@@ -70,16 +70,21 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Jobs.wsgi.application'
 
-
+AUTH_USER_MODEL = 'external_jobs.NewUser'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'Job_portal',  # Replace with your database name
+        'USER': 'root',  # Replace with your MySQL username
+        'PASSWORD': 'NewPassword123!',  # Replace with your MySQL password
+        'HOST': '127.0.0.1',  # Or 'localhost' for a local database
+        'PORT': '3306',  # Default MySQL port
     }
 }
+
 
 
 # Password validation
