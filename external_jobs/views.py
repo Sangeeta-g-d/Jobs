@@ -28,8 +28,6 @@ def job_details(request):
     }
     return render(request,'job_details.html',context)
 
-def add_job(request):
-    return render(request,'add_job.html')
 
 def admin_logout(request):
     logout(request)
@@ -47,6 +45,7 @@ def add_job(request):
         education = request.POST.get('education')
         location = request.POST.get('location')
         job_type = request.POST.get('job_type')
+        .
         work_mode = request.POST.get('work_mode')
         r_and_r = request.POST.get('r_and_r')
         jon_link = request.POST.get('job_link')
