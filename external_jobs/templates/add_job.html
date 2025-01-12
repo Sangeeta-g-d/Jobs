@@ -1,5 +1,22 @@
 {% extends 'admin_base.html' %}
 {% block content %}
+
+<!-- SweetAlert Messages -->
+{% if messages %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            {% for message in messages %}
+                Swal.fire({
+                    icon: '{% if message.tags == "error" %}error{% else %}success{% endif %}',
+                    title: '{{ message }}',
+                    showConfirmButton: false,
+                    timer: 2000 // Auto-close after 2 seconds
+                });
+            {% endfor %}
+        });
+    </script>
+{% endif %}
+
 <div class="col-sm-12">
     <div class="card">
         <div class="card-header">
@@ -12,72 +29,78 @@
                     <!-- Left Column -->
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="exampleInputEmail1">Job Title</label>
-                            <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Job Title" name="job_title">
-                            
+                            <label for="job_title">Job Title <span style="color: red;">*</span></label>
+                            <input type="text" class="form-control" id="job_title" name="job_title" placeholder="Enter Job Title">
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputPassword1">Company Name</label>
-                            <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Company Name" name="company_name">
+                            <label for="company_name">Company Name <span style="color: red;">*</span></label>
+                            <input type="text" class="form-control" id="company_name" name="company_name" placeholder="Enter Company Name">
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputPassword1">Experience</label>
-                            <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Experience" name="experience">
+                            <label for="location">Location <span style="color: red;">*</span></label>
+                            <input type="text" class="form-control" id="location" name="location" placeholder="Enter Location">
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputPassword1">Package</label>
-                            <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Package" name="package">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleFormControlSelect1">Work Mode</label>
-                            <select class="form-control" id="exampleFormControlSelect1" name="work_mode">
-                                <option>Remote</option>
-                                <option>Hybride</option>
-                                <option>Work From Office</option>
-                                
+                            <label for="job_type">Job Type</label>
+                            <select class="form-control" id="job_type" name="job_type">
+                                <option value="">Select</option>
+                                <option value="Full-Time">Full-Time</option>
+                                <option value="Part-Time">Part-Time</option>
+                                <option value="Internship">Internship</option>
+                                <option value="Freelance">Freelance</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="exampleFormControlTextarea1">Roles & Responsibilities</label>
-                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="r_and_r"></textarea>
-                        </div>
-                       
                     </div>
+
                     <!-- Right Column -->
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="exampleInputPassword1">Location</label>
-                            <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Location" name="location">
+                            <label for="job_link">Job Link <span style="color: red;">*</span></label>
+                            <input type="url" class="form-control" id="job_link" name="job_link" placeholder="Enter Job Link">
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputPassword1">Education</label>
-                            <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Education" name="education">
+                            <label for="experience">Experience</label>
+                            <input type="text" class="form-control" id="experience" name="experience" placeholder="Enter Experience">
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputPassword1">Skills</label>
-                            <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Required Skills" name="skills">
+                            <label for="package">Salary Package</label>
+                            <input type="text" class="form-control" id="package" name="package" placeholder="Enter Salary Package">
                         </div>
                         <div class="form-group">
-                            <label for="exampleFormControlSelect1">Job Type</label>
-                            <select class="form-control" id="exampleFormControlSelect1" name="job_type">
-                                <option>Full Time</option>
-                                <option>Part Time</option>
-                                <option>Internship</option>
-                                
+                            <label for="work_mode">Work Mode</label>
+                            <select class="form-control" id="work_mode" name="work_mode">
+                                <option value="">Select</option>
+                                <option value="Remote">Remote</option>
+                                <option value="On-Site">On-Site</option>
+                                <option value="Hybrid">Hybrid</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">Job Link</label>
-                            <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Job Link" name="job_link">
-                        </div>
-                        
                     </div>
                 </div>
+
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="education">Education</label>
+                            <input type="text" class="form-control" id="education" name="education" placeholder="Enter Education">
+                        </div>
+                        <div class="form-group">
+                            <label for="skills">Required Skills</label>
+                            <textarea class="form-control" id="skills" name="skills" rows="3" placeholder="Enter Required Skills"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="r_and_r">Roles and Responsibilities</label>
+                            <textarea class="form-control" id="r_and_r" name="r_and_r" rows="3" placeholder="Enter Roles and Responsibilities"></textarea>
+                        </div>
+                    </div>
+                </div>
+
                 <button type="submit" class="btn btn-primary mt-3">Submit</button>
             </form>
         </div>
-        
     </div>
-   
 </div>
+
 {% endblock %}
