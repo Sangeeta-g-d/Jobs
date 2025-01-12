@@ -3,53 +3,80 @@
 <div class="col-sm-12">
     <div class="card">
         <div class="card-header">
-            <h5>Basic Component</h5>
+            <h5>Add New Job</h5>
         </div>
         <div class="card-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <form>
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <!-- Left Column -->
+                    <div class="col-md-6">
                         <div class="form-group">
-                            <label for="exampleInputEmail1">Email address</label>
-                            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-                            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                            <label for="exampleInputEmail1">Job Title</label>
+                            <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Job Title" name="job_title">
+                            
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputPassword1">Password</label>
-                            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-                        </div>
-                        <div class="form-group form-check">
-                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                            <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                        </div>
-                        <button type="submit" class="btn  btn-primary">Submit</button>
-                    </form>
-                </div>
-                <div class="col-md-6">
-                    <form>
-                        <div class="form-group">
-                            <label>Text</label>
-                            <input type="text" class="form-control" placeholder="Text">
+                            <label for="exampleInputPassword1">Company Name</label>
+                            <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Company Name" name="company_name">
                         </div>
                         <div class="form-group">
-                            <label for="exampleFormControlSelect1">Example select</label>
-                            <select class="form-control" id="exampleFormControlSelect1">
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
+                            <label for="exampleInputPassword1">Experience</label>
+                            <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Experience" name="experience">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Package</label>
+                            <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Package" name="package">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleFormControlSelect1">Work Mode</label>
+                            <select class="form-control" id="exampleFormControlSelect1" name="work_mode">
+                                <option>Remote</option>
+                                <option>Hybride</option>
+                                <option>Work From Office</option>
+                                
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="exampleFormControlTextarea1">Example textarea</label>
-                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                            <label for="exampleFormControlTextarea1">Roles & Responsibilities</label>
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="r_and_r"></textarea>
                         </div>
-                    </form>
+                       
+                    </div>
+                    <!-- Right Column -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Location</label>
+                            <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Location" name="location">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Education</label>
+                            <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Education" name="education">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Skills</label>
+                            <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Required Skills" name="skills">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleFormControlSelect1">Job Type</label>
+                            <select class="form-control" id="exampleFormControlSelect1" name="job_type">
+                                <option>Full Time</option>
+                                <option>Part Time</option>
+                                <option>Internship</option>
+                                
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Job Link</label>
+                            <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Job Link" name="job_link">
+                        </div>
+                        
+                    </div>
                 </div>
-            </div>
-
+                <button type="submit" class="btn btn-primary mt-3">Submit</button>
+            </form>
         </div>
+        
     </div>
    
 </div>

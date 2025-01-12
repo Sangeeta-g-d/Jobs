@@ -24321,20 +24321,7 @@ body.box-layout .pcoded-navbar.theme-horizontal ~ .pcoded-header {
     border-bottom-right-radius: 60px;
 }
 
-.fixed-button {
-    position: fixed;
-    bottom: -50px;
-    right: 30px;
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.35);
-    opacity: 0;
-    z-index: 9;
-    transition: all 0.5s ease;
-}
 
-.fixed-button.active {
-    bottom: 50px;
-    opacity: 1;
-}
 
 .social-card {
     color: #fff;
