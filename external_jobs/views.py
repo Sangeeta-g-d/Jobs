@@ -23,9 +23,6 @@ def v3_login(request):
 def admin_db(request):
     return render(request,'admin_db.html')
 
-def add_job(request):
-    return render(request,'add_job.html')
-
 def admin_logout(request):
     logout(request)
     return redirect('/admin_login')
@@ -34,6 +31,8 @@ def register(request):
     return render(request,'register.html')
 
 def add_job(request):
+    alert = {"type": "", "message": ""}  # Initialize the alert dictionary
+
     if request.method == 'POST':
         try:
             # Extracting form data
@@ -52,16 +51,20 @@ def add_job(request):
 
             # Validation for mandatory fields
             if not job_title or not company_name or not location or not job_link:
+                missing_fields = []
                 if not job_title:
-                    messages.error(request, "Job Title is required!")
+                    missing_fields.append("Job Title")
                 if not company_name:
-                    messages.error(request, "Company Name is required!")
+                    missing_fields.append("Company Name")
                 if not location:
-                    messages.error(request, "Location is required!")
+                    missing_fields.append("Location")
                 if not job_link:
-                    messages.error(request, "Job Link is required!")
-                return redirect('add_job')  # Redirect back to the form
-            
+                    missing_fields.append("Job Link")
+                
+                alert["type"] = "error"
+                alert["message"] = f"Missing required fields: {', '.join(missing_fields)}"
+                return render(request, 'add_job.html', {"alert": alert})  # Pass alert to template
+
             # Create job entry in the database
             Jobs.objects.create(
                 job_title=job_title,
@@ -73,19 +76,21 @@ def add_job(request):
                 work_mode=work_mode,
                 required_skills=required_skills,
                 roles_and_responsibilities=r_and_r,
-                jon_link=job_link,
+                job_link=job_link,
                 company_name=company_name,
                 added_by=added_by,
             )
-            messages.success(request, "Job added successfully!")
-            return redirect('add_job')  # Redirect back to form or another page
+            alert["type"] = "success"
+            alert["message"] = "Job added successfully!"
+            return render(request, 'add_job.html', {"alert": alert})  # Pass alert to template
         except Exception as e:
-            # Log the error for debugging if needed
-            print(e)
-            messages.error(request, "Failed to add the job. Please try again.")
-            return redirect('add_job')
+            print(e)  # Log the error for debugging
+            alert["type"] = "error"
+            alert["message"] = "Failed to add the job. Please try again."
+            return render(request, 'add_job.html', {"alert": alert})  # Pass alert to template
 
-    return render(request, 'add_job.html')
+    return render(request, 'add_job.html', {"alert": alert})  # Initial render
+
 
 def job_details(request):
     data = Jobs.objects.all()
@@ -108,9 +113,45 @@ def get_job_details(request, id):
             'work_mode': job.work_mode,
             'required_skills': job.required_skills,
             'roles_and_responsibilities': job.roles_and_responsibilities,
-            'jon_link': job.jon_link,
+            'job_link': job.job_link,
         }
         return JsonResponse(data)
     except Jobs.DoesNotExist:
         return JsonResponse({'error': 'Job not found'}, status=404)
-    
+
+
+def edit_job_details(request, id):
+   
+    job = get_object_or_404(Jobs, id=id)
+
+    if request.method == 'POST':
+        # Retrieve data from the form
+        job.job_title = request.POST.get('job_title')
+        job.company_name = request.POST.get('company_name')
+        job.location = request.POST.get('location')
+        job.job_type = request.POST.get('job_type')
+        job.job_link = request.POST.get('job_link')
+        job.experience = request.POST.get('experience')
+        job.salary = request.POST.get('package')
+        job.work_mode = request.POST.get('work_mode')
+        job.education = request.POST.get('education')
+        job.required_skills = request.POST.get('skills')
+        job.roles_and_responsibilities = request.POST.get('r_and_r')
+
+        # Save updated details
+        job.save()
+        
+        return redirect('job_details')  # Replace with your list view name
+
+    context = {
+        'data': job
+    }
+    return render(request, 'edit_job_details.html', context)
+
+
+def delete_job(request, id):
+    if request.method == 'DELETE':
+        job = get_object_or_404(Jobs, id=id)
+        job.delete()
+        return JsonResponse({'message': 'Job deleted successfully!'}, status=200)
+    return JsonResponse({'error': 'Invalid request'}, status=400)

@@ -17,5 +17,5 @@ class Jobs(models.Model):
     work_mode = models.CharField(max_length=500, blank=True)
     required_skills = models.CharField(max_length=900)
     roles_and_responsibilities = models.CharField(max_length=1500, blank=True)
-    jon_link = models.CharField(max_length=400, blank=True)
+    job_link = models.CharField(max_length=400, blank=True)
     company_name = models.CharField(max_length=300, blank=True)

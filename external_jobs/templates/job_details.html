@@ -1,7 +1,7 @@
 {% extends 'admin_base.html' %}
 
 {% block content %}
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <div class="pcoded-content">
     <!-- [ breadcrumb ] start -->
     <div class="page-header">
@@ -51,18 +51,26 @@
                                     <td>{{ item.location }}</td>
                                     <td>
                                         <!-- View Button -->
-                                        <button class="btn btn-primary btn-sm" onclick="openJobPopup({{ item.id }})">
-                                            View
-                                        </button>
+                                        <!-- View Button -->
+                                        <a href="javascript:void(0);" 
+                                        class="btn btn-link text-primary" 
+                                        style="font-size: 1.5rem;" 
+                                        onclick="openJobPopup('{{ item.id }}')">
+                                         <i class="feather icon-eye"></i>
+                                        </a>
+
                                         <!-- Edit Icon (Larger) -->
-                                        <a href="" class="btn btn-link text-warning" style="font-size: 1.5rem;">
+                                        <a href="/edit_job_details/{{item.id}}/" class="btn btn-link text-warning" style="font-size: 1.5rem;">
                                             <i class="feather icon-edit"></i>
                                         </a>
                                         <!-- Delete Icon -->
-                                        <a href="" class="btn btn-link text-danger">
-                                            <i class="feather icon-trash"></i>
-                                        </a>
-                                    </td>
+                                       <a href="javascript:void(0);" 
+                                       class="btn btn-link text-danger" 
+                                       style="font-size: 1.5rem;" 
+                                       onclick="confirmDelete('{{ item.id }}')">
+                                       <i class="feather icon-trash"></i>
+                                    </a>
+
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -92,37 +100,4 @@
         </div>
     </div>
 </div>
-
-<!-- JS for Handling the Modal and View Action -->
-<script>
-    function openJobPopup(jobId) {
-        fetch(`/get_job_details/${jobId}/`)
-            .then(response => response.json())
-            .then(data => {
-                const content = `
-                    <p><strong>Job Title:</strong> ${data.job_title}</p>
-                    <p><strong>Company Name:</strong> ${data.company_name}</p>
-                    <p><strong>Salary:</strong> ${data.salary}</p>
-                    <p><strong>Experience:</strong> ${data.experience}</p>
-                    <p><strong>Location:</strong> ${data.location}</p>
-                    <p><strong>Education:</strong> ${data.education}</p>
-                    <p><strong>Job Type:</strong> ${data.job_type}</p>
-                    <p><strong>Work Mode:</strong> ${data.work_mode}</p>
-                    <p><strong>Skills:</strong> ${data.required_skills}</p>
-                    <p><strong>Roles and Responsibilities:</strong> ${data.roles_and_responsibilities}</p>
-                    <p><strong>Job Link:</strong> <a href="${data.jon_link}" target="_blank">${data.jon_link}</a></p>
-                `;
-                document.getElementById('jobDetailsContent').innerHTML = content;
-
-                // Initialize the modal after content is updated
-                const jobDetailsModal = new bootstrap.Modal(document.getElementById('jobDetailsModal'));
-                jobDetailsModal.show();
-            })
-            .catch(error => {
-                console.error('Error fetching job details:', error);
-                alert('Failed to load job details. Please try again.');
-            });
-    }
-</script>
-
 {% endblock %}
