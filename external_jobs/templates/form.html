@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+	{% include "layouts/head.html" %}
+    {% include "layouts/head-bottom-link.html" %}
+
+    <style>
+        @media (max-width: 768px) {
+    .auth-wrapper {
+        padding: 20px;
+    }
+
+    .auth-content {
+        width: 90%;
+    }
+}
+
+@media (min-width: 768px) {
+    .auth-content {
+        width: 50%;
+    }
+}
+
+    </style>
+
+</head>
+
+<!-- [ auth-signin ] start -->
+<div class="auth-wrapper">
+    <div class="auth-content text-center" style="width: 650px;">
+        <img src="/static/assets/images/logo.png" alt="" class="img-fluid mb-4">
+        <div class="card borderless custom-card" >
+            <div class="row align-items-center">
+                <div class="col-md-12">
+                    <div class="card-body">
+                        <h4 class="mb-3 f-w-400">Register</h4>
+                        <hr>
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            
+                            <div class="form-row">
+                                <!-- First Name -->
+                                <div class="col-md-6 form-group mb-3">
+                                    <input type="text" name="first_name" class="form-control" placeholder="First Name" required>
+                                </div>
+                                
+                                <!-- Last Name -->
+                                <div class="col-md-6 form-group mb-3">
+                                    <input type="text" name="last_name" class="form-control" placeholder="Last Name" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <!-- Username -->
+                                <div class="col-md-6 form-group mb-3">
+                                    <input type="text" name="username" class="form-control" placeholder="Username" required>
+                                </div>
+                                
+                                <!-- Phone Number -->
+                                <div class="col-md-6 form-group mb-3">
+                                    <input type="text" name="phone" class="form-control" placeholder="Phone Number" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <!-- Email -->
+                                <div class="col-md-6 form-group mb-3">
+                                    <input type="email" name="email" class="form-control" placeholder="Email" required>
+                                </div>
+                                
+                                <!-- College -->
+                                <div class="col-md-6 form-group mb-3">
+                                    <input type="text" name="college" class="form-control" placeholder="College" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <!-- Degree -->
+                                <div class="col-md-6 form-group mb-3">
+                                    <select name="degree" class="form-control" required>
+                                        <option value="" disabled selected>Degree</option>
+                                        <option value="bca">BCA</option>
+                                        <option value="bsc">B.Sc</option>
+                                        <option value="bcom">B.Com</option>
+                                        <option value="ba">B.A</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Location -->
+                                <div class="col-md-6 form-group mb-3">
+                                    <input type="text" name="location" class="form-control" placeholder="Location" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <!-- Start Year -->
+                                <div class="col-md-6 form-group mb-3">
+                                    <select name="start_year" class="form-control" required>
+                                        <option value="" disabled selected>Start Year</option>
+                                        {% for year in year_range %}
+                                        <option value="{{ year }}">{{ year }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <!-- End Year -->
+                                <div class="col-md-6 form-group mb-3">
+                                    <select name="end_year" class="form-control" required>
+                                        <option value="" disabled selected>End Year</option>
+                                        {% for year in year_range %}
+                                        <option value="{{ year }}">{{ year }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <!-- Experience -->
+                                <div class="col-md-12 form-group mb-3">
+                                    <input type="text" name="experience" class="form-control" placeholder="Experience" required>
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="btn btn-block btn-primary mb-4">Register</button>
+                        </form>
+                        <hr>
+                        <p class="mb-2 text-muted">Already have an account? <a href="auth-login.html" class="f-w-400">Signin</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- [ auth-signin ] end -->
+
+<!-- Required Js -->
+<script src="/static/assets/js/vendor-all.min.js"></script>
+<script src="/static/assets/js/plugins/bootstrap.min.js"></script>
+
+<script src="/static/assets/js/pcoded.min.js"></script>
+{% include "layouts/footer-bottom-link.html" %}
+
+</body>
+
+</html>

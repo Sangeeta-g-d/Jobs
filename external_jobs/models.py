@@ -4,6 +4,9 @@ from django.contrib.auth.models import AbstractUser
 
 class NewUser(AbstractUser):
     user_type = models.CharField(max_length=100, default='user')
+    fullname= models.CharField(max_length=250, blank=True)
+    phone_no = models.CharField(max_length=100, blank=True)
+
 
 
 class Jobs(models.Model):

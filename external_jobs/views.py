@@ -5,6 +5,8 @@ from django.contrib.auth.hashers import make_password
 from . models import *
 from django.contrib import messages
 from django.http import JsonResponse
+from datetime import datetime
+from django.contrib.auth.hashers import make_password
 # Create your views here.
 
 def v3_login(request):
@@ -155,3 +157,50 @@ def delete_job(request, id):
         job.delete()
         return JsonResponse({'message': 'Job deleted successfully!'}, status=200)
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+def index(request):
+    return render(request, 'index.html')
+
+
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST.get('email')
+        password = request.POST.get('password')
+        print(username,password)
+        user = authenticate(username = username, password = password)
+        if user is not None :
+            print("inside if")
+            login(request,user)
+            return redirect('/')
+        else:
+            print("inside else")
+            error_message = "Invalid username or password"
+            return render(request,'user_login.html',{'error_message':error_message})
+    return render(request, 'user_login.html')
+
+def user_registration(request):
+    if request.method == 'POST':
+        full_name = request.POST.get('fullname')
+        email = request.POST.get('email')
+        phone_no = request.POST.get('phone_no')
+        password = request.POST.get('password')
+        c_password = request.POST.get('c_password')
+        encrypted_password = make_password(c_password) 
+        # Validation checks
+        if not full_name or not email or not phone_no or not password or not c_password:
+            messages.error(request, "All fields are required!")
+        elif len(phone_no) != 10 or not phone_no.isdigit():
+            messages.error(request, "Phone number must be exactly 10 digits!")
+        elif password != c_password:
+            messages.error(request, "Password and Confirm Password do not match!")
+        else:
+            # Save user if validation passes
+            NewUser.objects.create(fullname=full_name, username=email, phone_no=phone_no, password=encrypted_password)
+            return render(request, 'user_registration.html', {'success': True})
+
+    return render(request, 'user_registration.html')
+
+
+def jobs(request):
+    return render(request, 'jobs.html')
