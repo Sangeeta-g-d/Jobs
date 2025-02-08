@@ -17,6 +17,7 @@ class Jobs(models.Model):
     location = models.CharField(max_length=500, blank=True)
     job_type = models.CharField(max_length=500, blank=True)
     work_mode = models.CharField(max_length=500, blank=True)
+    category = models.CharField(max_length=500, blank=True)
     required_skills = models.CharField(max_length=900)
     roles_and_responsibilities = models.CharField(max_length=1500, blank=True)
     job_link = models.CharField(max_length=400, default='nolink')

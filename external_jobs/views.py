@@ -31,6 +31,8 @@ def admin_logout(request):
 
 def register(request):
     return render(request,'register.html')
+
+
 def add_job(request):
     alert = {"type": "", "message": ""}
 
@@ -47,6 +49,7 @@ def add_job(request):
             r_and_r = request.POST.get('r_and_r')
             job_link = request.POST.get('job_link')
             company_name = request.POST.get('company_name')
+            category = request.POST.get('category')
             required_skills = request.POST.get('skills')
             company_logo = request.FILES.get('company_logo')  # Handle logo upload
 
@@ -76,11 +79,11 @@ def add_job(request):
                 required_skills=required_skills,
                 roles_and_responsibilities=r_and_r,
                 job_link=job_link,
+                category = category,
                 company_name=company_name,
                 company_logo=company_logo,
                 added_by=added_by,
             )
-
             
         except Exception as e:
             print(e)
@@ -200,8 +203,34 @@ def user_registration(request):
 
 
 def jobs(request):
-    job_list = Jobs.objects.all()  # Fetch all jobs from the database
-    return render(request, 'jobs.html', {'jobs': job_list})
+    selected_location = request.GET.get('location')  # Get selected location
+    selected_category = request.GET.get('category')  # Get selected category
+    selected_job_type = request.GET.get('job_type')  # Get selected job type
+
+    # Fetch unique values for filters
+    unique_locations = Jobs.objects.values_list('location', flat=True).distinct()
+    unique_categories = Jobs.objects.values_list('category', flat=True).distinct()
+    print("______________",unique_categories)
+    unique_job_types = Jobs.objects.values_list('job_type', flat=True).distinct()
+
+    # Filter jobs based on selected criteria
+    job_list = Jobs.objects.all()
+    if selected_location:
+        job_list = job_list.filter(location=selected_location)
+    if selected_category:
+        job_list = job_list.filter(category=selected_category)
+    if selected_job_type:
+        job_list = job_list.filter(job_type=selected_job_type)
+
+    return render(request, 'jobs.html', {
+        'jobs': job_list,
+        'locations': unique_locations,
+        'categories': unique_categories,
+        'job_types': unique_job_types,
+        'selected_location': selected_location,
+        'selected_category': selected_category,
+        'selected_job_type': selected_job_type
+    })
 
 
 def user_dashboard(request):
