@@ -31,28 +31,26 @@ def admin_logout(request):
 
 def register(request):
     return render(request,'register.html')
-
 def add_job(request):
-    alert = {"type": "", "message": ""}  # Initialize the alert dictionary
+    alert = {"type": "", "message": ""}
 
     if request.method == 'POST':
         try:
-            # Extracting form data
             added_by = request.user
-            job_title = request.POST.get('job_title', '').strip()
-            experience = request.POST.get('experience', '').strip()
-            salary = request.POST.get('package', '').strip()
-            education = request.POST.get('education', '').strip()
-            location = request.POST.get('location', '').strip()
-            job_type = request.POST.get('job_type', '').strip()
-            work_mode = request.POST.get('work_mode', '').strip()
-            r_and_r = request.POST.get('r_and_r', '').strip()
-            job_link = request.POST.get('job_link', '').strip()
-            company_name = request.POST.get('company_name', '').strip()
-            required_skills = request.POST.get('skills', '').strip()
+            job_title = request.POST.get('job_title')
+            experience = request.POST.get('experience')
+            salary = request.POST.get('package')
+            education = request.POST.get('education')
+            location = request.POST.get('location')
+            job_type = request.POST.get('job_type')
+            work_mode = request.POST.get('work_mode')
+            r_and_r = request.POST.get('r_and_r')
+            job_link = request.POST.get('job_link')
+            company_name = request.POST.get('company_name')
+            required_skills = request.POST.get('skills')
+            company_logo = request.FILES.get('company_logo')  # Handle logo upload
 
-            # Validation for mandatory fields
-            if not job_title or not company_name or not location or not job_link:
+            if not job_title or not company_name or not location :
                 missing_fields = []
                 if not job_title:
                     missing_fields.append("Job Title")
@@ -60,14 +58,13 @@ def add_job(request):
                     missing_fields.append("Company Name")
                 if not location:
                     missing_fields.append("Location")
-                if not job_link:
-                    missing_fields.append("Job Link")
                 
+
                 alert["type"] = "error"
                 alert["message"] = f"Missing required fields: {', '.join(missing_fields)}"
-                return render(request, 'add_job.html', {"alert": alert})  # Pass alert to template
+                return render(request, 'add_job.html', {"alert": alert})
 
-            # Create job entry in the database
+            # Create job entry
             Jobs.objects.create(
                 job_title=job_title,
                 salary=salary,
@@ -80,18 +77,18 @@ def add_job(request):
                 roles_and_responsibilities=r_and_r,
                 job_link=job_link,
                 company_name=company_name,
+                company_logo=company_logo,
                 added_by=added_by,
             )
-            alert["type"] = "success"
-            alert["message"] = "Job added successfully!"
-            return render(request, 'add_job.html', {"alert": alert})  # Pass alert to template
+
+            
         except Exception as e:
-            print(e)  # Log the error for debugging
+            print(e)
             alert["type"] = "error"
             alert["message"] = "Failed to add the job. Please try again."
-            return render(request, 'add_job.html', {"alert": alert})  # Pass alert to template
+            return render(request, 'add_job.html', {"alert": alert})
 
-    return render(request, 'add_job.html', {"alert": alert})  # Initial render
+    return render(request, 'add_job.html', {"alert": alert})
 
 
 def job_details(request):
@@ -158,9 +155,9 @@ def delete_job(request, id):
         return JsonResponse({'message': 'Job deleted successfully!'}, status=200)
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
-
 def index(request):
-    return render(request, 'index.html')
+    latest_jobs = Jobs.objects.order_by('-id')[:5]  # Fetch the 5 most recent jobs
+    return render(request, 'index.html', {'latest_jobs': latest_jobs})
 
 
 def user_login(request):
@@ -172,7 +169,7 @@ def user_login(request):
         if user is not None :
             print("inside if")
             login(request,user)
-            return redirect('/')
+            return redirect('/dashboard')
         else:
             print("inside else")
             error_message = "Invalid username or password"
@@ -203,4 +200,10 @@ def user_registration(request):
 
 
 def jobs(request):
-    return render(request, 'jobs.html')
+    job_list = Jobs.objects.all()  # Fetch all jobs from the database
+    return render(request, 'jobs.html', {'jobs': job_list})
+
+
+def user_dashboard(request):
+    job_list = Jobs.objects.all()  # Fetch all jobs from the database
+    return render(request, 'user_dashboard.html', {'jobs': job_list})
