@@ -250,10 +250,29 @@
             button.addEventListener("click", function() {
                 let jobId = this.getAttribute("data-job-id");
                 let detailsDiv = document.getElementById("job-details-" + jobId);
-                
+                let jobCard = this.closest(".single_jobs"); // Get the job card to scroll to
+
+                // Close all other job details sections
+                document.querySelectorAll(".job_details").forEach(div => {
+                    if (div !== detailsDiv) {
+                        div.style.display = "none"; // Hide other job details
+                    }
+                });
+
+                // Reset all "View More" button texts
+                document.querySelectorAll(".view-more-btn").forEach(btn => {
+                    if (btn !== this) {
+                        btn.innerText = "View More";
+                    }
+                });
+
+                // Toggle the clicked job details section
                 if (detailsDiv.style.display === "none" || detailsDiv.style.display === "") {
                     detailsDiv.style.display = "block";  // Show details
                     this.innerText = "View Less";  // Change button text
+                    
+                    // Smoothly scroll to the job card
+                    jobCard.scrollIntoView({ behavior: "smooth", block: "start" });
                 } else {
                     detailsDiv.style.display = "none";  // Hide details
                     this.innerText = "View More";  // Reset button text
@@ -262,6 +281,8 @@
         });
     });
 </script>
+
+
 
 
 
