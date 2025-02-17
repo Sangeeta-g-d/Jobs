@@ -1,0 +1,120 @@
+{% extends 'admin_base.html' %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<div class="pcoded-content">
+    <!-- [ breadcrumb ] start -->
+    <div class="page-header">
+        <div class="page-block">
+            <div class="row align-items-center">
+                <div class="col-md-12">
+                    <div class="page-header-title">
+                        <h5 class="m-b-10">Job Details</h5>
+                    </div>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html"><i class="feather icon-home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="#!">Job Management</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [ breadcrumb ] end -->
+
+    <!-- [ Main Content ] start -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Companies</h5>
+                </div>
+                <div class="card-body table-border-style">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Company Name</th>
+                                    <th>Phone Number</th>
+                                    <th>Email</th>
+                                    <th>Location</th>
+                                    <th>Action</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in data %}
+                                <tr id="row-{{ item.id }}">
+                                    <td>{{ item.fullname }}</td>
+                                    <td>{{ item.phone_no }}</td>
+                                    <td>{{ item.username }}</td>
+                                    <td>{{ item.address }}</td>
+                                    <td>
+                                        <button class="btn btn-sm {% if item.is_staff %}btn-danger{% else %}btn-success{% endif %}"
+                                                onclick="toggleApproval({{ item.id }})" id="approve-btn-{{ item.id }}">
+                                            {% if item.is_staff %}Disapprove{% else %}Approve{% endif %}
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <a href="/a_company_jobs/{{ item.id }}/" class="btn btn-info btn-sm">
+                                            View Jobs
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        
+                        <script>
+                            function toggleApproval(userId) {
+                                fetch(`/toggle-approval/${userId}/`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'X-CSRFToken': '{{ csrf_token }}',
+                                        'Content-Type': 'application/json'
+                                    }
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        let button = document.getElementById(`approve-btn-${userId}`);
+                                        if (data.is_staff) {
+                                            button.textContent = 'Disapprove';
+                                            button.classList.remove('btn-success');
+                                            button.classList.add('btn-danger');
+                                        } else {
+                                            button.textContent = 'Approve';
+                                            button.classList.remove('btn-danger');
+                                            button.classList.add('btn-success');
+                                        }
+                                    }
+                                })
+                                .catch(error => console.error('Error:', error));
+                            }
+                        </script>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [ Main Content ] end -->
+</div>
+
+<!-- Job Details Modal -->
+<div class="modal fade" id="jobDetailsModal" tabindex="-1" aria-labelledby="jobDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="jobDetailsModalLabel">Job Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="jobDetailsContent">
+                <!-- Job details will be loaded here dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

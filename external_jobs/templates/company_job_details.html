@@ -1,4 +1,4 @@
-{% extends 'admin_base.html' %}
+{% extends 'company_base.html' %}
 
 {% block content %}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -38,8 +38,9 @@
                                     <th>Salary</th>
                                     <th>Experience</th>
                                     <th>Location</th>
+                                    
                                     <th>Actions</th>
-                                   
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -51,30 +52,35 @@
                                     <td>{{ item.experience }}</td>
                                     <td>{{ item.location }}</td>
                                    
+                                    
                                     <td>
                                         <!-- View Button -->
                                         <!-- View Button -->
                                         <a href="javascript:void(0);" 
                                         class="btn btn-link text-primary" 
-                                        style="font-size: 1.3rem;" 
+                                        style="font-size: 1.1rem;" 
                                         onclick="openJobPopup('{{ item.id }}')">
                                          <i class="feather icon-eye"></i>
                                         </a>
 
                                         <!-- Edit Icon (Larger) -->
-                                        <a href="/edit_job_details/{{item.id}}/" class="btn btn-link text-warning" style="font-size: 1.3rem;">
+                                        <a href="/company_edit_job_details/{{item.id}}/" class="btn btn-link text-warning" style="font-size: 1.1rem;">
                                             <i class="feather icon-edit"></i>
                                         </a>
                                         <!-- Delete Icon -->
                                        <a href="javascript:void(0);" 
                                        class="btn btn-link text-danger" 
-                                       style="font-size: 1.3rem;" 
+                                       style="font-size: 1.1rem;" 
                                        onclick="confirmDelete('{{ item.id }}')">
                                        <i class="feather icon-trash"></i>
                                     </a>
                                     </td>
-                                  
-                                    
+                                    <td>
+                                        <button class="btn btn-sm btn-warning" 
+                                                onclick="changeJobStatus({{ item.id }})">
+                                            Inactive
+                                        </button>
+                                    </td>
 
                                 </tr>
                                 {% endfor %}
@@ -105,4 +111,21 @@
         </div>
     </div>
 </div>
+<script>
+    function changeJobStatus(jobId) {
+        if (confirm("Are you sure you want to mark this job as inactive?")) {
+            fetch(`/toggle_job_status/${jobId}/`, {
+                method: 'GET',
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload(); // Reload page to update job list
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    }
+    </script>
+    
 {% endblock %}

@@ -1,0 +1,96 @@
+{% extends 'admin_base.html' %}
+
+{% block content %}
+<div class="pcoded-wrapper">
+    <div class="pcoded-content">
+        <div class="pcoded-inner-content">
+            <div class="main-body">
+                <div class="page-wrapper">
+                    <!-- [ Breadcrumb ] -->
+                    <div class="page-header">
+                        <div class="page-block">
+                            <div class="row align-items-center">
+                                <div class="col-md-12">
+                                    <div class="page-header-title">
+                                        <h4 class="m-b-10" style="font-size: 25px;">
+                                            <strong>{{ c_name.company_name }}</strong>
+                                        </h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- [ Main Content ] -->
+                    <div class="row">
+                        {% for job in jobs %}
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 style="font-size: 18px;"><strong>{{ job.job_title }}</strong></h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row" style="line-height: 30px;">
+                                        <div class="col-6">Salary: <strong>{{ job.salary }}</strong></div>
+                                        <div class="col-6">Experience: <strong>{{ job.experience }} years</strong></div>
+                                    </div>
+                                    <div class="row" style="line-height: 30px;">
+                                        <div class="col-6">Location: <strong>{{ job.location }}</strong></div>
+                                        <div class="col-6">Job Type: <strong>{{ job.job_type }}</strong></div>
+                                    </div>
+                                    <div class="row" style="line-height: 30px;">
+                                        <div class="col-6">Work Mode: <strong>{{ job.work_mode }}</strong></div>
+                                        
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Posted Date: <strong>{{ job.date_posted|date:"M. d, Y" }}</strong></div>
+                                    </div>
+                                    
+                                    <!-- View Applied Candidates -->
+                                    <a href="/a_candidate_details/{{ job.id }}/" class="btn btn-primary mt-3">
+                                        View Applied Candidates
+                                    </a>
+                                    
+                                    <!-- View More Button -->
+                                    <button class="btn btn-info mt-3" data-bs-toggle="modal" data-bs-target="#jobModal{{ job.id }}">
+                                        View More
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal for Job Details -->
+                        <div class="modal fade" id="jobModal{{ job.id }}" tabindex="-1" aria-labelledby="jobModalLabel{{ job.id }}" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="jobModalLabel{{ job.id }}"><strong>{{ job.job_title }}</strong></h5>
+                                        
+                                    </div>
+                                    <div class="modal-body">
+                                        
+                                        <p><strong>Education:</strong> {{ job.education }}</p>
+                                        
+                                        <p><strong>Education:</strong>{{ job.category }}</strong></p>
+                                        <p><strong>Required Skills:</strong> {{ job.required_skills }}</p>
+                                        <p><strong>Roles & Responsibilities:</strong> {{ job.roles_and_responsibilities }}</p>
+                                        
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS (Ensure Bootstrap is loaded) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+{% endblock %}

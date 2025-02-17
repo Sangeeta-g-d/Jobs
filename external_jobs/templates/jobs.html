@@ -77,59 +77,45 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
-                                        <div class="single_field">
-                                            <select class="wide">
-                                                <option data-display="Location">Location</option>
-                                                <option value="1">Rangpur</option>
-                                                <option value="2">Dhaka </option>
-                                            </select>
-                                        </div>
+                                        <form method="GET" action="{% url 'jobs' %}">
+                                            <div class="single_field">
+                                                <select name="location" class="wide" onchange="this.form.submit()">
+                                                    <option value="">All Locations</option>
+                                                    {% for location in locations %}
+                                                        <option value="{{ location }}" {% if selected_location == location %}selected{% endif %}>
+                                                            {{ location }}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+
+                                             <!-- Category Filter -->
+    <div class="single_field">
+        <select name="category" class="wide" onchange="this.form.submit()">
+            <option value="">All Categories</option>
+            {% for category in categories %}
+                <option value="{{ category }}" {% if selected_category == category %}selected{% endif %}>
+                    {{ category }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Job Type Filter -->
+    <div class="single_field">
+        <select name="job_type" class="wide" onchange="this.form.submit()">
+            <option value="">All Job Types</option>
+            {% for job_type in job_types %}
+                <option value="{{ job_type }}" {% if selected_job_type == job_type %}selected{% endif %}>
+                    {{ job_type }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+                                        </form>
                                     </div>
-                                    <div class="col-lg-12">
-                                        <div class="single_field">
-                                            <select class="wide">
-                                                <option data-display="Category">Category</option>
-                                                <option value="1">Category 1</option>
-                                                <option value="2">Category 2 </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="single_field">
-                                            <select class="wide">
-                                                <option data-display="Experience">Experience</option>
-                                                <option value="1">Experience 1</option>
-                                                <option value="2">Experience 2 </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="single_field">
-                                            <select class="wide">
-                                                <option data-display="Job type">Job type</option>
-                                                <option value="1">full time 1</option>
-                                                <option value="2">part time 2 </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="single_field">
-                                            <select class="wide">
-                                                <option data-display="Qualification">Qualification</option>
-                                                <option value="1">Qualification 1</option>
-                                                <option value="2">Qualification 2</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="single_field">
-                                            <select class="wide">
-                                                <option data-display="Gender">Gender</option>
-                                                <option value="1">male</option>
-                                                <option value="2">female</option>
-                                            </select>
-                                        </div>
-                                    </div>
+                                   
+                                   
                                 </div>
                             </form>
                         </div>
@@ -281,6 +267,7 @@
         });
     });
 </script>
+
 
 
 

@@ -6,6 +6,11 @@ class NewUser(AbstractUser):
     user_type = models.CharField(max_length=100, default='user')
     fullname= models.CharField(max_length=250, blank=True)
     phone_no = models.CharField(max_length=100, blank=True)
+    address = models.CharField(max_length=500, blank=True)  # New field for address
+    profile_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)  # New field for profile image
+
+    def __str__(self):
+        return self.username
 
 
 class Jobs(models.Model):
@@ -17,11 +22,22 @@ class Jobs(models.Model):
     location = models.CharField(max_length=500, blank=True)
     job_type = models.CharField(max_length=500, blank=True)
     work_mode = models.CharField(max_length=500, blank=True)
+    category = models.CharField(max_length=500, blank=True)
     required_skills = models.CharField(max_length=900)
     roles_and_responsibilities = models.CharField(max_length=1500, blank=True)
     job_link = models.CharField(max_length=400, default='nolink')
     company_name = models.CharField(max_length=300, blank=True)
-    company_logo = models.ImageField(upload_to='company_logos/', blank=True, null=True)  # New field
+    company_logo = models.ImageField(upload_to='company_logos/', blank=True, null=True)
+    status = models.CharField(max_length=400, default='Active')
+    # New field to store the job posting date
+    date_posted = models.DateField(auto_now_add=True)  # Stores only date (not time)
 
     def __str__(self):
         return self.job_title
+    
+class AppliedJob(models.Model):
+    user = models.ForeignKey(NewUser, on_delete=models.CASCADE)
+    company = models.IntegerField()  # Store company ID
+    job_id = models.IntegerField()  # Store job ID
+    resume = models.FileField(upload_to='resumes/')
+    applied_at = models.DateTimeField(auto_now_add=True)

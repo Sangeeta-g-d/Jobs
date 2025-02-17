@@ -1,4 +1,4 @@
-{% extends 'admin_base.html' %}
+{% extends 'company_base.html' %}
 {% block content %}
 
 <!-- SweetAlert Messages -->
@@ -30,10 +30,7 @@
                             <label for="job_title">Job Title <span style="color: red;">*</span></label>
                             <input type="text" class="form-control" id="job_title" name="job_title" placeholder="Enter Job Title">
                         </div>
-                        <div class="form-group">
-                            <label for="company_name">Company Name <span style="color: red;">*</span></label>
-                            <input type="text" class="form-control" id="company_name" name="company_name" placeholder="Enter Company Name">
-                        </div>
+                        
                         <div class="form-group">
                             <label for="location">Location <span style="color: red;">*</span></label>
                             <input type="text" class="form-control" id="location" name="location" placeholder="Enter Location">
@@ -49,13 +46,18 @@
                                 <option value="Freelance">Freelance</option>
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label for="education">Education</label>
+                            <input type="text" class="form-control" id="education" name="education" placeholder="Enter Education">
+                        </div>
                     </div>
 
                     <!-- Right Column -->
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="job_link">Job Link </label>
-                            <input type="url" class="form-control" id="job_link" name="job_link" placeholder="Enter Job Link">
+                            <label for="company_name">Company Name <span style="color: red;">*</span></label>
+                            <input type="text" class="form-control" id="company_name" name="company_name" 
+                                   value="{{ data.fullname }}" placeholder="Enter Company Name">
                         </div>
                         <div class="form-group">
                             <label for="experience">Experience</label>
@@ -90,10 +92,7 @@
 
                 <div class="row mt-3">
                     <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="education">Education</label>
-                            <input type="text" class="form-control" id="education" name="education" placeholder="Enter Education">
-                        </div>
+                       
                         <div class="form-group">
                             <label for="job_type">Job Category</label>
                             <select class="form-control" id="category" name="category">
@@ -118,6 +117,10 @@
                         <div class="form-group">
                             <label for="company_logo">Company Logo</label>
                             <input type="file" class="form-control" id="company_logo" name="company_logo">
+                            
+                            {% if data.profile_image %}
+                                <img src="{{ data.profile_image.url }}" alt="Company Logo" class="mt-2" style="width: 100px; height: auto;">
+                            {% endif %}
                         </div>
                         <div class="form-group">
                             <label for="r_and_r">Roles and Responsibilities</label>

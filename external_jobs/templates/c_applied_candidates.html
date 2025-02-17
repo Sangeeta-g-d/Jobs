@@ -1,4 +1,4 @@
-{% extends 'admin_base.html' %}
+{% extends 'company_base.html' %}
 
 {% block content %}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -26,56 +26,41 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h5>Job Details</h5>
+                    <h5>Applied Candidates</h5>
                 </div>
                 <div class="card-body table-border-style">
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>Job Title</th>
-                                    <th>Company Name</th>
-                                    <th>Salary</th>
-                                    <th>Experience</th>
-                                    <th>Location</th>
-                                    <th>Actions</th>
-                                   
+                                    <th>Full Name</th>
+                                    <th>Email</th>
+                                    <th>Phone No</th>
+                                    <th>Resume</th>
+                                    <th>Applied Date</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for item in data %}
+                                {% for candidate in candidate_details %}
                                 <tr>
-                                    <td>{{ item.job_title }}</td>
-                                    <td>{{ item.company_name }}</td>
-                                    <td>{{ item.salary }}</td>
-                                    <td>{{ item.experience }}</td>
-                                    <td>{{ item.location }}</td>
-                                   
+                                    <td>{{ candidate.fullname }}</td>
+                                    <td>{{ candidate.email }}</td>
+                                    <td>{{ candidate.phone_no }}</td>
                                     <td>
-                                        <!-- View Button -->
-                                        <!-- View Button -->
-                                        <a href="javascript:void(0);" 
-                                        class="btn btn-link text-primary" 
-                                        style="font-size: 1.3rem;" 
-                                        onclick="openJobPopup('{{ item.id }}')">
-                                         <i class="feather icon-eye"></i>
-                                        </a>
-
-                                        <!-- Edit Icon (Larger) -->
-                                        <a href="/edit_job_details/{{item.id}}/" class="btn btn-link text-warning" style="font-size: 1.3rem;">
-                                            <i class="feather icon-edit"></i>
-                                        </a>
-                                        <!-- Delete Icon -->
-                                       <a href="javascript:void(0);" 
-                                       class="btn btn-link text-danger" 
-                                       style="font-size: 1.3rem;" 
-                                       onclick="confirmDelete('{{ item.id }}')">
-                                       <i class="feather icon-trash"></i>
-                                    </a>
+                                        {% if candidate.resume %}
+                                            <a href="{{ candidate.resume }}" target="_blank" class="btn btn-sm btn-primary">
+                                                <i class="fas fa-file-download"></i> Download
+                                            </a>
+                                        {% else %}
+                                            No Resume
+                                        {% endif %}
                                     </td>
-                                  
-                                    
+<td>{{ candidate.applied_at|date:"d M, Y" }}</td>  <!-- Example: 05 Feb, 2025 -->
 
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center">No candidates have applied yet.</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -83,6 +68,7 @@
                     </div>
                 </div>
             </div>
+            
         </div>
     </div>
     <!-- [ Main Content ] end -->

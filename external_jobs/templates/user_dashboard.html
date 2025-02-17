@@ -71,65 +71,81 @@
                             <h3>Filter</h3>
                             <form action="#">
                                 <div class="row">
+                                    
                                     <div class="col-lg-12">
-                                        <div class="single_field">
-                                            <input type="text" placeholder="Search keyword">
-                                        </div>
+                                        <form method="GET" action="{% url 'jobs' %}">
+                                            <div class="single_field">
+                                                <select name="location" class="wide" onchange="this.form.submit()">
+                                                    <option value="">All Locations</option>
+                                                    {% for location in locations %}
+                                                        <option value="{{ location }}" {% if selected_location == location %}selected{% endif %}>
+                                                            {{ location }}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+
+                                             <!-- Category Filter -->
+
+
+    <!-- Job Type Filter -->
+    <div class="single_field">
+        <select name="job_type" class="wide" onchange="this.form.submit()">
+            <option value="">All Job Types</option>
+            {% for job_type in job_types %}
+                <option value="{{ job_type }}" {% if selected_job_type == job_type %}selected{% endif %}>
+                    {{ job_type }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="single_field">
+        <select name="category" class="wide" onchange="this.form.submit()">
+            <option value="">All Categories</option>
+            {% for category in categories %}
+                <option value="{{ category }}" {% if selected_category == category %}selected{% endif %}>
+                    {{ category }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="single_field">
+        <select name="work_mode" class="wide" onchange="this.form.submit()">
+            <option value="">All Work Modes</option>
+            {% for mode in work_modes %}
+                <option value="{{ mode }}" {% if selected_work_mode == mode %}selected{% endif %}>
+                    {{ mode }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div class="single_field">
+        <select name="experience" class="wide" onchange="this.form.submit()">
+            <option value="">All Experience Levels</option>
+            {% for exp in experience_levels %}
+                <option value="{{ exp }}" {% if selected_experience == exp %}selected{% endif %}>
+                    {{ exp }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div class="single_field">
+        <select name="date_posted" class="wide" onchange="this.form.submit()">
+            <option value="">Any Time</option>
+            <option value="1_day" {% if selected_date_posted == "1_day" %}selected{% endif %}>Last 1 Day</option>
+            <option value="3_days" {% if selected_date_posted == "3_days" %}selected{% endif %}>Last 3 Days</option>
+            <option value="1_week" {% if selected_date_posted == "1_week" %}selected{% endif %}>Last 1 Week</option>
+        </select>
+    </div>
+    
+                             </form>
                                     </div>
-                                    <div class="col-lg-12">
-                                        <div class="single_field">
-                                            <select class="wide">
-                                                <option data-display="Location">Location</option>
-                                                <option value="1">Rangpur</option>
-                                                <option value="2">Dhaka </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="single_field">
-                                            <select class="wide">
-                                                <option data-display="Category">Category</option>
-                                                <option value="1">Category 1</option>
-                                                <option value="2">Category 2 </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="single_field">
-                                            <select class="wide">
-                                                <option data-display="Experience">Experience</option>
-                                                <option value="1">Experience 1</option>
-                                                <option value="2">Experience 2 </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="single_field">
-                                            <select class="wide">
-                                                <option data-display="Job type">Job type</option>
-                                                <option value="1">full time 1</option>
-                                                <option value="2">part time 2 </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="single_field">
-                                            <select class="wide">
-                                                <option data-display="Qualification">Qualification</option>
-                                                <option value="1">Qualification 1</option>
-                                                <option value="2">Qualification 2</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="single_field">
-                                            <select class="wide">
-                                                <option data-display="Gender">Gender</option>
-                                                <option value="1">male</option>
-                                                <option value="2">female</option>
-                                            </select>
-                                        </div>
-                                    </div>
+                                   
+                                   
                                 </div>
                             </form>
                         </div>
@@ -145,26 +161,25 @@
                         </div>
                     </div>
                 </div>
+                
                 <div class="col-lg-9">
                     <div class="recent_joblist_wrap">
                         <div class="recent_joblist white-bg">
                             <div class="row align-items-center">
                                 <div class="col-md-6">
-                                    <h4>Job Listing</h4>
+                                    <h4>Search Jobs</h4>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="serch_cat d-flex justify-content-end">
-                                        <select>
-                                            <option data-display="Most Recent">Most Recent</option>
-                                            <option value="1">Marketer</option>
-                                            <option value="2">WordPress</option>
-                                            <option value="4">Designer</option>
-                                        </select>
-                                    </div>
+                                    <form method="GET" action="{% url 'user_dashboard' %}" class="search_bar d-flex justify-content-end">
+                                        <input type="text" class="form-control search-input" name="search" id="job_search" placeholder="Search by job title" value="{{ search_query }}">
+                                        <button type="submit" class="btn btn-primary search-btn ml-2">Search</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    
+                    
                 
                     <div class="job_lists m-0">
                         <div class="row">
@@ -189,9 +204,13 @@
                                     </div>
                                     <div class="jobs_right">
                                         <div class="apply_now">
-                                            <a class="heart_mark" href="#"><i class="fa fa-heart"></i></a>
-                                            <a href="/login" target="_blank" class="boxed-btn3">Apply Now</a>
+                                            {% if job.job_link != "nolink" %}
+                                                <a href="{{ job.job_link }}" target="_blank" class="boxed-btn3">Apply Now</a>
+                                            {% else %}
+                                                <a href="javascript:void(0);" class="boxed-btn3 open-popup" data-job-id="{{ job.id }}">Apply Now</a>
+                                            {% endif %}
                                         </div>
+                                        
                                         <div class="date">
                                             <p class="view-more-btn" data-job-id="{{ job.id }}">View More</p> 
                                         </div>
@@ -226,7 +245,29 @@
     </div>
     <!-- job_listing_area_end  -->
 
- 
+
+    <!-- Popup Form  -->
+
+    <!-- Background overlay -->
+<div id="popup-overlay"></div>
+
+<!-- Popup Form -->
+<div id="popup-form">
+    <div class="popup-content">
+        <h3>Apply for this Job</h3>
+        <form id="job-application-form">
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="text" id="phone" placeholder="Phone Number" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="file" id="resume" accept=".pdf,.doc,.docx" required>
+            <div class="popup-buttons">
+                <button type="submit" id="submit-application">Submit</button>
+                <button type="button" id="close-popup">Close</button>
+            </div>
+        </form>
+    </div>
+</div>
+
     <script>
         $( function() {
             $( "#slider-range" ).slider({
@@ -250,10 +291,29 @@
             button.addEventListener("click", function() {
                 let jobId = this.getAttribute("data-job-id");
                 let detailsDiv = document.getElementById("job-details-" + jobId);
-                
+                let jobCard = this.closest(".single_jobs"); // Get the job card to scroll to
+
+                // Close all other job details sections
+                document.querySelectorAll(".job_details").forEach(div => {
+                    if (div !== detailsDiv) {
+                        div.style.display = "none"; // Hide other job details
+                    }
+                });
+
+                // Reset all "View More" button texts
+                document.querySelectorAll(".view-more-btn").forEach(btn => {
+                    if (btn !== this) {
+                        btn.innerText = "View More";
+                    }
+                });
+
+                // Toggle the clicked job details section
                 if (detailsDiv.style.display === "none" || detailsDiv.style.display === "") {
                     detailsDiv.style.display = "block";  // Show details
                     this.innerText = "View Less";  // Change button text
+                    
+                    // Smoothly scroll to the job card
+                    jobCard.scrollIntoView({ behavior: "smooth", block: "start" });
                 } else {
                     detailsDiv.style.display = "none";  // Hide details
                     this.innerText = "View More";  // Reset button text
@@ -262,6 +322,67 @@
         });
     });
 </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const popupForm = document.getElementById("popup-form");
+        const closeButton = document.getElementById("close-popup");
+        const openButtons = document.querySelectorAll(".open-popup");
+        const submitButton = document.getElementById("submit-application");
+        const usernameInput = document.getElementById("username");
+        const phoneInput = document.getElementById("phone");
+        const emailInput = document.getElementById("email");
+        const resumeInput = document.getElementById("resume");
+
+        openButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                let jobId = this.getAttribute("data-job-id");
+                popupForm.dataset.jobId = jobId;
+
+                // Fetch user details via AJAX
+                fetch("/get-user-details/")
+                    .then(response => response.json())
+                    .then(data => {
+                        usernameInput.value = data.username;
+                        phoneInput.value = data.phone;
+                        emailInput.value = data.email;
+                    });
+
+                popupForm.style.display = "block";
+            });
+        });
+
+        closeButton.addEventListener("click", function () {
+            popupForm.style.display = "none";
+        });
+
+        document.getElementById("job-application-form").addEventListener("submit", function (event) {
+            event.preventDefault();
+            let formData = new FormData();
+            formData.append("username", usernameInput.value);
+            formData.append("phone", phoneInput.value);
+            formData.append("email", emailInput.value);
+            formData.append("resume", resumeInput.files[0]);
+            formData.append("job_id", popupForm.dataset.jobId);
+
+            fetch("/apply-job/", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}"
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    popupForm.style.display = "none";
+                });
+        });
+    });
+</script>
+
+    
+
 
 
 

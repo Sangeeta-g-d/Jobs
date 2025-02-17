@@ -1,0 +1,87 @@
+{% extends 'company_base.html' %}
+{% block content %}
+
+<div class="col-sm-12">
+    <div class="card">
+        <div class="card-header">
+            <h5>Edit Job Details</h5>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <!-- Left Column -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="job_title">Job Title </label>
+                            <input type="text" class="form-control" id="job_title" name="job_title" value="{{data.job_title}}" placeholder="Enter Job Title">
+                        </div>
+                        <div class="form-group">
+                            <label for="company_name">Company Name </label>
+                            <input type="text" class="form-control" id="company_name" name="company_name" value="{{data.company_name}}" placeholder="Enter Company Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="location">Location </label>
+                            <input type="text" class="form-control" id="location" name="location" placeholder="Enter Location" value="{{data.location}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="job_type">Job Type</label>
+                            <select class="form-control" id="job_type" name="job_type">
+                                <option value="{{data.job_type}}">Select</option>
+                                <option value="Full-Time">Full-Time</option>
+                                <option value="Part-Time">Part-Time</option>
+                                <option value="Internship">Internship</option>
+                                <option value="Freelance">Freelance</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="education">Education</label>
+                            <input type="text" class="form-control" id="education" name="education" value="{{data.education}}" placeholder="Enter Education">
+                        </div>
+                        <div class="form-group">
+                            <label for="experience">Experience</label>
+                            <input type="text" class="form-control" id="experience" name="experience" placeholder="Enter Experience" value="{{data.experience}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="package">Salary Package</label>
+                            <input type="text" class="form-control" id="package" name="package" placeholder="Enter Salary Package" value="{{data.salary}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="work_mode">Work Mode</label>
+                            <select class="form-control" id="work_mode" name="work_mode">
+                                <option value="{{data.work_mode}}">Select</option>
+                                <option value="Remote">Remote</option>
+                                <option value="On-Site">On-Site</option>
+                                <option value="Hybrid">Hybrid</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                       
+                        <div class="form-group">
+                            <label for="skills">Required Skills</label>
+                            <textarea class="form-control" id="skills" name="skills" rows="3" placeholder="Enter Required Skills">{{data.required_skills}}</textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="r_and_r">Roles and Responsibilities</label>
+                            <textarea class="form-control" id="r_and_r" name="r_and_r" rows="3" placeholder="Enter Roles and Responsibilities">{{data.roles_and_responsibilities}}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn  btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
