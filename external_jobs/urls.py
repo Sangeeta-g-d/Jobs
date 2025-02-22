@@ -32,6 +32,7 @@ urlpatterns = [
     path('toggle_job_status/<int:job_id>/', views.toggle_job_status, name='toggle_job_status'),
     path('a_company_jobs/<int:id>/', views.a_company_jobs, name='a_company_jobs'),
     path('a_candidate_details/<int:id>/', views.a_candidate_details, name='a_candidate_details'),
+    path('user_profile/',views.user_profile,name="user_profile"),
 
 
 ]

@@ -12,6 +12,15 @@ class NewUser(AbstractUser):
     def __str__(self):
         return self.username
 
+class UserDetails(models.Model):
+    user_id = models.ForeignKey(NewUser, on_delete=models.CASCADE)
+    qualification = models.CharField(max_length=100, default='qualification')
+    year_of_exp = models.CharField(max_length=250, default='exp')
+    area_of_interest = models.CharField(max_length=250, default='interest')
+    year_of_passing = models.CharField(max_length=100,default='year')
+    user_resume = models.FileField(upload_to='user_resumes/',blank=True, null=True)
+    skills = models.CharField(max_length=700,default='skills')
+
 
 class Jobs(models.Model):
     added_by = models.ForeignKey(NewUser, on_delete=models.CASCADE, default='')
