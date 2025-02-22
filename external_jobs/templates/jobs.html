@@ -68,14 +68,18 @@
                 <div class="col-lg-3">
                     <div class="job_filter white-bg">
                         <div class="form_inner white-bg">
-                            <h3>Filter</h3>
+                            <div class="d-flex justify-content-between align-items-center" style="margin-bottom: 10px;">
+                                <h3 class="mb-0">Filter</h3>
+                                <a href="{% url 'jobs' %}?reset=true" class="btn btn-secondary">Reset</a>
+                            </div>
+                            
+                            
+                            
+
                             <form action="#">
                                 <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="single_field">
-                                            <input type="text" placeholder="Search keyword">
-                                        </div>
-                                    </div>
+                            
+                                    
                                     <div class="col-lg-12">
                                         <form method="GET" action="{% url 'jobs' %}">
                                             <div class="single_field">
@@ -112,6 +116,36 @@
             {% endfor %}
         </select>
     </div>
+
+    <div class="single_field">
+        <select name="work_mode" class="wide" onchange="this.form.submit()">
+            <option value="">All Work Modes</option>
+            {% for mode in work_modes %}
+                <option value="{{ mode }}" {% if selected_work_mode == mode %}selected{% endif %}>
+                    {{ mode }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="single_field">
+        <select name="experience" class="wide" onchange="this.form.submit()">
+            <option value="">All Experience Levels</option>
+            {% for exp in experience_levels %}
+                <option value="{{ exp }}" {% if selected_experience == exp %}selected{% endif %}>
+                    {{ exp }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="single_field">
+        <select name="date_posted" class="wide" onchange="this.form.submit()">
+            <option value="">Any Time</option>
+            <option value="1_day" {% if selected_date_posted == "1_day" %}selected{% endif %}>Last 1 Day</option>
+            <option value="3_days" {% if selected_date_posted == "3_days" %}selected{% endif %}>Last 3 Days</option>
+            <option value="1_week" {% if selected_date_posted == "1_week" %}selected{% endif %}>Last 1 Week</option>
+        </select>
+    </div>
                                         </form>
                                     </div>
                                    
@@ -126,9 +160,7 @@
                                 <input type="text" id="amount" readonly style="border:0; color:#7A838B; font-size: 14px; font-weight:400;">
                             </p>
                         </div>
-                        <div class="reset_btn">
-                            <button  class="boxed-btn3 w-100" type="submit">Reset</button>
-                        </div>
+                      
                     </div>
                 </div>
                 <div class="col-lg-9">
@@ -136,17 +168,14 @@
                         <div class="recent_joblist white-bg">
                             <div class="row align-items-center">
                                 <div class="col-md-6">
-                                    <h4>Job Listing</h4>
+                                    <h4>Search Jobs</h4>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="serch_cat d-flex justify-content-end">
-                                        <select>
-                                            <option data-display="Most Recent">Most Recent</option>
-                                            <option value="1">Marketer</option>
-                                            <option value="2">WordPress</option>
-                                            <option value="4">Designer</option>
-                                        </select>
-                                    </div>
+                                    <form method="GET" action="{% url 'jobs' %}" class="search_bar d-flex justify-content-end">
+                                        <input type="text" class="form-control search-input" name="search" id="job_search" placeholder="Search by job title" value="{{ search_query }}">
+                                        <button type="submit" class="btn btn-secondary search-btn ml-2">Search</button>
+                                    </form>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -154,7 +183,8 @@
                 
                     <div class="job_lists m-0">
                         <div class="row">
-                            {% for job in jobs %}
+                            {% for item in jobs_with_age %}
+                            {% with job=item.job days_old=item.days_old %}
                             <div class="col-lg-12 col-md-12">
                                 <div class="single_jobs white-bg d-flex justify-content-between">
                                     <div class="jobs_left d-flex align-items-center">
@@ -171,6 +201,7 @@
                                                     <p><i class="fa fa-clock-o"></i> {{ job.job_type }}</p>
                                                 </div>
                                             </div>
+                                           
                                         </div>
                                     </div>
                                     <div class="jobs_right">
@@ -179,11 +210,17 @@
                                             <a href="/login" target="_blank" class="boxed-btn3">Apply Now</a>
                                         </div>
                                         <div class="date">
-                                            <p class="view-more-btn" data-job-id="{{ job.id }}">View More</p> 
+                                            <p class="view-more-btn" data-job-id="{{ job.id }}">View More</p>
+                                            <p class="text-muted">
+                                                Posted {% if days_old == 0 %} Today
+                                                {% elif days_old == 1 %} 1 day ago
+                                                {% else %} {{ days_old }} days ago
+                                                {% endif %}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
-                                
+                    
                                 <!-- Hidden Job Details Section -->
                                 <div class="job_details" id="job-details-{{ job.id }}" style="display: none; background: #f9f9f9; padding: 15px; border-radius: 5px; margin-top: 10px;">
                                     <p><strong>Company:</strong> {{ job.company_name }}</p>
@@ -193,16 +230,18 @@
                                     <p><strong>Work Mode:</strong> {{ job.work_mode }}</p>
                                     <p><strong>Required Skills:</strong> {{ job.required_skills }}</p>
                                     <p><strong>Roles & Responsibilities:</strong> {{ job.roles_and_responsibilities }}</p>
-                                    
+                    
                                     <!-- Apply Button -->
                                     <div class="apply_now">
                                         <a href="/login" target="_blank" class="boxed-btn3">Apply Now</a>
                                     </div>
                                 </div>
                             </div>
+                            {% endwith %}
                             {% endfor %}
                         </div>
                     </div>
+                    
                     
                     
                 </div>
@@ -268,6 +307,67 @@
     });
 </script>
 
+
+<!-- Script for search functionality -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("#search_designation").on("keyup", function() {
+            var designation = $(this).val().trim();
+
+            $.ajax({
+                url: "{% url 'jobs' %}",
+                type: "GET",
+                data: {
+                    designation: designation
+                },
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"  // Required for detecting AJAX in Django
+                },
+                success: function(response) {
+                    var jobsList = $(".job_lists .row");
+                    jobsList.empty(); // Clear existing jobs
+
+                    if (response.jobs.length > 0) {
+                        response.jobs.forEach(function(job) {
+                            var jobHtml = `
+                                <div class="col-lg-12 col-md-12">
+                                    <div class="single_jobs white-bg d-flex justify-content-between">
+                                        <div class="jobs_left d-flex align-items-center">
+                                            <div class="thumb">
+                                                <img src="${job.company_logo}" alt="">
+                                            </div>
+                                            <div class="jobs_conetent">
+                                                <a href="#"><h4>${job.job_title}</h4></a>
+                                                <div class="links_locat d-flex align-items-center">
+                                                    <div class="location">
+                                                        <p><i class="fa fa-map-marker"></i> ${job.location}</p>
+                                                    </div>
+                                                    <div class="location">
+                                                        <p><i class="fa fa-clock-o"></i> ${job.job_type}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="jobs_right">
+                                            <div class="apply_now">
+                                                <a class="heart_mark" href="#"><i class="fa fa-heart"></i></a>
+                                                <a href="/login" target="_blank" class="boxed-btn3">Apply Now</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            jobsList.append(jobHtml);
+                        });
+                    } else {
+                        jobsList.html("<p>No jobs found.</p>");
+                    }
+                }
+            });
+        });
+    });
+</script>
 
 
 

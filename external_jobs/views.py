@@ -9,6 +9,8 @@ from django.http import JsonResponse
 from datetime import date, datetime
 from django.contrib.auth.hashers import make_password
 from django.db.models import Count
+from datetime import timedelta, date
+from django.utils.timezone import now
 
 # Create your views here.
 
@@ -216,65 +218,134 @@ def user_registration(request):
     return render(request, 'user_registration.html')
 
 def jobs(request):
-    selected_location = request.GET.get('location')
-    selected_category = request.GET.get('category')
-    selected_job_type = request.GET.get('job_type')
+    if request.GET.get('reset'):
+        request.session.pop('searched_jobs', None)
+        request.session.pop('filters', None)  # Clear filters
+        return redirect('jobs')
+    # Get user search input
+    search_query = request.GET.get('search', '').strip()
+    selected_designation = request.GET.get('designation', '').strip()
+    print("----------------------",selected_designation)
+    selected_location = request.GET.get('location', '').strip()
+    selected_category = request.GET.get('category', '').strip()
+    selected_job_type = request.GET.get('job_type', '').strip()
+    selected_work_mode = request.GET.get('work_mode', '').strip()
+    selected_experience = request.GET.get('experience', '').strip()
+    selected_date_posted = request.GET.get('date_posted', '').strip()
 
-    # Store filters in session
-    request.session['selected_location'] = selected_location
-    request.session['selected_category'] = selected_category
-    request.session['selected_job_type'] = selected_job_type
+    request.session['filters'] = {
+        'search_query': search_query,
+        'designation': selected_designation,
+        'location': selected_location,
+        'category': selected_category,
+        'job_type': selected_job_type,
+        'work_mode': selected_work_mode,
+        'experience': selected_experience,
+        'date_posted': selected_date_posted,
+    }
 
-    # Fetch unique values for filters
+    # Fetch unique filters for the dropdowns
     unique_locations = Jobs.objects.values_list('location', flat=True).distinct()
     unique_categories = Jobs.objects.values_list('category', flat=True).distinct()
     unique_job_types = Jobs.objects.values_list('job_type', flat=True).distinct()
+    unique_work_modes = Jobs.objects.values_list('work_mode', flat=True).distinct()
+    unique_experience_levels = Jobs.objects.values_list('experience', flat=True).distinct()
 
-    # Apply filters
-    job_list = Jobs.objects.all()
+
+    # If a new search is made, store the job IDs in the session
+    if search_query:
+        job_list = Jobs.objects.filter(job_title__icontains=search_query)
+        request.session['searched_jobs'] = list(job_list.values_list('id', flat=True))
+    else:
+        searched_job_ids = request.session.get('searched_jobs', [])
+        job_list = Jobs.objects.filter(id__in=searched_job_ids) if searched_job_ids else Jobs.objects.all()
+
+    # Apply filters only to the searched results
+    if selected_designation:
+        job_list = job_list.filter(job_title__icontains=selected_designation)
+        request.session['searched_jobs'] = list(job_list.values_list('id', flat=True))
+    else:
+        searched_job_ids = request.session.get('searched_jobs', [])
+        job_list = Jobs.objects.filter(id__in=searched_job_ids) if searched_job_ids else Jobs.objects.all()
+
     if selected_location:
-        job_list = job_list.filter(location=selected_location)
-    if selected_category:
-        job_list = job_list.filter(category=selected_category)
-    if selected_job_type:
-        job_list = job_list.filter(job_type=selected_job_type)
+        job_list = job_list.filter(location__icontains=selected_location)
 
-    return render(request, 'jobs.html', {
-        'jobs': job_list,
+    if selected_category:
+        job_list = job_list.filter(category__icontains=selected_category)
+
+    if selected_job_type:
+        job_list = job_list.filter(job_type__icontains=selected_job_type)
+
+    if selected_work_mode:
+        job_list = job_list.filter(work_mode=selected_work_mode)
+
+    if selected_experience:
+        job_list = job_list.filter(experience=selected_experience)
+
+    if selected_date_posted:
+        today = date.today()
+        if selected_date_posted == "1_day":
+            job_list = job_list.filter(date_posted__gte=today - timedelta(days=1))
+        elif selected_date_posted == "3_days":
+            job_list = job_list.filter(date_posted__gte=today - timedelta(days=3))
+        elif selected_date_posted == "1_week":
+            job_list = job_list.filter(date_posted__gte=today - timedelta(days=7))
+
+    # Compute job age (days since posted)
+    jobs_with_age = [{'job': job, 'days_old': (now().date() - job.date_posted).days} for job in job_list]
+
+    context = {
+        'jobs_with_age': jobs_with_age,
         'locations': unique_locations,
         'categories': unique_categories,
         'job_types': unique_job_types,
+        'work_modes': unique_work_modes,
+        'experience_levels': unique_experience_levels,
         'selected_location': selected_location,
+        'selected_designation': selected_designation,
         'selected_category': selected_category,
-        'selected_job_type': selected_job_type
-    })
-from datetime import timedelta, date
+        'selected_job_type': selected_job_type,
+        'search_query': search_query,  # Persist search query
+    }
+
+    return render(request, 'jobs.html', context)
+
+
 
 def user_dashboard(request):
-    # Get filters from GET parameters or session
-    selected_location = request.GET.get('location', request.session.get('selected_location'))
-    selected_category = request.GET.get('category', request.session.get('selected_category'))
-    selected_job_type = request.GET.get('job_type', request.session.get('selected_job_type'))
-    selected_work_mode = request.GET.get('work_mode', request.session.get('selected_work_mode'))
-    selected_experience = request.GET.get('experience', request.session.get('selected_experience'))
-    selected_date_posted = request.GET.get('date_posted', request.session.get('selected_date_posted'))
-    search_query = request.GET.get('search', '')
+    if request.GET.get('reset'):
+        keys_to_clear = [
+        'selected_location', 'selected_category', 'selected_job_type', 
+        'selected_work_mode', 'selected_experience', 'selected_date_posted', 
+        'search_query', 'designation', 'searched_jobs'
+        ]
+        for key in keys_to_clear:
+            request.session.pop(key, None)  # Remove key if it exists
+        return redirect('user_dashboard')  # Redirect to clear URL params
+    # Check if session has saved filters from pre-login state
+    selected_location = request.GET.get('location', request.session.get('selected_location', ''))
+    selected_category = request.GET.get('category', request.session.get('selected_category', ''))
+    selected_job_type = request.GET.get('job_type', request.session.get('selected_job_type', ''))
+    selected_work_mode = request.GET.get('work_mode', request.session.get('selected_work_mode', ''))
+    selected_experience = request.GET.get('experience', request.session.get('selected_experience', ''))
+    selected_date_posted = request.GET.get('date_posted', request.session.get('selected_date_posted', ''))
+    search_query = request.GET.get('search', request.session.get('search_query', ''))
+    selected_designation = request.GET.get('designation', request.session.get('designation', ''))
 
-    # Update session values if new filters are applied
-    if request.GET.get('location') is not None:
+    # Store new filters in session
+    if request.GET:
         request.session['selected_location'] = selected_location
-    if request.GET.get('category') is not None:
         request.session['selected_category'] = selected_category
-    if request.GET.get('job_type') is not None:
         request.session['selected_job_type'] = selected_job_type
-    if request.GET.get('work_mode') is not None:
         request.session['selected_work_mode'] = selected_work_mode
-    if request.GET.get('experience') is not None:
         request.session['selected_experience'] = selected_experience
-    if request.GET.get('date_posted') is not None:
         request.session['selected_date_posted'] = selected_date_posted
-
-    # Fetch unique values for filters
+        request.session['search_query'] = search_query
+        request.session['designation'] = selected_designation
+    
+    print("***************************",selected_designation)
+    # Fetch unique values for dropdown filters
     unique_locations = Jobs.objects.values_list('location', flat=True).distinct()
     unique_categories = Jobs.objects.values_list('category', flat=True).distinct()
     unique_job_types = Jobs.objects.values_list('job_type', flat=True).distinct()
@@ -284,18 +355,32 @@ def user_dashboard(request):
     # Apply filters
     job_list = Jobs.objects.all()
 
+    if search_query:
+        job_list = Jobs.objects.filter(job_title__icontains=search_query)
+        request.session['searched_jobs'] = list(job_list.values_list('id', flat=True))
+    else:
+        searched_job_ids = request.session.get('searched_jobs', [])
+        job_list = Jobs.objects.filter(id__in=searched_job_ids) if searched_job_ids else Jobs.objects.all()
+
+    # Apply filters only to the searched results
+    if selected_designation:
+        job_list = job_list.filter(job_title__icontains=selected_designation)
+        request.session['searched_jobs'] = list(job_list.values_list('id', flat=True))
+    else:
+        searched_job_ids = request.session.get('searched_jobs', [])
+        job_list = Jobs.objects.filter(id__in=searched_job_ids) if searched_job_ids else Jobs.objects.all()
+
     if selected_location:
-        job_list = job_list.filter(location=selected_location)
+        job_list = job_list.filter(location__icontains=selected_location)
     if selected_category:
-        job_list = job_list.filter(category=selected_category)
+        job_list = job_list.filter(category__icontains=selected_category)
     if selected_job_type:
-        job_list = job_list.filter(job_type=selected_job_type)
+        job_list = job_list.filter(job_type__icontains=selected_job_type)
     if selected_work_mode:
         job_list = job_list.filter(work_mode=selected_work_mode)
     if selected_experience:
         job_list = job_list.filter(experience=selected_experience)
-    if search_query:
-        job_list = job_list.filter(job_title__icontains=search_query)
+    
 
     # Date Posted Filter
     if selected_date_posted:
@@ -307,7 +392,10 @@ def user_dashboard(request):
         elif selected_date_posted == "1_week":
             job_list = job_list.filter(date_posted__gte=today - timedelta(days=7))
 
+    jobs_with_age = [{'job': job, 'days_old': (now().date() - job.date_posted).days} for job in job_list]
+
     return render(request, 'user_dashboard.html', {
+        'jobs_with_age':jobs_with_age,
         'jobs': job_list,
         'locations': unique_locations,
         'categories': unique_categories,
@@ -322,7 +410,6 @@ def user_dashboard(request):
         'selected_date_posted': selected_date_posted,
         'search_query': search_query
     })
-
 
 
 def company_register(request):

@@ -68,7 +68,11 @@
                 <div class="col-lg-3">
                     <div class="job_filter white-bg">
                         <div class="form_inner white-bg">
-                            <h3>Filter</h3>
+                            <div class="d-flex justify-content-between align-items-center" style="margin-bottom: 10px;">
+                                <h3 class="mb-0">Filter</h3>
+                                <a href="{% url 'user_dashboard' %}?reset=true" class="btn btn-secondary">Reset</a>
+                            </div>
+                            
                             <form action="#">
                                 <div class="row">
                                     
@@ -172,7 +176,7 @@
                                 <div class="col-md-6">
                                     <form method="GET" action="{% url 'user_dashboard' %}" class="search_bar d-flex justify-content-end">
                                         <input type="text" class="form-control search-input" name="search" id="job_search" placeholder="Search by job title" value="{{ search_query }}">
-                                        <button type="submit" class="btn btn-primary search-btn ml-2">Search</button>
+                                        <button type="submit" class="btn btn-secondary search-btn ml-2">Search</button>
                                     </form>
                                 </div>
                             </div>
@@ -183,7 +187,8 @@
                 
                     <div class="job_lists m-0">
                         <div class="row">
-                            {% for job in jobs %}
+                            {% for item in jobs_with_age %}
+                            {% with job=item.job days_old=item.days_old %}
                             <div class="col-lg-12 col-md-12">
                                 <div class="single_jobs white-bg d-flex justify-content-between">
                                     <div class="jobs_left d-flex align-items-center">
@@ -200,23 +205,26 @@
                                                     <p><i class="fa fa-clock-o"></i> {{ job.job_type }}</p>
                                                 </div>
                                             </div>
+                                           
                                         </div>
                                     </div>
                                     <div class="jobs_right">
                                         <div class="apply_now">
-                                            {% if job.job_link != "nolink" %}
-                                                <a href="{{ job.job_link }}" target="_blank" class="boxed-btn3">Apply Now</a>
-                                            {% else %}
-                                                <a href="javascript:void(0);" class="boxed-btn3 open-popup" data-job-id="{{ job.id }}">Apply Now</a>
-                                            {% endif %}
+                                            <a class="heart_mark" href="#"><i class="fa fa-heart"></i></a>
+                                            <a href="/login" target="_blank" class="boxed-btn3">Apply Now</a>
                                         </div>
-                                        
                                         <div class="date">
-                                            <p class="view-more-btn" data-job-id="{{ job.id }}">View More</p> 
+                                            <p class="view-more-btn" data-job-id="{{ job.id }}">View More</p>
+                                            <p class="text-muted">
+                                                Posted {% if days_old == 0 %} Today
+                                                {% elif days_old == 1 %} 1 day ago
+                                                {% else %} {{ days_old }} days ago
+                                                {% endif %}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
-                                
+                    
                                 <!-- Hidden Job Details Section -->
                                 <div class="job_details" id="job-details-{{ job.id }}" style="display: none; background: #f9f9f9; padding: 15px; border-radius: 5px; margin-top: 10px;">
                                     <p><strong>Company:</strong> {{ job.company_name }}</p>
@@ -226,13 +234,14 @@
                                     <p><strong>Work Mode:</strong> {{ job.work_mode }}</p>
                                     <p><strong>Required Skills:</strong> {{ job.required_skills }}</p>
                                     <p><strong>Roles & Responsibilities:</strong> {{ job.roles_and_responsibilities }}</p>
-                                    
+                    
                                     <!-- Apply Button -->
                                     <div class="apply_now">
                                         <a href="/login" target="_blank" class="boxed-btn3">Apply Now</a>
                                     </div>
                                 </div>
                             </div>
+                            {% endwith %}
                             {% endfor %}
                         </div>
                     </div>

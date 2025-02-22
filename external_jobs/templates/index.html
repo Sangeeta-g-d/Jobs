@@ -29,25 +29,30 @@
     <!-- catagory_area -->
     <div class="catagory_area">
         <div class="container">
-            <div class="row cat_search align-items-center">
-                <div class="col-lg-5 col-md-5">
-                    <div class="single_input position-relative">
-                        <input type="text" placeholder="Job title, keywords, or company">
-                        <i class="fas fa-search position-absolute" style="right: 15px; top: 50%; transform: translateY(-50%);"></i>
+            <form action="{% url 'jobs' %}" method="GET">
+                <div class="row cat_search align-items-center">
+                    <div class="col-lg-5 col-md-5">
+                        <div class="single_input position-relative">
+                            <input type="text" name="designation" placeholder="Job title, keywords, or company" value="{{ request.GET.designation }}">
+                            <i class="fas fa-search position-absolute" style="right: 15px; top: 50%; transform: translateY(-50%);"></i>
+                        </div>
+                    </div>
+                    <div class="col-lg-5 col-md-5">
+                        <div class="single_input position-relative">
+                            <input type="text" name="location" placeholder="City, State or Remote" value="{{ request.GET.location }}">
+                            <i class="fas fa-map-marker-alt position-absolute" style="right: 15px; top: 50%; transform: translateY(-50%);"></i>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-2">
+                        <div class="job_btn">
+                            <button type="submit" class="boxed-btn3">Find Job</button>
+                        </div>
                     </div>
                 </div>
-                <div class="col-lg-5 col-md-5">
-                    <div class="single_input position-relative">
-                        <input type="text" placeholder="City, State or Remote">
-                        <i class="fas fa-map-marker-alt position-absolute" style="right: 15px; top: 50%; transform: translateY(-50%);"></i>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-2">
-                    <div class="job_btn">
-                        <a href="#" class="boxed-btn3">Find Job</a>
-                    </div>
-                </div>
-            </div>
+            </form>
+            
+            
+            
                 
 
             
