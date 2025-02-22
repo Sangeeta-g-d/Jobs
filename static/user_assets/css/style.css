@@ -2651,12 +2651,12 @@ h3 {
 
 /* line 11, ../../Arafath/CL/December/235. Job board/HTML/scss/_category.scss */
 .catagory_area .cat_search .single_input input {
-  height: 50px;
-  border: 1px solid #E8E8E8;
+  height: 75px;
+  border: 1px solid #504d4d;
   padding: 20px;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
-  border-radius: 5px;
+  border-radius: 7px;
   width: 100%;
 }
 

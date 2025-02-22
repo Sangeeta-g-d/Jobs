@@ -591,3 +591,24 @@ def a_candidate_details(request,id):
         }
 
     return render(request,'a_candidate_details.html',context)
+
+def company_inactive_job(request):
+    company_id = request.user.id
+    data = Jobs.objects.filter(added_by_id=company_id, status="Inactive")  # Fetch only active jobs
+    context = {
+        'data': data
+    }
+    return render(request, 'company_inactive_jobs.html', context)
+
+
+def toggle_job_status_inactive(request, job_id):
+    job = get_object_or_404(Jobs, id=job_id)
+
+    # Change the status
+    if job.status == "Inactive":
+        job.status = "Active"
+    else:
+        job.status = "Inactive"
+    
+    job.save()
+    return JsonResponse({"success": True, "new_status": job.status})
