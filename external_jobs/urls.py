@@ -34,6 +34,17 @@ urlpatterns = [
     path('a_candidate_details/<int:id>/', views.a_candidate_details, name='a_candidate_details'),
     path('company_inactive_job', views.company_inactive_job, name='company_inactive_job'),
     path('toggle_job_status_inactive/<int:job_id>/', views.toggle_job_status_inactive, name='toggle_job_status_inactive'),
+    path('user_applied_jobs', views.user_applied_jobs, name='user_applied_jobs'),
+    path('u_applied_job_detail/<int:job_id>/', views.u_applied_job_detail, name='u_applied_job_detail'),
+    path('about_us', views.about_us, name='about_us'),
+    path('contact_us', views.contact_us, name='contact_us'),
+    path('check-email/', views.check_email, name='check_email'),
+    path('admin_logout',views.admin_logout,name='admin_logout'),
+    path('company_logout',views.company_logout,name='company_logout'),
+    path('user_logout',views.user_logout,name='user_logout'),
+    path('contact_us_details',views.contact_us_details,name='contact_us_details'),
+
+
 
 
 ]

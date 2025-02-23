@@ -4,63 +4,7 @@
     <!-- bradcam_area  -->
     
     <!--/ bradcam_area  -->
-    <header>
-        <div class="header-area " style="background: rgba(0, 29, 56, 0.8);">
-            <div id="sticky-header" class="main-header-area">
-                <div class="container-fluid ">
-                    <div class="header_bottom_border">
-                        <div class="row align-items-center">
-                            <div class="col-xl-3 col-lg-2">
-                                <div class="logo">
-                                    <a href="index.html">
-                                        <img src="/static/user_assets/img/logo.png" alt="">
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-xl-6 col-lg-7">
-                                <div class="main-menu  d-none d-lg-block">
-                                    <nav>
-                                        <ul id="navigation">
-                                            <li><a href="index.html">home</a></li>
-                                            <li><a href="jobs.html">Browse Job</a></li>
-                                            <li><a href="#">pages <i class="ti-angle-down"></i></a>
-                                                <ul class="submenu">
-                                                    <li><a href="candidate.html">Candidates </a></li>
-                                                    <li><a href="job_details.html">job details </a></li>
-                                                    <li><a href="elements.html">elements</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="#">blog <i class="ti-angle-down"></i></a>
-                                                <ul class="submenu">
-                                                    <li><a href="blog.html">blog</a></li>
-                                                    <li><a href="single-blog.html">single-blog</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="contact.html">Contact</a></li>
-                                        </ul>
-                                    </nav>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-lg-3 d-none d-lg-block">
-                                <div class="Appointment">
-                                    <div class="phone_num d-none d-xl-block">
-                                        <a href="#">Log in</a>
-                                    </div>
-                                    <div class="d-none d-lg-block">
-                                        <a class="boxed-btn3" href="#">Post a Job</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="mobile_menu d-block d-lg-none"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </header>
+  
     <!-- job_listing_area_start  -->
     <div class="job_listing_area plus_padding">
         <div class="container">
@@ -68,7 +12,11 @@
                 <div class="col-lg-3">
                     <div class="job_filter white-bg">
                         <div class="form_inner white-bg">
-                            <h3>Filter</h3>
+                            <div class="d-flex justify-content-between align-items-center" style="margin-bottom: 10px;">
+                                <h3 class="mb-0">Filter</h3>
+                                <a href="{% url 'user_dashboard' %}?reset=true" class="btn btn-secondary">Reset</a>
+                            </div>
+                            
                             <form action="#">
                                 <div class="row">
                                     
@@ -172,7 +120,7 @@
                                 <div class="col-md-6">
                                     <form method="GET" action="{% url 'user_dashboard' %}" class="search_bar d-flex justify-content-end">
                                         <input type="text" class="form-control search-input" name="search" id="job_search" placeholder="Search by job title" value="{{ search_query }}">
-                                        <button type="submit" class="btn btn-primary search-btn ml-2">Search</button>
+                                        <button type="submit" class="btn btn-secondary search-btn ml-2">Search</button>
                                     </form>
                                 </div>
                             </div>
@@ -183,7 +131,8 @@
                 
                     <div class="job_lists m-0">
                         <div class="row">
-                            {% for job in jobs %}
+                            {% for item in jobs_with_age %}
+                            {% with job=item.job days_old=item.days_old %}
                             <div class="col-lg-12 col-md-12">
                                 <div class="single_jobs white-bg d-flex justify-content-between">
                                     <div class="jobs_left d-flex align-items-center">
@@ -200,6 +149,7 @@
                                                     <p><i class="fa fa-clock-o"></i> {{ job.job_type }}</p>
                                                 </div>
                                             </div>
+                                           
                                         </div>
                                     </div>
                                     <div class="jobs_right">
@@ -210,13 +160,18 @@
                                                 <a href="javascript:void(0);" class="boxed-btn3 open-popup" data-job-id="{{ job.id }}">Apply Now</a>
                                             {% endif %}
                                         </div>
-                                        
                                         <div class="date">
-                                            <p class="view-more-btn" data-job-id="{{ job.id }}">View More</p> 
+                                            <p class="view-more-btn" data-job-id="{{ job.id }}">View More</p>
+                                            <p class="text-muted">
+                                                Posted {% if days_old == 0 %} Today
+                                                {% elif days_old == 1 %} 1 day ago
+                                                {% else %} {{ days_old }} days ago
+                                                {% endif %}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
-                                
+                    
                                 <!-- Hidden Job Details Section -->
                                 <div class="job_details" id="job-details-{{ job.id }}" style="display: none; background: #f9f9f9; padding: 15px; border-radius: 5px; margin-top: 10px;">
                                     <p><strong>Company:</strong> {{ job.company_name }}</p>
@@ -226,13 +181,18 @@
                                     <p><strong>Work Mode:</strong> {{ job.work_mode }}</p>
                                     <p><strong>Required Skills:</strong> {{ job.required_skills }}</p>
                                     <p><strong>Roles & Responsibilities:</strong> {{ job.roles_and_responsibilities }}</p>
-                                    
+                    
                                     <!-- Apply Button -->
                                     <div class="apply_now">
-                                        <a href="/login" target="_blank" class="boxed-btn3">Apply Now</a>
+                                        {% if job.job_link != "nolink" %}
+                                            <a href="{{ job.job_link }}" target="_blank" class="boxed-btn3">Apply Now</a>
+                                        {% else %}
+                                            <a href="javascript:void(0);" class="boxed-btn3 open-popup" data-job-id="{{ job.id }}">Applyy Now</a>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
+                            {% endwith %}
                             {% endfor %}
                         </div>
                     </div>
@@ -245,28 +205,29 @@
     </div>
     <!-- job_listing_area_end  -->
 
-
-    <!-- Popup Form  -->
-
-    <!-- Background overlay -->
+    
+</div>
 <div id="popup-overlay"></div>
 
 <!-- Popup Form -->
 <div id="popup-form">
-    <div class="popup-content">
-        <h3>Apply for this Job</h3>
-        <form id="job-application-form">
-            <input type="text" id="username" placeholder="Username" required>
-            <input type="text" id="phone" placeholder="Phone Number" required>
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="file" id="resume" accept=".pdf,.doc,.docx" required>
-            <div class="popup-buttons">
-                <button type="submit" id="submit-application">Submit</button>
-                <button type="button" id="close-popup">Close</button>
-            </div>
-        </form>
-    </div>
+<div class="popup-content">
+<h3>Apply for this Job</h3>
+<form id="job-application-form">
+<input type="text" id="username" placeholder="Username" required>
+<input type="text" id="phone" placeholder="Phone Number" required>
+<input type="email" id="email" placeholder="Email" required>
+<input type="file" id="resume" accept=".pdf,.doc,.docx" required>
+<div class="popup-buttons">
+<button type="submit" id="submit-application">Submit</button>
+<button type="button" id="close-popup">Close</button>
 </div>
+</form>
+</div>
+</div>
+    <!-- Popup Form  -->
+
+  
 
     <script>
         $( function() {
@@ -334,6 +295,7 @@
         const emailInput = document.getElementById("email");
         const resumeInput = document.getElementById("resume");
 
+        // Open popup and fetch user details
         openButtons.forEach(button => {
             button.addEventListener("click", function () {
                 let jobId = this.getAttribute("data-job-id");
@@ -352,10 +314,12 @@
             });
         });
 
+        // Close popup
         closeButton.addEventListener("click", function () {
             popupForm.style.display = "none";
         });
 
+        // Handle form submission
         document.getElementById("job-application-form").addEventListener("submit", function (event) {
             event.preventDefault();
             let formData = new FormData();
@@ -372,14 +336,37 @@
                     "X-CSRFToken": "{{ csrf_token }}"
                 }
             })
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                    popupForm.style.display = "none";
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === "Your application has been submitted successfully!") {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Application Submitted!',
+                        text: data.message,
+                        showConfirmButton: false,
+                        timer: 2000
+                    }).then(() => {
+                        popupForm.style.display = "none";
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: data.message
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: 'Something went wrong. Please try again.'
                 });
+            });
         });
     });
 </script>
+
 
     
 

@@ -9,8 +9,27 @@ from django.http import JsonResponse
 from datetime import date, datetime
 from django.contrib.auth.hashers import make_password
 from django.db.models import Count
+from datetime import timedelta, date
+from django.utils.timezone import now
+from django.contrib.auth.decorators import login_required
+
 
 # Create your views here.
+
+def admin_logout(request):
+    logout(request)
+    # Redirect to a specific page after logout (optional)
+    return redirect('/v3_login')
+
+def company_logout(request):
+    logout(request)
+    # Redirect to a specific page after logout (optional)
+    return redirect('/company_login')
+
+def user_logout(request):
+    logout(request)
+    # Redirect to a specific page after logout (optional)
+    return redirect('/')
 
 def v3_login(request):
     if request.method == 'POST':
@@ -24,10 +43,13 @@ def v3_login(request):
             error_message = "Invalid username or password"
             return render(request,'v3_login.html',{'error_message':error_message})
     return render(request,'v3_login.html')
+
+@login_required
 def admin_db(request):
     total_jobs = Jobs.objects.exclude(job_link='nolink').count()  # Count jobs with valid links
     total_companies = NewUser.objects.filter(user_type='Company').count()  # Count companies
-
+    username= request.user.username
+    print(username)
     # Get companies with the number of jobs posted
     companies = NewUser.objects.filter(user_type='Company').annotate(
         total_jobs=Count('jobs')
@@ -36,20 +58,19 @@ def admin_db(request):
     return render(request, 'admin_db.html', {
         'total_jobs': total_jobs,
         'total_companies': total_companies,
-        'companies': companies
+        'companies': companies,
+        'username':username
     })
 
-def admin_logout(request):
-    logout(request)
-    return redirect('/admin_login')
+
 
 def register(request):
     return render(request,'register.html')
 
-
+@login_required
 def add_job(request):
     alert = {"type": "", "message": ""}
-
+    username= request.user.username
     if request.method == 'POST':
         try:
             added_by = request.user
@@ -106,16 +127,19 @@ def add_job(request):
             alert["message"] = "Failed to add the job. Please try again."
             return render(request, 'add_job.html', {"alert": alert})
 
-    return render(request, 'add_job.html', {"alert": alert})
+    return render(request, 'add_job.html', {"alert": alert,'username':username})
 
-
+@login_required
 def job_details(request):
     data = Jobs.objects.all()
+    username= request.user.username
     context = {
-        'data': data
+        'data': data,
+        'username':username
     }
     return render(request, 'job_details.html', context)
 
+@login_required
 def get_job_details(request, id):
     try:
         job = Jobs.objects.get(id=id)
@@ -136,11 +160,10 @@ def get_job_details(request, id):
     except Jobs.DoesNotExist:
         return JsonResponse({'error': 'Job not found'}, status=404)
 
-
+@login_required
 def edit_job_details(request, id):
    
     job = get_object_or_404(Jobs, id=id)
-
     if request.method == 'POST':
         # Retrieve data from the form
         job.job_title = request.POST.get('job_title')
@@ -165,7 +188,7 @@ def edit_job_details(request, id):
     }
     return render(request, 'edit_job_details.html', context)
 
-
+@login_required
 def delete_job(request, id):
     if request.method == 'DELETE':
         job = get_object_or_404(Jobs, id=id)
@@ -193,88 +216,161 @@ def user_login(request):
     return render(request, 'user_login.html')
 
 
+def check_email(request):
+    email = request.GET.get('email')
+    if NewUser.objects.filter(email=email).exists():
+        return JsonResponse({'exists': True})
+    return JsonResponse({'exists': False})
+
 def user_registration(request):
     if request.method == 'POST':
-        full_name = request.POST.get('fullname')
-        email = request.POST.get('email')
-        phone_no = request.POST.get('phone_no')
-        password = request.POST.get('password')
-        c_password = request.POST.get('c_password')
-        encrypted_password = make_password(c_password) 
-        # Validation checks
-        if not full_name or not email or not phone_no or not password or not c_password:
-            messages.error(request, "All fields are required!")
-        elif len(phone_no) != 10 or not phone_no.isdigit():
-            messages.error(request, "Phone number must be exactly 10 digits!")
-        elif password != c_password:
-            messages.error(request, "Password and Confirm Password do not match!")
-        else:
-            # Save user if validation passes
-            NewUser.objects.create(fullname=full_name, username=email, phone_no=phone_no, password=encrypted_password)
-            return render(request, 'user_registration.html', {'success': True})
+        fullname = request.POST['fullname']
+        phone = request.POST['phone_no']
+        email = request.POST['email']
+        password = request.POST['password']
+        encrypted_password = make_password(password) 
+
+
+        if NewUser.objects.filter(username=email).exists():
+            return JsonResponse({'status': 'error', 'message': 'Email already exists!'})
+
+        # Save User
+        user = NewUser.objects.create_user(username=email, phone_no=phone, password=encrypted_password, fullname=fullname)
+        user.save()
+        return JsonResponse({'status': 'success', 'message': 'Registration Successful!'})
 
     return render(request, 'user_registration.html')
 
+
 def jobs(request):
-    selected_location = request.GET.get('location')
-    selected_category = request.GET.get('category')
-    selected_job_type = request.GET.get('job_type')
+    if request.GET.get('reset'):
+        request.session.pop('searched_jobs', None)
+        request.session.pop('filters', None)  # Clear filters
+        return redirect('jobs')
+    # Get user search input
+    search_query = request.GET.get('search', '').strip()
+    selected_designation = request.GET.get('designation', '').strip()
+    print("----------------------",selected_designation)
+    selected_location = request.GET.get('location', '').strip()
+    selected_category = request.GET.get('category', '').strip()
+    selected_job_type = request.GET.get('job_type', '').strip()
+    selected_work_mode = request.GET.get('work_mode', '').strip()
+    selected_experience = request.GET.get('experience', '').strip()
+    selected_date_posted = request.GET.get('date_posted', '').strip()
 
-    # Store filters in session
-    request.session['selected_location'] = selected_location
-    request.session['selected_category'] = selected_category
-    request.session['selected_job_type'] = selected_job_type
+    request.session['filters'] = {
+        'search_query': search_query,
+        'designation': selected_designation,
+        'location': selected_location,
+        'category': selected_category,
+        'job_type': selected_job_type,
+        'work_mode': selected_work_mode,
+        'experience': selected_experience,
+        'date_posted': selected_date_posted,
+    }
 
-    # Fetch unique values for filters
+    # Fetch unique filters for the dropdowns
     unique_locations = Jobs.objects.values_list('location', flat=True).distinct()
     unique_categories = Jobs.objects.values_list('category', flat=True).distinct()
     unique_job_types = Jobs.objects.values_list('job_type', flat=True).distinct()
+    unique_work_modes = Jobs.objects.values_list('work_mode', flat=True).distinct()
+    unique_experience_levels = Jobs.objects.values_list('experience', flat=True).distinct()
 
-    # Apply filters
-    job_list = Jobs.objects.all()
+
+    # If a new search is made, store the job IDs in the session
+    if search_query:
+        job_list = Jobs.objects.filter(job_title__icontains=search_query)
+        request.session['searched_jobs'] = list(job_list.values_list('id', flat=True))
+    else:
+        searched_job_ids = request.session.get('searched_jobs', [])
+        job_list = Jobs.objects.filter(id__in=searched_job_ids) if searched_job_ids else Jobs.objects.all()
+
+    # Apply filters only to the searched results
+    if selected_designation:
+        job_list = job_list.filter(job_title__icontains=selected_designation)
+        request.session['searched_jobs'] = list(job_list.values_list('id', flat=True))
+    else:
+        searched_job_ids = request.session.get('searched_jobs', [])
+        job_list = Jobs.objects.filter(id__in=searched_job_ids) if searched_job_ids else Jobs.objects.all()
+
     if selected_location:
-        job_list = job_list.filter(location=selected_location)
-    if selected_category:
-        job_list = job_list.filter(category=selected_category)
-    if selected_job_type:
-        job_list = job_list.filter(job_type=selected_job_type)
+        job_list = job_list.filter(location__icontains=selected_location)
 
-    return render(request, 'jobs.html', {
-        'jobs': job_list,
+    if selected_category:
+        job_list = job_list.filter(category__icontains=selected_category)
+
+    if selected_job_type:
+        job_list = job_list.filter(job_type__icontains=selected_job_type)
+
+    if selected_work_mode:
+        job_list = job_list.filter(work_mode=selected_work_mode)
+
+    if selected_experience:
+        job_list = job_list.filter(experience=selected_experience)
+
+    if selected_date_posted:
+        today = date.today()
+        if selected_date_posted == "1_day":
+            job_list = job_list.filter(date_posted__gte=today - timedelta(days=1))
+        elif selected_date_posted == "3_days":
+            job_list = job_list.filter(date_posted__gte=today - timedelta(days=3))
+        elif selected_date_posted == "1_week":
+            job_list = job_list.filter(date_posted__gte=today - timedelta(days=7))
+
+    # Compute job age (days since posted)
+    jobs_with_age = [{'job': job, 'days_old': (now().date() - job.date_posted).days} for job in job_list]
+
+    context = {
+        'jobs_with_age': jobs_with_age,
         'locations': unique_locations,
         'categories': unique_categories,
         'job_types': unique_job_types,
+        'work_modes': unique_work_modes,
+        'experience_levels': unique_experience_levels,
         'selected_location': selected_location,
+        'selected_designation': selected_designation,
         'selected_category': selected_category,
-        'selected_job_type': selected_job_type
-    })
-from datetime import timedelta, date
+        'selected_job_type': selected_job_type,
+        'search_query': search_query,  # Persist search query
+    }
 
+    return render(request, 'jobs.html', context)
+
+
+@login_required
 def user_dashboard(request):
-    # Get filters from GET parameters or session
-    selected_location = request.GET.get('location', request.session.get('selected_location'))
-    selected_category = request.GET.get('category', request.session.get('selected_category'))
-    selected_job_type = request.GET.get('job_type', request.session.get('selected_job_type'))
-    selected_work_mode = request.GET.get('work_mode', request.session.get('selected_work_mode'))
-    selected_experience = request.GET.get('experience', request.session.get('selected_experience'))
-    selected_date_posted = request.GET.get('date_posted', request.session.get('selected_date_posted'))
-    search_query = request.GET.get('search', '')
+    if request.GET.get('reset'):
+        keys_to_clear = [
+        'selected_location', 'selected_category', 'selected_job_type', 
+        'selected_work_mode', 'selected_experience', 'selected_date_posted', 
+        'search_query', 'designation', 'searched_jobs'
+        ]
+        for key in keys_to_clear:
+            request.session.pop(key, None)  # Remove key if it exists
+        return redirect('user_dashboard')  # Redirect to clear URL params
+    # Check if session has saved filters from pre-login state
+    selected_location = request.GET.get('location', request.session.get('selected_location', ''))
+    selected_category = request.GET.get('category', request.session.get('selected_category', ''))
+    selected_job_type = request.GET.get('job_type', request.session.get('selected_job_type', ''))
+    selected_work_mode = request.GET.get('work_mode', request.session.get('selected_work_mode', ''))
+    selected_experience = request.GET.get('experience', request.session.get('selected_experience', ''))
+    selected_date_posted = request.GET.get('date_posted', request.session.get('selected_date_posted', ''))
+    search_query = request.GET.get('search', request.session.get('search_query', ''))
+    selected_designation = request.GET.get('designation', request.session.get('designation', ''))
 
-    # Update session values if new filters are applied
-    if request.GET.get('location') is not None:
+    # Store new filters in session
+    if request.GET:
         request.session['selected_location'] = selected_location
-    if request.GET.get('category') is not None:
         request.session['selected_category'] = selected_category
-    if request.GET.get('job_type') is not None:
         request.session['selected_job_type'] = selected_job_type
-    if request.GET.get('work_mode') is not None:
         request.session['selected_work_mode'] = selected_work_mode
-    if request.GET.get('experience') is not None:
         request.session['selected_experience'] = selected_experience
-    if request.GET.get('date_posted') is not None:
         request.session['selected_date_posted'] = selected_date_posted
-
-    # Fetch unique values for filters
+        request.session['search_query'] = search_query
+        request.session['designation'] = selected_designation
+    
+    print("***************************",selected_designation)
+    # Fetch unique values for dropdown filters
     unique_locations = Jobs.objects.values_list('location', flat=True).distinct()
     unique_categories = Jobs.objects.values_list('category', flat=True).distinct()
     unique_job_types = Jobs.objects.values_list('job_type', flat=True).distinct()
@@ -284,18 +380,32 @@ def user_dashboard(request):
     # Apply filters
     job_list = Jobs.objects.all()
 
+    if search_query:
+        job_list = Jobs.objects.filter(job_title__icontains=search_query)
+        request.session['searched_jobs'] = list(job_list.values_list('id', flat=True))
+    else:
+        searched_job_ids = request.session.get('searched_jobs', [])
+        job_list = Jobs.objects.filter(id__in=searched_job_ids) if searched_job_ids else Jobs.objects.all()
+
+    # Apply filters only to the searched results
+    if selected_designation:
+        job_list = job_list.filter(job_title__icontains=selected_designation)
+        request.session['searched_jobs'] = list(job_list.values_list('id', flat=True))
+    else:
+        searched_job_ids = request.session.get('searched_jobs', [])
+        job_list = Jobs.objects.filter(id__in=searched_job_ids) if searched_job_ids else Jobs.objects.all()
+
     if selected_location:
-        job_list = job_list.filter(location=selected_location)
+        job_list = job_list.filter(location__icontains=selected_location)
     if selected_category:
-        job_list = job_list.filter(category=selected_category)
+        job_list = job_list.filter(category__icontains=selected_category)
     if selected_job_type:
-        job_list = job_list.filter(job_type=selected_job_type)
+        job_list = job_list.filter(job_type__icontains=selected_job_type)
     if selected_work_mode:
         job_list = job_list.filter(work_mode=selected_work_mode)
     if selected_experience:
         job_list = job_list.filter(experience=selected_experience)
-    if search_query:
-        job_list = job_list.filter(job_title__icontains=search_query)
+    
 
     # Date Posted Filter
     if selected_date_posted:
@@ -307,7 +417,10 @@ def user_dashboard(request):
         elif selected_date_posted == "1_week":
             job_list = job_list.filter(date_posted__gte=today - timedelta(days=7))
 
+    jobs_with_age = [{'job': job, 'days_old': (now().date() - job.date_posted).days} for job in job_list]
+
     return render(request, 'user_dashboard.html', {
+        'jobs_with_age':jobs_with_age,
         'jobs': job_list,
         'locations': unique_locations,
         'categories': unique_categories,
@@ -322,7 +435,6 @@ def user_dashboard(request):
         'selected_date_posted': selected_date_posted,
         'search_query': search_query
     })
-
 
 
 def company_register(request):
@@ -378,11 +490,13 @@ def company_login(request):
         return render(request, 'company_login.html', {'error_message': error_message})
     return render(request, 'company_login.html')
 
-
+@login_required
 def company_list(request):
     data = NewUser.objects.filter(user_type='Company').all()
-    return render(request, 'company_list.html', {'data': data})
+    username= request.user.username
+    return render(request, 'company_list.html', {'data': data,'username':username})
 
+@login_required
 def toggle_approval(request, user_id):
     if request.method == "POST":
         user = get_object_or_404(NewUser, id=user_id)
@@ -391,17 +505,22 @@ def toggle_approval(request, user_id):
         return JsonResponse({"success": True, "is_staff": user.is_staff})
     return JsonResponse({"success": False})
 
-
+@login_required
 def company_db(request):
-    return render(request, 'company_db.html')
+    username= request.user.fullname
+    logo=request.user.profile_image
+    return render(request, 'company_db.html',{'username':username,'logo':logo})
 
 
 def company_base(request):
     return render(request, 'company_base.html')
 
+@login_required
 def company_add_job(request):
     alert = {"type": "", "message": ""}
     user = request.user.id
+    username= request.user.fullname
+    logo=request.user.profile_image
     data = NewUser.objects.filter(id=user).first()  # Fetch single user instance
     
     if request.method == 'POST':
@@ -454,8 +573,9 @@ def company_add_job(request):
             alert["type"] = "error"
             alert["message"] = "Failed to add the job. Please try again."
 
-    return render(request, 'company_add_job.html', {"alert": alert, "data": data})
+    return render(request, 'company_add_job.html', {"alert": alert, "data": data,'username':username,'logo':logo})
 
+@login_required
 def get_user_details(request):
     user = request.user
     return JsonResponse({
@@ -463,6 +583,8 @@ def get_user_details(request):
         "phone": user.phone_no,
         "email": user.username
     })
+
+@login_required
 def apply_job(request):
     if request.method == "POST":
         user = request.user
@@ -485,11 +607,16 @@ def apply_job(request):
 
     return JsonResponse({"message": "Invalid request!"}, status=400)
 
+@login_required
 def company_job_details(request):
     company_id = request.user.id
+    username= request.user.fullname
+    logo=request.user.profile_image
     data = Jobs.objects.filter(added_by_id=company_id, status="Active")  # Fetch only active jobs
     context = {
-        'data': data
+        'data': data,
+        'username':username,
+        'logo':logo
     }
     return render(request, 'company_job_details.html', context)
 
@@ -506,6 +633,7 @@ def toggle_job_status(request, job_id):
     job.save()
     return JsonResponse({"success": True, "new_status": job.status})
 
+@login_required
 def company_edit_job_details(request, id):
    
     job = get_object_or_404(Jobs, id=id)
@@ -533,13 +661,18 @@ def company_edit_job_details(request, id):
     }
     return render(request, 'company_edit_job_details.html', context)
 
+@login_required
 def company_applied_jobs(request):
     company_id = request.user.id
+    username= request.user.fullname
+    logo=request.user.profile_image
     jobs = Jobs.objects.filter(added_by=company_id)  # Filter jobs by the logged-in company
-    return render(request, 'company_applied_jobs.html', {'jobs': jobs})
+    return render(request, 'company_applied_jobs.html', {'jobs': jobs,'username':username,'logo':logo})
 
-
+@login_required
 def c_applied_candidates(request, job_id):
+    username= request.user.fullname
+    logo=request.user.profile_image
     # Get the applied candidates for the given job_id
     applied_candidates = AppliedJob.objects.filter(job_id=job_id)
 
@@ -556,23 +689,29 @@ def c_applied_candidates(request, job_id):
         })
 
     context = {
-        'candidate_details': candidate_details
+        'candidate_details': candidate_details,
+        'username':username,
+        'logo':logo
     }
     return render(request, 'c_applied_candidates.html', context)
 
+@login_required
 def a_company_jobs(request,id):
     print(id)
     c_name = Jobs.objects.filter(added_by_id=id).first()
     jobs= Jobs.objects.filter(added_by_id= id)
+    username= request.user.username
     context = {
         'jobs': jobs,
-        'c_name':c_name
+        'c_name':c_name,
+        'username':username
     }
     return render(request,'a_company_jobs.html',context)
 
-
+@login_required
 def a_candidate_details(request,id):
     applied_candidates = AppliedJob.objects.filter(job_id=id)
+    username= request.user.username
     print(applied_candidates)
     # Fetch user details for each application
     candidate_details = []
@@ -587,20 +726,26 @@ def a_candidate_details(request,id):
             'applied_at': application.applied_at,
         })
     context = {
-        'candidate_details': candidate_details
+        'candidate_details': candidate_details,
+        'username':username
         }
 
     return render(request,'a_candidate_details.html',context)
 
+@login_required
 def company_inactive_job(request):
     company_id = request.user.id
+    username= request.user.fullname
+    logo=request.user.profile_image
     data = Jobs.objects.filter(added_by_id=company_id, status="Inactive")  # Fetch only active jobs
     context = {
-        'data': data
+        'data': data,
+        'username':username,
+        'logo':logo
     }
     return render(request, 'company_inactive_jobs.html', context)
 
-
+@login_required
 def toggle_job_status_inactive(request, job_id):
     job = get_object_or_404(Jobs, id=job_id)
 
@@ -612,3 +757,57 @@ def toggle_job_status_inactive(request, job_id):
     
     job.save()
     return JsonResponse({"success": True, "new_status": job.status})
+
+@login_required
+def user_applied_jobs(request):
+    user_id = request.user.id
+    search_query = request.GET.get('search', '').strip()  # Get the search query from the request
+
+    # Fetch all applied jobs of the logged-in user
+    applied_jobs = AppliedJob.objects.filter(user_id=user_id).select_related('user')
+
+    # Filter jobs by company name if search query is provided
+    job_details = []
+    for applied_job in applied_jobs:
+        job = Jobs.objects.get(id=applied_job.job_id)
+        if search_query.lower() in job.company_name.lower():  # Case-insensitive search
+            job_details.append({
+                'company_logo': job.company_logo.url if job.company_logo else None,
+                'company_name': job.company_name,
+                'job_title': job.job_title,
+                'applied_at': applied_job.applied_at.strftime('%d-%m-%Y'),
+                'resume': applied_job.resume.url,
+                'job_id': job.id
+            })
+
+    return render(request, 'user_applied_jobs.html', {'job_details': job_details, 'search_query': search_query})
+
+@login_required
+def u_applied_job_detail(request, job_id):
+    job = get_object_or_404(Jobs, id=job_id)
+    return render(request, 'u_applied_job_detail.html', {'job': job})
+
+
+def about_us(request):
+    return render(request, 'about_us.html')
+
+def contact_us(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        phone_no = request.POST.get('phone_no')
+        message = request.POST.get('message')
+        
+        if name and email and phone_no and message:
+            Contact_us.objects.create(name=name, email=email, phone_no=phone_no, message=message)
+            return JsonResponse({'message': 'Form submitted successfully!'})
+        else:
+            return JsonResponse({'message': 'Please fill in all fields!'})
+
+    return render(request, 'contact_us.html')
+
+@login_required
+def contact_us_details(request):
+    data = Contact_us.objects.all()
+    username= request.user.username
+    return render(request, 'contact_us_details.html', {'data': data,'username':username})

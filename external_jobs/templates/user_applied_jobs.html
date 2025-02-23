@@ -1,0 +1,94 @@
+{% extends 'user_base.html' %}
+{% block content %}
+
+    <!-- bradcam_area  -->
+    
+    <!--/ bradcam_area  -->
+   
+    <!-- job_listing_area_start  -->
+    <div class="job_listing_area plus_padding">
+        <div class="container">
+            <div class="row">
+            
+                <div class="col-lg-12">
+                    <h3 class="mb-30">Applied Jobs</h3>
+                    <div class="recent_joblist_wrap">
+                        <div class="recent_joblist white-bg">
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <h4>Search Jobs</h4>
+                                </div>
+                                <div class="col-md-6">
+                                    <form method="GET" action="{% url 'user_applied_jobs' %}" class="search_bar d-flex justify-content-end">
+                                        <input type="text" class="form-control search-input" name="search" id="job_search" 
+                                               placeholder="Search by company name" value="{{ search_query }}">
+                                        <button type="submit" class="btn btn-secondary search-btn ml-2">Search</button>
+                                        <a href="{% url 'user_applied_jobs' %}" class="btn btn-light ml-2">Reset</a>
+                                    </form>
+                                </div>
+                                
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section-top-border">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered text-center align-middle">
+                                <thead class="table-primary" style="background-color: #0f304f">
+                                    <tr style="color: #dbe0e5">
+                                        <th>#</th>
+                                        <th>Company Logo</th>
+                                        <th>Company Name</th>
+                                        <th>Designation</th>
+                                        <th>Applied Date</th>
+                                        <th>Resume</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for job in job_details %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>
+                                            {% if job.company_logo %}
+                                                <img src="{{ job.company_logo }}" alt="Company Logo" width="50" height="50" class="rounded">
+                                            {% else %}
+                                                <span>No Logo</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ job.company_name }}</td>
+                                        <td>{{ job.job_title }}</td>
+                                        <td>{{ job.applied_at }}</td>
+                                        <td><a href="{{ job.resume }}" download class="btn btn-success btn-sm">Download</a></td>
+                                        <td><a href="{% url 'u_applied_job_detail' job.job_id %}" class="btn btn-primary btn-sm" style="    background-color:#e22e2e; border-color : #e22e2e" >View More</a></td>
+
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="7" class="text-center">No applied jobs found.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <!-- job_listing_area_end  -->
+
+
+
+
+
+
+
+    {% endblock %}
+
+	
