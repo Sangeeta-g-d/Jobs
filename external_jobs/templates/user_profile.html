@@ -1,0 +1,150 @@
+{% extends 'user_base.html' %}
+{% block content %}
+<style>
+    /* Reduce font size for input field values */
+.form-control-lg::placeholder,
+.form-control-lg {
+    font-size: 16px; /* Adjust to your preference */
+}
+
+</style>
+<div class="job_listing_area plus_padding">
+    <div class="container">
+        <div class="job_details_area">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-10">
+                        <div class="job_details_header mb-4">
+                            <div class="single_jobs white-bg d-flex justify-content-between">
+                                <div class="jobs_left d-flex align-items-center">
+                                    <div class="thumb">
+                                        <img src="img/svg_icon/1.svg" alt="">
+                                    </div>
+                                    <div class="jobs_conetent">
+                                        <a href="#"><h4>{{request.user.fullname}}</h4></a>
+                                        <div class="links_locat d-flex align-items-center">
+                                            <div class="location">
+                                                <p>  <i class="fa fa-phone"></i>{{request.user.phone_no}}</p>
+                                            </div>
+                                            <div class="location">
+                                                <p> <i class="fa fa-envelope"></i>{{request.user.username}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="jobs_right">
+                                    <a href="path/to/your/resume.pdf" download="Your_Resume.pdf" class="resume_link">
+                                        <i class="fa fa-file-pdf-o"></i> Resume
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="descript_wrap white-bg p-5 rounded shadow-lg">
+                            <h3 class="mb-4 text-center text-primary">Edit Your Details</h3>
+                            <form method="POST" action="">
+                                {% csrf_token %}
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <label for="fullname" class="form-label">Full name</label>
+                                        <input type="text" class="form-control form-control-lg" id="fullname" name="fullname" value="{{ request.user.fullname }}" placeholder="Enter your full name" required>
+                                        <div class="text-danger" id="fullnameError"></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="phone_no" class="form-label">Contact Number</label>
+                                        <input type="tel" class="form-control form-control-lg" id="phone_no" name="phone_no" value="{{ request.user.phone_no }}" placeholder="Enter your contact number" required>
+                                        <div class="text-danger" id="phoneError"></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="emailid" class="form-label">Email</label>
+                                        <input type="email" class="form-control form-control-lg" id="emailid" name="email" value="{{ request.user.username }}" placeholder="Enter your email" required>
+                                        <div class="text-danger" id="emailError"></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="resume" class="form-label">Resume</label>
+                                        <input type="file" class="form-control form-control-lg" id="resume" name="resume">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="qualification" class="form-label">Qualification</label>
+                                        <input type="text" class="form-control form-control-lg" id="qualification" name="qualification" value="{{ user_details.qualification }}" placeholder="Enter your qualification" pattern="^[A-Za-z\s]+$" title="Qualification should not contain numbers" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="year_of_passing" class="form-label">Year of Passing</label>
+                                        <input type="text" class="form-control form-control-lg" id="year_of_passing" name="year_of_passing" value="{{ user_details.year_of_passing }}" placeholder="Enter year of passing" required>
+                                        <div class="text-danger" id="yearError"></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="year_of_exp" class="form-label">Experience (Years)</label>
+                                        <input type="text" class="form-control form-control-lg" id="year_of_exp" name="year_of_exp" value="{{ user_details.year_of_exp }}" placeholder="Enter experience in years" required>
+                                        <div class="text-danger" id="expError"></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="area_of_interest" class="form-label">Area of Interest</label>
+                                        <select class="form-control form-control-lg" id="area_of_interest" name="area_of_interest" required>
+                                            <option value="">Select</option>
+                                            <option value="Design-Creative" {% if user_details.area_of_interest == "Design-Creative" %}selected{% endif %}>Design-Creative</option>
+                                            <option value="Marketing" {% if user_details.area_of_interest == "Marketing" %}selected{% endif %}>Marketing</option>
+                                            <option value="Software and Web" {% if user_details.area_of_interest == "Software and Web" %}selected{% endif %}>Software and Web</option>
+                                            <option value="Administration" {% if user_details.area_of_interest == "Administration" %}selected{% endif %}>Administration</option>
+                                            <option value="Teaching and Education" {% if user_details.area_of_interest == "Teaching and Education" %}selected{% endif %}>Teaching and Education</option>
+                                            <option value="Engineering (Hardware)" {% if user_details.area_of_interest == "Engineering (Hardware)" %}selected{% endif %}>Engineering (Hardware)</option>
+                                            <option value="Telemarketing" {% if user_details.area_of_interest == "Telemarketing" %}selected{% endif %}>Telemarketing</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="skills" class="form-label">Skills</label>
+                                        <textarea class="form-control form-control-lg" id="skills" name="skills" rows="4" placeholder="List your skills">{{ user_details.skills }}</textarea>
+                                    </div>
+                                    <div class="col-12 text-center mt-4">
+                                        <button type="submit" class="btn btn-primary btn-lg px-5">Save Changes</button>
+                                    </div>
+                                </div>
+                            </form>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- script for validations -->
+<script>
+    document.getElementById('userForm').addEventListener('input', function (e) {
+        const fullname = document.getElementById('fullname');
+        const phone = document.getElementById('phone_no');
+        const email = document.getElementById('emailid');
+        const year = document.getElementById('year_of_passing');
+        const experience = document.getElementById('year_of_exp');
+
+        document.getElementById('fullnameError').textContent = /^[A-Za-z\s]+$/.test(fullname.value) || fullname.value === '' ? '' : 'Only letters and spaces allowed.';
+        document.getElementById('phoneError').textContent = /^\d{10}$/.test(phone.value) || phone.value === '' ? '' : 'Must be exactly 10 digits.';
+        document.getElementById('emailError').textContent = email.validity.valid ? '' : 'Enter a valid email address.';
+        document.getElementById('yearError').textContent = /^\d{4}$/.test(year.value) || year.value === '' ? '' : 'Enter a valid 4-digit year.';
+        document.getElementById('expError').textContent = /^\d+$/.test(experience.value) || experience.value === '' ? '' : 'Experience should be a number.';
+    });
+</script>
+
+
+<script>
+    // Check if 'saved=true' exists in the URL
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('saved') === 'true') {
+            Swal.fire({
+                title: 'Success!',
+                text: 'Your profile has been updated successfully.',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                focusConfirm: false
+            });
+            // Remove the query parameter from the URL without reloading the page
+            const newUrl = window.location.origin + window.location.pathname;
+            window.history.replaceState({}, document.title, newUrl);
+        }
+    });
+</script>
+
+{% endblock %}

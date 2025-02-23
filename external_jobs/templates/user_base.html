@@ -25,13 +25,40 @@
     <link rel="stylesheet" href="/static/user_assets/css/gijgo.css">
     <link rel="stylesheet" href="/static/user_assets/css/animate.min.css">
     <link rel="stylesheet" href="/static/user_assets/css/slicknav.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/static/user_assets/css/style.css">
     <!-- <link rel="stylesheet" href="css/responsive.css"> -->
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Add SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
     <style>
+        .resume_link {
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: fit-content;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.resume_link i {
+    color: #d9534f; /* PDF icon color */
+    font-size: 20px;
+}
+
+.resume_link:hover {
+    background: #f5f5f5;
+}
+
         .popular_search ul {
         list-style: none;
         padding: 0;
@@ -256,7 +283,17 @@
                                                     
                                                 </ul>
                                             </li>
+<<<<<<< HEAD
                                            
+=======
+                                            <li><a href="#">blog <i class="ti-angle-down"></i></a>
+                                                <ul class="submenu">
+                                                    <li><a href="blog.html">blog</a></li>
+                                                    <li><a href="single-blog.html">single-blog</a></li>
+                                                </ul>
+                                            </li>
+                                            <li><a href="/user_profile">Profile</a></li>
+>>>>>>> 0bcbdb5664182c9c99a335a60bacb9c62277b0a3
                                         </ul>
                                     </nav>
                                 </div>

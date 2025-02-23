@@ -732,6 +732,7 @@ def a_candidate_details(request,id):
 
     return render(request,'a_candidate_details.html',context)
 
+<<<<<<< HEAD
 @login_required
 def company_inactive_job(request):
     company_id = request.user.id
@@ -811,3 +812,36 @@ def contact_us_details(request):
     data = Contact_us.objects.all()
     username= request.user.username
     return render(request, 'contact_us_details.html', {'data': data,'username':username})
+=======
+
+from django.shortcuts import redirect
+
+def user_profile(request):
+    user_details, created = UserDetails.objects.get_or_create(user_id=request.user)
+    saved = False
+
+    if request.method == 'POST':
+        # Update user's basic info
+        request.user.fullname = request.POST.get('fullname', '')
+        request.user.phone_no = request.POST.get('phone_no', '')
+        request.user.username = request.POST.get('email', '')
+        request.user.save()
+
+        # Update user details
+        user_details.qualification = request.POST.get('qualification', '')
+        user_details.year_of_exp = request.POST.get('year_of_exp', '')
+        user_details.area_of_interest = request.POST.get('area_of_interest', '')
+        user_details.year_of_passing = request.POST.get('year_of_passing', '')
+        user_details.skills = request.POST.get('skills', '')
+
+        if request.FILES.get('resume'):
+            user_details.user_resume = request.FILES['resume']
+
+        user_details.save()
+
+        # Redirect with a query parameter
+        return redirect('/user_profile/?saved=true')
+
+    context = {'user_details': user_details}
+    return render(request, 'user_profile.html', context)
+>>>>>>> 0bcbdb5664182c9c99a335a60bacb9c62277b0a3
