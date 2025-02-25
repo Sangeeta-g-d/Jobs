@@ -732,7 +732,6 @@ def a_candidate_details(request,id):
 
     return render(request,'a_candidate_details.html',context)
 
-<<<<<<< HEAD
 @login_required
 def company_inactive_job(request):
     company_id = request.user.id
@@ -812,7 +811,6 @@ def contact_us_details(request):
     data = Contact_us.objects.all()
     username= request.user.username
     return render(request, 'contact_us_details.html', {'data': data,'username':username})
-=======
 
 from django.shortcuts import redirect
 
@@ -844,4 +842,3 @@ def user_profile(request):
 
     context = {'user_details': user_details}
     return render(request, 'user_profile.html', context)
->>>>>>> 0bcbdb5664182c9c99a335a60bacb9c62277b0a3
