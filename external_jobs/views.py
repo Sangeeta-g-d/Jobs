@@ -176,8 +176,30 @@ def delete_job(request, id):
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 def index(request):
-    latest_jobs = Jobs.objects.order_by('-id')[:5]  # Fetch the 5 most recent jobs
-    return render(request, 'index.html', {'latest_jobs': latest_jobs})
+    latest_jobs = Jobs.objects.order_by('-id')[:5]
+    
+    # Count jobs for each category
+    DC = Jobs.objects.filter(category="Design-Creative").count()
+    Marketing = Jobs.objects.filter(category="Marketing").count()
+    TM = Jobs.objects.filter(category="Telemarketing").count()
+    SW = Jobs.objects.filter(category="Software and Web").count()
+    administration = Jobs.objects.filter(category="Administration").count()
+    TE = Jobs.objects.filter(category="Teaching and Education").count()
+    engineering = Jobs.objects.filter(category="Engineering (Hardware)").count()
+    healthcare = Jobs.objects.filter(category="Healthcare").count()
+    
+    context = {
+        'DC': DC,
+        'Marketing': Marketing,
+        'TM': TM,
+        'SW': SW,
+        'administration': administration,
+        'TE': TE,
+        'engineering': engineering,
+        'healthcare': healthcare,
+        'latest_jobs': latest_jobs
+    }
+    return render(request, 'index.html', context)
 
 def user_login(request):
     if request.method == 'POST':

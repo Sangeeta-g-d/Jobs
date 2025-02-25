@@ -118,7 +118,6 @@
         const email = document.getElementById('emailid');
         const year = document.getElementById('year_of_passing');
         const experience = document.getElementById('year_of_exp');
-
         document.getElementById('fullnameError').textContent = /^[A-Za-z\s]+$/.test(fullname.value) || fullname.value === '' ? '' : 'Only letters and spaces allowed.';
         document.getElementById('phoneError').textContent = /^\d{10}$/.test(phone.value) || phone.value === '' ? '' : 'Must be exactly 10 digits.';
         document.getElementById('emailError').textContent = email.validity.valid ? '' : 'Enter a valid email address.';
