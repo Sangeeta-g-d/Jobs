@@ -127,7 +127,7 @@
 }
 
 .view-more-btn:hover {
-    color: #007bff; /* Blue color on hover */
+    color: #e22e2e; /* Blue color on hover */
     transform: translateX(5px); /* Arrow effect */
 }
 
@@ -208,12 +208,12 @@
 }
 
 #submit-application {
-    background: #007bff;
+    background: #e22e2e;
     color: white;
 }
 
 #submit-application:hover {
-    background: #0056b3;
+    background: #d12b2b;
 }
 
 #close-popup {
@@ -222,6 +222,29 @@
 
 #close-popup:hover {
     background: #999;
+}
+/* applie_jobs table */
+.table img {
+    display: block;
+    margin: auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+/* applied_job_detail */
+.job_details_header {
+    border-left: 4px solid #e22e2e;
+}
+
+.job_summary {
+    border-top: 4px solid #e22e2e;
+}
+
+.apply_now {
+    text-align: center;
+}
+
+.apply_now a {
+    width: 100%;
 }
 
     </style>
@@ -250,21 +273,11 @@
                                 <div class="main-menu  d-none d-lg-block">
                                     <nav>
                                         <ul id="navigation">
-                                            <li><a href="index.html">home</a></li>
-                                            <li><a href="jobs.html">Browse Job</a></li>
-                                            <li><a href="#">pages <i class="ti-angle-down"></i></a>
-                                                <ul class="submenu">
-                                                    <li><a href="candidate.html">Candidates </a></li>
-                                                    <li><a href="job_details.html">job details </a></li>
-                                                    <li><a href="elements.html">elements</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="#">blog <i class="ti-angle-down"></i></a>
-                                                <ul class="submenu">
-                                                    <li><a href="blog.html">blog</a></li>
-                                                    <li><a href="single-blog.html">single-blog</a></li>
-                                                </ul>
-                                            </li>
+                                           
+                                            <li><a href="/dashboard">Jobs</a></li>
+                                            <li><a href="/user_applied_jobs">Applied Jobs</a></li>
+                                           
+                                           
                                             <li><a href="/user_profile">Profile</a></li>
                                         </ul>
                                     </nav>
@@ -272,11 +285,9 @@
                             </div>
                             <div class="col-xl-3 col-lg-3 d-none d-lg-block">
                                 <div class="Appointment">
-                                    <div class="phone_num d-none d-xl-block">
-                                        <a href="#">Log in</a>
-                                    </div>
+                                    
                                     <div class="d-none d-lg-block">
-                                        <a class="boxed-btn3" href="#">Post a Job</a>
+                                        <a class="boxed-btn3" href="/user_logout">Logout</a>
                                     </div>
                                 </div>
                             </div>

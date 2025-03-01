@@ -152,8 +152,11 @@
                                     </div>
                                     <div class="jobs_right">
                                         <div class="apply_now">
-                                            <a class="heart_mark" href="#"><i class="fa fa-heart"></i></a>
-                                            <a href="/login" target="_blank" class="boxed-btn3">Apply Now</a>
+                                            {% if job.job_link != "nolink" %}
+                                                <a href="{{ job.job_link }}" target="_blank" class="boxed-btn3">Apply Now</a>
+                                            {% else %}
+                                                <a href="javascript:void(0);" class="boxed-btn3 open-popup" data-job-id="{{ job.id }}">Apply Now</a>
+                                            {% endif %}
                                         </div>
                                         <div class="date">
                                             <p class="view-more-btn" data-job-id="{{ job.id }}">View More</p>
@@ -179,7 +182,11 @@
                     
                                     <!-- Apply Button -->
                                     <div class="apply_now">
-                                        <a href="/login" target="_blank" class="boxed-btn3">Apply Now</a>
+                                        {% if job.job_link != "nolink" %}
+                                            <a href="{{ job.job_link }}" target="_blank" class="boxed-btn3">Apply Now</a>
+                                        {% else %}
+                                            <a href="javascript:void(0);" class="boxed-btn3 open-popup" data-job-id="{{ job.id }}">Applyy Now</a>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -196,28 +203,29 @@
     </div>
     <!-- job_listing_area_end  -->
 
-
-    <!-- Popup Form  -->
-
-    <!-- Background overlay -->
+    
+</div>
 <div id="popup-overlay"></div>
 
 <!-- Popup Form -->
 <div id="popup-form">
-    <div class="popup-content">
-        <h3>Apply for this Job</h3>
-        <form id="job-application-form">
-            <input type="text" id="username" placeholder="Username" required>
-            <input type="text" id="phone" placeholder="Phone Number" required>
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="file" id="resume" accept=".pdf,.doc,.docx" required>
-            <div class="popup-buttons">
-                <button type="submit" id="submit-application">Submit</button>
-                <button type="button" id="close-popup">Close</button>
-            </div>
-        </form>
-    </div>
+<div class="popup-content">
+<h3>Apply for this Job</h3>
+<form id="job-application-form">
+<input type="text" id="username" placeholder="Username" required>
+<input type="text" id="phone" placeholder="Phone Number" required>
+<input type="email" id="email" placeholder="Email" required>
+<input type="file" id="resume" accept=".pdf,.doc,.docx" required>
+<div class="popup-buttons">
+<button type="submit" id="submit-application">Submit</button>
+<button type="button" id="close-popup">Close</button>
 </div>
+</form>
+</div>
+</div>
+    <!-- Popup Form  -->
+
+  
 
     <script>
         $( function() {
@@ -285,6 +293,7 @@
         const emailInput = document.getElementById("email");
         const resumeInput = document.getElementById("resume");
 
+        // Open popup and fetch user details
         openButtons.forEach(button => {
             button.addEventListener("click", function () {
                 let jobId = this.getAttribute("data-job-id");
@@ -303,10 +312,12 @@
             });
         });
 
+        // Close popup
         closeButton.addEventListener("click", function () {
             popupForm.style.display = "none";
         });
 
+        // Handle form submission
         document.getElementById("job-application-form").addEventListener("submit", function (event) {
             event.preventDefault();
             let formData = new FormData();
@@ -323,14 +334,37 @@
                     "X-CSRFToken": "{{ csrf_token }}"
                 }
             })
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                    popupForm.style.display = "none";
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === "Your application has been submitted successfully!") {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Application Submitted!',
+                        text: data.message,
+                        showConfirmButton: false,
+                        timer: 2000
+                    }).then(() => {
+                        popupForm.style.display = "none";
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: data.message
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: 'Something went wrong. Please try again.'
                 });
+            });
         });
     });
 </script>
+
 
     
 

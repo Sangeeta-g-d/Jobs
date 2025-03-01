@@ -1,10 +1,7 @@
-<!doctype html>
-<html class="no-js" lang="zxx">
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Job Board</title>
+    <title>GenuineJobs</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -62,6 +59,7 @@
 </head>
 
 <body>
+
     <!--[if lte IE 9]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
         <![endif]-->
@@ -76,7 +74,7 @@
                             <div class="col-xl-3 col-lg-2">
                                 <div class="logo">
                                     <a href="index.html">
-                                        <img src="/static/assets/images/final_logo-removebg-preview.png" alt="" width="100px" height="100px">
+                                        <img src="/static/user_assets/img/logo.png" alt="">
                                     </a>
                                 </div>
                             </div>
@@ -117,194 +115,117 @@
         </div>
     </header>
 
-    <!-- slider_area_start -->
-    <div class="slider_area">
-        <div class="single_slider  d-flex align-items-center slider_bg_1">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-7 col-md-6">
-                        <div class="slider_text">
-                            <h5 class="wow fadeInLeft" data-wow-duration="1s" data-wow-delay=".2s">4536+ Jobs listed</h5>
-                            <h3 class="wow fadeInLeft" data-wow-duration="1s" data-wow-delay=".3s">Find your Dream Job</h3>
-                            <p class="wow fadeInLeft" data-wow-duration="1s" data-wow-delay=".4s">We provide online instant cash loans with quick approval that suit your term length</p>
-                            <div class="sldier_btn wow fadeInLeft" data-wow-duration="1s" data-wow-delay=".5s">
-                                <a href="#" class="boxed-btn3">Upload your Resume</a>
-                            </div>
+   
+    <section class="contact-section section_padding">
+        <div class="container">
+    <!-- Contact Us Form -->
+    <div class="row">
+        <div class="col-12">
+          <h2 class="contact-title">Get in Touch</h2>
+        </div>
+        <div class="col-lg-6">
+            <form class="form-contact contact_form" method="post" id="contactForm" novalidate="novalidate">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <textarea class="form-control w-100" name="message" id="message" cols="30" rows="7" 
+                                      placeholder="Enter Message"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-sm-6" style="margin-top: 25px;">
+                        <div class="form-group">
+                            <input class="form-control" name="name" id="name" type="text" placeholder="Enter your name">
+                        </div>
+                    </div>
+                    <div class="col-sm-6" style="margin-top: 25px;">
+                        <div class="form-group">
+                            <input class="form-control" name="email" id="email" type="email" placeholder="Enter email address">
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <input class="form-control" name="phone_no" id="subject" type="text" placeholder="Enter Phone number">
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="ilstration_img wow fadeInRight d-none d-lg-block text-right" data-wow-duration="1s" data-wow-delay=".2s">
-            <img src="/static/user_assets/img/banner/illustration.png" alt="">
-        </div>
-    </div>
-    <!-- slider_area_end -->
-
-    <!-- catagory_area -->
-    <div class="catagory_area">
-        <div class="container">
-            <form action="{% url 'jobs' %}" method="GET">
-                <div class="row cat_search align-items-center">
-                    <div class="col-lg-5 col-md-5">
-                        <div class="single_input position-relative">
-                            <input type="text" name="designation" placeholder="Job title, keywords, or company" value="{{ request.GET.designation }}">
-                            <i class="fas fa-search position-absolute" style="right: 15px; top: 50%; transform: translateY(-50%);"></i>
-                        </div>
-                    </div>
-                    <div class="col-lg-5 col-md-5">
-                        <div class="single_input position-relative">
-                            <input type="text" name="location" placeholder="City, State or Remote" value="{{ request.GET.location }}">
-                            <i class="fas fa-map-marker-alt position-absolute" style="right: 15px; top: 50%; transform: translateY(-50%);"></i>
-                        </div>
-                    </div>
-                    <div class="col-lg-2 col-md-2">
-                        <div class="job_btn">
-                            <button type="submit" class="boxed-btn3">Find Job</button>
-                        </div>
-                    </div>
+                <div class="form-group mt-3">
+                    <button type="submit" class="button button-contactForm btn_4 boxed-btn">Send Message</button>
                 </div>
             </form>
             
-            
-            
-                
-
-            
-            
+          
             
         </div>
+        <div class="col-lg-6">
+            <p>Welcome to GenuineJobs!
+
+                We’re here to help you take the next step in your career journey. Whether you’re a fresher looking for your first job or an experienced professional exploring new opportunities, our mission is to provide a reliable and user-friendly platform to connect job seekers with genuine employers.</p>
+                <p>
+                If you have any questions, feedback, or need assistance, we’d love to hear from you. Your experience matters to us, and we’re committed to ensuring you have a smooth and trustworthy job search.</p>
+          <div class="media contact-info">
+           
+            <span class="contact-info__icon"><i class="ti-home"></i></span>
+            <div class="media-body">
+              <h3>GenuineJobs Headquarters </h3>
+              <p>Rosemead, CA 91770</p>
+            </div>
+          </div>
+          <div class="media contact-info">
+            <span class="contact-info__icon"><i class="ti-tablet"></i></span>
+            <div class="media-body">
+              <h3>00 (440) 9865 562</h3>
+              <p>Mon to Fri 9am to 6pm</p>
+            </div>
+          </div>
+          <div class="media contact-info">
+            <span class="contact-info__icon"><i class="ti-email"></i></span>
+            <div class="media-body">
+              <h3>info@genuinejobs.com  </h3>
+              <p>Send us your query anytime!</p>
+            </div>
+          </div>
+          
+      </div>
     </div>
-    <!--/ catagory_area -->
-
-    <!-- popular_catagory_area_start  -->
-    <div class="popular_catagory_area" id="Categories">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section_title mb-40">
-                        <h3>Popular Categories</h3>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-4 col-xl-3 col-md-6">
-                    <div class="single_catagory">
-                        <a href="/jobs?category=Design-Creative"><h4>Design & Creative</h4></a>
-                        <p><span>{{ DC }}</span> Available position{{ DC|pluralize }}</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-xl-3 col-md-6">
-                    <div class="single_catagory">
-                        <a href="/jobs?category=Marketing"><h4>Marketing</h4></a>
-                        <p><span>{{ Marketing }}</span> Available position{{ Marketing|pluralize }}</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-xl-3 col-md-6">
-                    <div class="single_catagory">
-                        <a href="/jobs?category=Telemarketing"><h4>Telemarketing</h4></a>
-                        <p><span>{{ TM }}</span> Available position{{ TM|pluralize }}</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-xl-3 col-md-6">
-                    <div class="single_catagory">
-                        <a href="/jobs?category=Software and Web"><h4>Software & Web</h4></a>
-                        <p><span>{{ SW }}</span> Available position{{ SW|pluralize }}</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-xl-3 col-md-6">
-                    <div class="single_catagory">
-                        <a href="/jobs?category=Administration"><h4>Administration</h4></a>
-                        <p><span>{{ administration }}</span> Available position{{ administration|pluralize }}</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-xl-3 col-md-6">
-                    <div class="single_catagory">
-                        <a href="/jobs?category=Teaching and Education"><h4>Teaching & Education</h4></a>
-                        <p><span>{{ TE }}</span> Available position{{ TE|pluralize }}</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-xl-3 col-md-6">
-                    <div class="single_catagory">
-                        <a href="/jobs?category=Engineering (Hardware)"><h4>Engineering</h4></a>
-                        <p><span>{{ engineering }}</span> Available position{{ engineering|pluralize }}</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-xl-3 col-md-6">
-                    <div class="single_catagory">
-                        <a href="/jobs?category=Healthcare"><h4>Healthcare</h4></a>
-                        <p><span>{{ healthcare }}</span> Available position{{ healthcare|pluralize }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <p>Stay connected and updated on the latest job postings and career advice.  
+        [Facebook] | [LinkedIn] | [Twitter] | [Instagram]  
+    </p>
+    <p>
+        We’re dedicated to helping you find authentic job opportunities and building a future you deserve. Reach out to us anytime — we’re here for you!</p>
     </div>
-    
-    <!-- popular_catagory_area_end  -->
+</section>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            
+<script>
+    document.getElementById("contactForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+        let formData = new FormData(this);
 
-    <!-- job_listing_area_start  -->
-    <div class="job_listing_area" id="Latest_jobs">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <div class="section_title">
-                        <h3>Latest Job Listings</h3>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="brouse_job text-right">
-                        <a href="/jobs" class="boxed-btn4">Browse More Jobs</a>
-                    </div>
-                </div>
-            </div>
-            <div class="job_lists">
-                <div class="row">
-                    {% for job in latest_jobs %}
-                    <div class="col-lg-12 col-md-12">
-                        <div class="single_jobs white-bg d-flex justify-content-between">
-                            <div class="jobs_left d-flex align-items-center">
-                                <div class="thumb">
-                                    {% if job.company_logo %}
-                                    <img src="{{ job.company_logo.url }}" alt="Company Logo">
-                                    {% else %}
-                                    <img src="/static/user_assets/img/svg_icon/default.svg" alt="Default Logo">
-                                    {% endif %}
-                                </div>
-                                <div class="jobs_conetent">
-                                    <a href="{{ job.job_link }}"><h4>{{ job.job_title }}</h4></a>
-                                    <div class="links_locat d-flex align-items-center">
-                                        <div class="location">
-                                            <p><i class="fa fa-map-marker"></i> {{ job.location }}</p>
-                                        </div>
-                                        <div class="location">
-                                            <p><i class="fa fa-clock-o"></i> {{ job.job_type }}</p>
-                                        </div>
-                                        <div class="location">
-                                            <p><i class="fa fa-briefcase"></i> {{ job.experience }} Years</p>
-                                        </div>
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                            <div class="jobs_right">
-                                <div class="apply_now">
-                                    <a href="{{ job.job_link }}" class="boxed-btn3">Apply Now</a>
-                                </div>
-                               
-                            </div>
-                        </div>
-                    </div>
-                    {% empty %}
-                    <p>No jobs available.</p>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- job_listing_area_end  -->
-
-
+        fetch("", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: data.message,
+                showConfirmButton: false,
+                timer: 2000
+            });
+            this.reset();
+        })
+        .catch(error => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                text: 'Something went wrong!'
+            });
+        });
+    });
+</script>
  <!-- footer start -->
  <footer class="footer">
     <div class="footer_top">

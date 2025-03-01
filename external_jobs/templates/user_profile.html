@@ -110,40 +110,4 @@
 </div>
 
 
-<!-- script for validations -->
-<script>
-    document.getElementById('userForm').addEventListener('input', function (e) {
-        const fullname = document.getElementById('fullname');
-        const phone = document.getElementById('phone_no');
-        const email = document.getElementById('emailid');
-        const year = document.getElementById('year_of_passing');
-        const experience = document.getElementById('year_of_exp');
-        document.getElementById('fullnameError').textContent = /^[A-Za-z\s]+$/.test(fullname.value) || fullname.value === '' ? '' : 'Only letters and spaces allowed.';
-        document.getElementById('phoneError').textContent = /^\d{10}$/.test(phone.value) || phone.value === '' ? '' : 'Must be exactly 10 digits.';
-        document.getElementById('emailError').textContent = email.validity.valid ? '' : 'Enter a valid email address.';
-        document.getElementById('yearError').textContent = /^\d{4}$/.test(year.value) || year.value === '' ? '' : 'Enter a valid 4-digit year.';
-        document.getElementById('expError').textContent = /^\d+$/.test(experience.value) || experience.value === '' ? '' : 'Experience should be a number.';
-    });
-</script>
-
-
-<script>
-    // Check if 'saved=true' exists in the URL
-    document.addEventListener('DOMContentLoaded', function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('saved') === 'true') {
-            Swal.fire({
-                title: 'Success!',
-                text: 'Your profile has been updated successfully.',
-                icon: 'success',
-                confirmButtonText: 'OK',
-                focusConfirm: false
-            });
-            // Remove the query parameter from the URL without reloading the page
-            const newUrl = window.location.origin + window.location.pathname;
-            window.history.replaceState({}, document.title, newUrl);
-        }
-    });
-</script>
-
 {% endblock %}

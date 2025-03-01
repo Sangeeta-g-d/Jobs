@@ -33,14 +33,27 @@ urlpatterns = [
     path('toggle_job_status/<int:job_id>/', views.toggle_job_status, name='toggle_job_status'),
     path('a_company_jobs/<int:id>/', views.a_company_jobs, name='a_company_jobs'),
     path('a_candidate_details/<int:id>/', views.a_candidate_details, name='a_candidate_details'),
+    path('company_inactive_job', views.company_inactive_job, name='company_inactive_job'),
+    path('toggle_job_status_inactive/<int:job_id>/', views.toggle_job_status_inactive, name='toggle_job_status_inactive'),
+    path('user_applied_jobs', views.user_applied_jobs, name='user_applied_jobs'),
+    path('u_applied_job_detail/<int:job_id>/', views.u_applied_job_detail, name='u_applied_job_detail'),
+    path('about_us', views.about_us, name='about_us'),
+    path('contact_us', views.contact_us, name='contact_us'),
+    path('check-email/', views.check_email, name='check_email'),
+    path('admin_logout',views.admin_logout,name='admin_logout'),
+    path('company_logout',views.company_logout,name='company_logout'),
+    path('user_logout',views.user_logout,name='user_logout'),
+    path('contact_us_details',views.contact_us_details,name='contact_us_details'),
+
+
     path('user_profile/',views.user_profile,name="user_profile"),
 
 
     # Password reset paths
-    path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
-    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
-    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
-    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    path('forgot_password/', views.forgot_password, name='forgot_password'),
+    path('reset_password/<uidb64>/<token>/', views.reset_password, name='reset_password'),
+    path('password_reset_sent',views.password_reset_sent,name="password_reset_sent"),
+    path('password_reset_success',views.password_reset_success,name="password_reset_success"),
 
 
 ]
