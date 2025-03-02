@@ -47,7 +47,7 @@ class Jobs(models.Model):
 class AppliedJob(models.Model):
     user = models.ForeignKey(NewUser, on_delete=models.CASCADE)
     company = models.IntegerField()  # Store company ID
-    job_id = models.IntegerField()  # Store job ID
+    job_id = models.ForeignKey(Jobs, on_delete=models.CASCADE) # Store job ID
     resume = models.FileField(upload_to='resumes/')
     applied_at = models.DateTimeField(auto_now_add=True)
 

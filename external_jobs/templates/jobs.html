@@ -86,7 +86,7 @@
                                         <ul id="navigation">
                                             <li><a href="/">home</a></li>
                                             <li><a href="#Latest_jobs">Jobs</a></li>
-                                            <li><a href="#Categories">Categories</a></li>
+                                           
                                             <li><a href="/about_us">About Us</a></li>
                                             <li><a href="/contact_us">Contact Us</a></li>
                                            
@@ -239,74 +239,75 @@
                 
                     <div class="job_lists m-0">
                         <div class="row">
-                            {% for item in jobs_with_age %}
-                            {% with job=item.job days_old=item.days_old %}
-                            <div class="col-lg-12 col-md-12">
-                                <div class="single_jobs white-bg d-flex justify-content-between">
-                                    <div class="jobs_left d-flex align-items-center">
-                                        <div class="thumb">
-                                            <img src="{{ job.company_logo.url }}" alt="">
-                                        </div>
-                                        <div class="jobs_conetent">
-                                            <a href="#"><h4>{{ job.job_title }}</h4></a>
-                                            <div class="links_locat d-flex align-items-center">
-                                                <div class="location">
-                                                    <p><i class="fa fa-map-marker"></i> {{ job.location }}</p>
+                            {% if jobs_with_age %}
+                                {% for item in jobs_with_age %}
+                                    {% with job=item.job days_old=item.days_old %}
+                                        <div class="col-lg-12 col-md-12">
+                                            <div class="single_jobs white-bg d-flex justify-content-between">
+                                                <div class="jobs_left d-flex align-items-center">
+                                                    <div class="thumb">
+                                                        <img src="{{ job.company_logo.url }}" alt="">
+                                                    </div>
+                                                    <div class="jobs_conetent">
+                                                        <a href="#"><h4>{{ job.job_title }}</h4></a>
+                                                        <div class="links_locat d-flex align-items-center">
+                                                            <div class="location">
+                                                                <p><i class="fa fa-map-marker"></i> {{ job.location }}</p>
+                                                            </div>
+                                                            <div class="location">
+                                                                <p><i class="fa fa-clock-o"></i> {{ job.job_type }}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="location">
-                                                    <p><i class="fa fa-clock-o"></i> {{ job.job_type }}</p>
+                                                <div class="jobs_right">
+                                                    <div class="apply_now">
+                                                       
+                                                        <a href="/login"  class="boxed-btn3">Apply Now</a>
+                                                    </div>
+                                                    <div class="date">
+                                                        <p class="view-more-btn" data-job-id="{{ job.id }}">View More</p>
+                                                        <p class="text-muted">
+                                                            Posted {% if days_old == 0 %} Today
+                                                            {% elif days_old == 1 %} 1 day ago
+                                                            {% else %} {{ days_old }} days ago
+                                                            {% endif %}
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             </div>
-                                           
-                                        </div>
-                                    </div>
-                                    <div class="jobs_right">
-                                        <div class="apply_now">
-                                            <a href="/login" target="_blank" class="boxed-btn3">Apply Now</a>
-                                        </div>
-                                        <div class="date">
-                                            <p class="view-more-btn" data-job-id="{{ job.id }}">View More</p>
-                                            <p class="text-muted">
-                                                Posted {% if days_old == 0 %} Today
-                                                {% elif days_old == 1 %} 1 day ago
-                                                {% else %} {{ days_old }} days ago
-                                                {% endif %}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
                     
-                                <!-- Hidden Job Details Section -->
-                                <div class="job_details" id="job-details-{{ job.id }}" style="display: none; background: #f9f9f9; padding: 15px; border-radius: 5px; margin-top: 10px;">
-                                    <p><strong>Company:</strong> {{ job.company_name }}</p>
-                                    <p><strong>Salary:</strong> {{ job.salary }}</p>
-                                    <p><strong>Experience:</strong> {{ job.experience }}</p>
-                                    <p><strong>Education:</strong> {{ job.education }}</p>
-                                    <p><strong>Work Mode:</strong> {{ job.work_mode }}</p>
-                                    <p><strong>Required Skills:</strong> {{ job.required_skills }}</p>
-                                    <p><strong>Roles & Responsibilities:</strong> {{ job.roles_and_responsibilities }}</p>
+                                            <!-- Hidden Job Details Section -->
+                                            <div class="job_details" id="job-details-{{ job.id }}" style="display: none; background: #f9f9f9; padding: 15px; border-radius: 5px; margin-top: 10px;">
+                                                <p><strong>Company:</strong> {{ job.company_name }}</p>
+                                                <p><strong>Salary:</strong> {{ job.salary }}</p>
+                                                <p><strong>Experience:</strong> {{ job.experience }}</p>
+                                                <p><strong>Education:</strong> {{ job.education }}</p>
+                                                <p><strong>Work Mode:</strong> {{ job.work_mode }}</p>
+                                                <p><strong>Required Skills:</strong> {{ job.required_skills }}</p>
+                                                <p><strong>Roles & Responsibilities:</strong> {{ job.roles_and_responsibilities }}</p>
                     
-                                    <!-- Apply Button -->
-                                    <div class="apply_now">
-                                        <a href="/login" target="_blank" class="boxed-btn3">Apply Now</a>
-                                    </div>
+                                                <div class="apply_now">
+                                                    <a href="/login" target="_blank" class="boxed-btn3">Apply Now</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endwith %}
+                                {% endfor %}
+                            {% else %}
+                                <div class="col-12 text-center">
+                                    <h3>Sorry! No jobs found.</h3>
                                 </div>
-                            </div>
-                            {% endwith %}
-                            {% endfor %}
+                            {% endif %}
                         </div>
-                    </div>
-                    
-                    
-                    
+                    </div>     
                 </div>
-                
             </div>
         </div>
     </div>
     <!-- job_listing_area_end  -->
 
- 
+
     <script>
         $( function() {
             $( "#slider-range" ).slider({

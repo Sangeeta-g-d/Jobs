@@ -2,18 +2,7 @@
 {% block content %}
 
 <!-- SweetAlert Messages -->
-{% if alert.message %}
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            Swal.fire({
-                icon: '{{ alert.type }}', // 'success' or 'error'
-                title: '{{ alert.message }}',
-                showConfirmButton: false,
-                timer: 2000 // Auto-close after 2 seconds
-            });
-        });
-    </script>
-{% endif %}
+
 
 <div class="col-sm-12">
     <div class="card">
@@ -105,6 +94,7 @@
                                 <option value="Teaching and Education">Teaching and Education</option>
                                 <option value="Engineering (Hardware)">Engineering (Hardware)</option>
                                 <option value="Telemarketing">Telemarketing</option>
+                                <option value="Healthcare">Healthcare</option>
                                 
                             </select>
                         </div>
@@ -131,6 +121,28 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        {% if alert.type == "success" %}
+            Swal.fire({
+                icon: "success",
+                title: "Success!",
+                text: "{{ alert.message }}",
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "OK"
+            });
+        {% elif alert.type == "error" %}
+            Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: "{{ alert.message }}",
+                confirmButtonColor: "#d33",
+                confirmButtonText: "Try Again"
+            });
+        {% endif %}
+    });
+</script>
 
 
 

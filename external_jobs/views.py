@@ -13,8 +13,72 @@ from datetime import timedelta, date
 from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
 
+# forgot password
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth import get_user_model
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes
+from django.core.mail import send_mail
+from django.urls import reverse
+from django.http import HttpResponse
+from django.conf import settings
 
+User = get_user_model()
 # Create your views here.
+def forgot_password(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        user = User.objects.filter(email=email).first()
+
+        if user:
+            token = default_token_generator.make_token(user)
+            uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+            reset_link = request.build_absolute_uri(reverse('reset_password', args=[uidb64, token]))
+
+            # Send email
+            send_mail(
+                "Password Reset Request",
+                f"Click the link to reset your password: {reset_link}",
+                settings.EMAIL_HOST_USER,
+                [email],
+                fail_silently=False,
+            )
+            return render(request, 'password_reset_sent.html')
+
+        return render(request, 'forgot_password.html', {'error': 'No user found with this email.'})
+
+    return render(request, 'forgot_password.html')
+
+
+def password_reset_sent(request):
+    return render(request,'password_reset_sent.html')
+
+# Reset password - Form submission
+def reset_password(request, uidb64, token):
+    if request.method == 'POST':
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if new_password != confirm_password:
+            return render(request, 'reset_password.html', {'error': 'Passwords do not match.', 'uidb64': uidb64, 'token': token})
+
+        try:
+            uid = urlsafe_base64_decode(uidb64).decode()
+            user = User.objects.get(pk=uid)
+        except (User.DoesNotExist, ValueError, TypeError):
+            return render(request, 'reset_password.html', {'error': 'Invalid reset link.'})
+
+        if default_token_generator.check_token(user, token):
+            user.set_password(new_password)
+            user.save()
+            return redirect('password_reset_success')  # Redirect to success page
+        else:
+            return render(request, 'reset_password.html', {'error': 'Invalid or expired reset link.'})
+
+    return render(request, 'reset_password.html', {'uidb64': uidb64, 'token': token})
+
+def password_reset_success(request):
+    return render(request, 'password_reset_success.html')
 
 def admin_logout(request):
     logout(request)
@@ -131,7 +195,8 @@ def add_job(request):
 
 @login_required
 def job_details(request):
-    data = Jobs.objects.all()
+    id= request.user.id
+    data = Jobs.objects.filter(added_by_id=id)
     username= request.user.username
     context = {
         'data': data,
@@ -190,22 +255,58 @@ def edit_job_details(request, id):
 
 @login_required
 def delete_job(request, id):
-    if request.method == 'DELETE':
-        job = get_object_or_404(Jobs, id=id)
+    print(id,"idddddddd")
+    job = get_object_or_404(Jobs, id=id, added_by=request.user)
+    
+    if request.method == "POST":
         job.delete()
-        return JsonResponse({'message': 'Job deleted successfully!'}, status=200)
-    return JsonResponse({'error': 'Invalid request'}, status=400)
+        messages.success(request, "Job deleted successfully.")
+        return redirect('company_job_details')  # Redirect back to job listing page
+
+@login_required
+def delete_job_admin(request, id):
+    print(id, "idddddddd")
+    job = get_object_or_404(Jobs, id=id)  # Removed `added_by=request.user`
+    
+    if request.method == "POST":
+        job.delete()
+        messages.success(request, "Job deleted successfully.")
+        return redirect('job_details')  # Redirect to job listing page
+
 
 def index(request):
-    latest_jobs = Jobs.objects.order_by('-id')[:5]  # Fetch the 5 most recent jobs
-    return render(request, 'index.html', {'latest_jobs': latest_jobs})
+    latest_jobs = Jobs.objects.order_by('-id')[:5]
+    
+    # Count jobs for each category
+    DC = Jobs.objects.filter(category="Design-Creative").count()
+    Marketing = Jobs.objects.filter(category="Marketing").count()
+    TM = Jobs.objects.filter(category="Telemarketing").count()
+    SW = Jobs.objects.filter(category="Software and Web").count()
+    administration = Jobs.objects.filter(category="Administration").count()
+    TE = Jobs.objects.filter(category="Teaching and Education").count()
+    engineering = Jobs.objects.filter(category="Engineering (Hardware)").count()
+    healthcare = Jobs.objects.filter(category="Healthcare").count()
+    
+    context = {
+        'DC': DC,
+        'Marketing': Marketing,
+        'TM': TM,
+        'SW': SW,
+        'administration': administration,
+        'TE': TE,
+        'engineering': engineering,
+        'healthcare': healthcare,
+        'latest_jobs': latest_jobs
+    }
+    return render(request, 'index.html', context)
 
 def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('email')
         password = request.POST.get('password')
-
+        print(username, password)
         user = authenticate(username=username, password=password)
+        print(user)
         if user is not None:
             login(request, user)
             return redirect('/dashboard')  # Redirect to dashboard after login
@@ -218,7 +319,8 @@ def user_login(request):
 
 def check_email(request):
     email = request.GET.get('email')
-    if NewUser.objects.filter(email=email).exists():
+    print(email)
+    if NewUser.objects.filter(username=email).exists():
         return JsonResponse({'exists': True})
     return JsonResponse({'exists': False})
 
@@ -235,7 +337,7 @@ def user_registration(request):
             return JsonResponse({'status': 'error', 'message': 'Email already exists!'})
 
         # Save User
-        user = NewUser.objects.create_user(username=email, phone_no=phone, password=encrypted_password, fullname=fullname)
+        user = NewUser.objects.create_user(username=email, phone_no=phone, password=encrypted_password, fullname=fullname, email=email)
         user.save()
         return JsonResponse({'status': 'success', 'message': 'Registration Successful!'})
 
@@ -436,6 +538,10 @@ def user_dashboard(request):
         'search_query': search_query
     })
 
+def check_username(request):
+    username = request.GET.get('username')
+    exists = NewUser.objects.filter(fullname=username).exists()
+    return JsonResponse({'exists': exists})
 
 def company_register(request):
     if request.method == 'POST':
@@ -446,30 +552,38 @@ def company_register(request):
         password = request.POST.get('password')
         c_password = request.POST.get('c_password')
         image = request.FILES.get('profile_image')  # Handle uploaded image
-        print(full_name,email,phone_no,address,password,c_password)
+
+        # Validate required fields
+        if not all([full_name, email, phone_no, address, password, c_password]):
+            return JsonResponse({'status': 'error', 'message': 'All fields are required!'})
+
+        # Check if email already exists
+        if NewUser.objects.filter(email=email).exists():
+            return JsonResponse({'status': 'error', 'message': 'Email already exists!'})
+        
+        # Check if username (company name) already exists
+        if NewUser.objects.filter(fullname=full_name).exists():
+            return JsonResponse({'status': 'error', 'message': 'Company name already exists!'})
+
+       
+        # Encrypt password
         encrypted_password = make_password(password)
 
-        # Validation checks
-        if not full_name or not email  or not password or not c_password or not address:
-            messages.error(request, "All fields are required!")
-        elif len(phone_no) != 10 or not phone_no.isdigit():
-            messages.error(request, "Phone number must be exactly 10 digits!")
-        elif password != c_password:
-            messages.error(request, "Password and Confirm Password do not match!")
-        else:
-            # Save user if validation passes
-            NewUser.objects.create(
-                fullname=full_name,
-                username=email,
-                phone_no=phone_no,
-                address=address,
-                password=encrypted_password,
-                profile_image=image,
-                user_type = 'Company'
-            )
-            return render(request, 'company_register.html', {'success': True})
+        # Create and save user
+        user = NewUser.objects.create_user(
+            fullname=full_name,
+            username=email,
+            phone_no=phone_no,
+            address=address,
+            password=encrypted_password,
+            profile_image=image,
+            user_type='Company',
+            email=email
+        )
+        user.save()
 
-    
+        return JsonResponse({'status': 'success', 'message': 'Company Registration Successful!'})
+
     return render(request, 'company_register.html')
 
 
@@ -477,15 +591,19 @@ def company_login(request):
     if request.method == 'POST':
         username = request.POST.get('email')
         password = request.POST.get('password')
+        print(username,password)
         user = authenticate(username=username, password=password)
+        print(user)
         if user is not None:
             if user.is_staff:  # Check if the admin has approved the user
                 login(request, user)
                 return redirect('/company_db')
             else:
+                print("hhhhhhhhhhhhhhh")
                 print(user.is_staff)
                 error_message = "Admin has not approved your account yet."
         else:
+            print("kkkkkkkkkkk")
             error_message = "Invalid username or password."
         return render(request, 'company_login.html', {'error_message': error_message})
     return render(request, 'company_login.html')
@@ -507,10 +625,27 @@ def toggle_approval(request, user_id):
 
 @login_required
 def company_db(request):
-    username= request.user.fullname
-    logo=request.user.profile_image
-    return render(request, 'company_db.html',{'username':username,'logo':logo})
+    user = request.user
+    username = user.fullname
+    logo = user.profile_image
 
+    # Count total jobs added by the company
+    total_jobs = Jobs.objects.filter(added_by=user).count()
+
+    # Count total applicants for all jobs posted by the company
+    job_ids = Jobs.objects.filter(added_by=user).values_list('id', flat=True)
+    total_applicants = AppliedJob.objects.filter(job_id__in=job_ids).count()
+    print(total_applicants,"gggggggggggg")
+    # Get all jobs added by the company
+    jobs = Jobs.objects.filter(added_by=user)
+
+    return render(request, 'company_db.html', {
+        'username': username,
+        'logo': logo,
+        'total_jobs': total_jobs,
+        'total_applicants': total_applicants,
+        'jobs': jobs,
+    })
 
 def company_base(request):
     return render(request, 'company_base.html')
@@ -769,7 +904,7 @@ def user_applied_jobs(request):
     # Filter jobs by company name if search query is provided
     job_details = []
     for applied_job in applied_jobs:
-        job = Jobs.objects.get(id=applied_job.job_id)
+        job = Jobs.objects.get(id=applied_job.job_id_id)
         if search_query.lower() in job.company_name.lower():  # Case-insensitive search
             job_details.append({
                 'company_logo': job.company_logo.url if job.company_logo else None,
@@ -842,3 +977,23 @@ def user_profile(request):
 
     context = {'user_details': user_details}
     return render(request, 'user_profile.html', context)
+
+@login_required
+def company_profile(request):
+    username= request.user.fullname
+    logo=request.user.profile_image
+    user = request.user  # Get the logged-in user
+
+    if request.method == "POST":
+        user.fullname = request.POST.get('fullname', user.fullname)
+        user.phone_no = request.POST.get('phone_no', user.phone_no)
+        user.address = request.POST.get('address', user.address)
+        user.username = request.POST.get('email', user.email)
+        if 'profile_image' in request.FILES:
+            user.profile_image = request.FILES['profile_image']
+
+        user.save()
+        messages.success(request, "Profile updated successfully.")
+        return redirect('company_profile')
+
+    return render(request, 'company_profile.html', {'user': user,'username':username,'logo':logo})

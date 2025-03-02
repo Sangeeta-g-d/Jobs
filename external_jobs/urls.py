@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('',views.index,name="index"),
@@ -12,6 +13,7 @@ urlpatterns = [
     path('get_job_details/<int:id>/', views.get_job_details, name='get_job_details'),
     path('edit_job_details/<int:id>/', views.edit_job_details, name='edit_job_details'),
     path('delete_job/<int:id>/', views.delete_job, name='delete_job'),
+    path('delete_job_admin/<int:id>/', views.delete_job_admin, name='delete_job_admin'),
     path('login',views.user_login,name='user_login'),
     path('user_registration',views.user_registration,name='user_registration'),
     path('jobs',views.jobs,name='jobs'),
@@ -45,7 +47,16 @@ urlpatterns = [
     path('contact_us_details',views.contact_us_details,name='contact_us_details'),
 
 
-    path('user_profile/',views.user_profile,name="user_profile"),
+    path('user_profile',views.user_profile,name="user_profile"),
+
+    path('check-username/', views.check_username, name='check_username'),
+
+    # Password reset paths
+    path('forgot_password/', views.forgot_password, name='forgot_password'),
+    path('reset_password/<uidb64>/<token>/', views.reset_password, name='reset_password'),
+    path('password_reset_sent',views.password_reset_sent,name="password_reset_sent"),
+    path('password_reset_success',views.password_reset_success,name="password_reset_success"),
+    path('company_profile',views.company_profile,name="company_profile"),
 
 
 ]

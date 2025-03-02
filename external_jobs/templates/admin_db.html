@@ -5,11 +5,11 @@
                 <div class="row align-items-center">
                     <div class="col-md-12">
                         <div class="page-header-title">
-                            <h5 class="m-b-10">Dashboard Analytics</h5>
+                            <h5 class="m-b-10">Admin Dashboard</h5>
                         </div>
                         <ul class="breadcrumb">
                             <li class="breadcrumb-item"><a href="index.html"><i class="feather icon-home"></i></a></li>
-                            <li class="breadcrumb-item"><a href="#!">Dashboard Analytics</a></li>
+                            <li class="breadcrumb-item"><a href="/admin_db">Overview</a></li>
                         </ul>
                     </div>
                 </div>
@@ -91,7 +91,12 @@
                                                 
                                             </div>
                                             <div class="d-inline-block align-middle">
+                                                {% if company.profile_image %}
                                                 <img src="{{ company.profile_image.url }}" alt="user image" class="img-radius wid-60 align-top m-r-15">
+                                            {% else %}
+                                                <img src="\static\assets\images\company.jpg" alt="default image" class="img-radius wid-60 align-top m-r-15">
+                                            {% endif %}
+                                            
                                                 <div class="d-inline-block">
                                                     <h6>{{ company.fullname }}</h6>
                                                 </div>

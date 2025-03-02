@@ -2,8 +2,14 @@
 
 {% block content %}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- CSRF Token for AJAX   
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+-->
+<input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+
 <div class="pcoded-content">
-    <!-- [ breadcrumb ] start -->
     <div class="page-header">
         <div class="page-block">
             <div class="row align-items-center">
@@ -12,16 +18,16 @@
                         <h5 class="m-b-10">Job Details</h5>
                     </div>
                     <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html"><i class="feather icon-home"></i></a></li>
-                        <li class="breadcrumb-item"><a href="#!">Job Management</a></li>
+                        <li class="breadcrumb-item"><a href="/company_job_details"><i class="feather icon-home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="/company_job_details">Job Information</a></li>
+
                     </ul>
                 </div>
             </div>
         </div>
     </div>
-    <!-- [ breadcrumb ] end -->
 
-    <!-- [ Main Content ] start -->
+    <!-- Job Details Table -->
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -38,9 +44,8 @@
                                     <th>Salary</th>
                                     <th>Experience</th>
                                     <th>Location</th>
-                                    
                                     <th>Actions</th>
-                                    <th></th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -51,29 +56,23 @@
                                     <td>{{ item.salary }}</td>
                                     <td>{{ item.experience }}</td>
                                     <td>{{ item.location }}</td>
-                                   
-                                    
                                     <td>
                                         <!-- View Button -->
-                                        <!-- View Button -->
-                                        <a href="javascript:void(0);" 
-                                        class="btn btn-link text-primary" 
-                                        style="font-size: 1.1rem;" 
-                                        onclick="openJobPopup('{{ item.id }}')">
-                                         <i class="feather icon-eye"></i>
+                                        <a href="#" class="btn btn-link text-primary" 
+                                           data-bs-toggle="modal" 
+                                           data-bs-target="#jobModal{{ item.id }}"  style="font-size: 1.3rem;" >
+                                            <i class="feather icon-eye"></i>
                                         </a>
 
-                                        <!-- Edit Icon (Larger) -->
-                                        <a href="/company_edit_job_details/{{item.id}}/" class="btn btn-link text-warning" style="font-size: 1.1rem;">
+                                        <!-- Edit Button -->
+                                        <a href="/company_edit_job_details/{{ item.id }}/" class="btn btn-link text-warning"  style="font-size: 1.3rem;" >
                                             <i class="feather icon-edit"></i>
                                         </a>
-                                        <!-- Delete Icon -->
-                                       <a href="javascript:void(0);" 
-                                       class="btn btn-link text-danger" 
-                                       style="font-size: 1.1rem;" 
-                                       onclick="confirmDelete('{{ item.id }}')">
-                                       <i class="feather icon-trash"></i>
-                                    </a>
+
+                                        <!-- Delete Button -->
+                                        <button class="btn btn-link text-danger" style="font-size: 1.3rem;" data-bs-toggle="modal" data-bs-target="#deleteModal{{ item.id }}">
+                                            <i class="feather icon-trash"></i>
+                                        </button>
                                     </td>
                                     <td>
                                         <button class="btn btn-sm btn-warning" 
@@ -81,8 +80,52 @@
                                             Inactive
                                         </button>
                                     </td>
-
                                 </tr>
+                                <div class="modal fade" id="deleteModal{{ item.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ item.id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteModalLabel{{ item.id }}">Confirm Deletion</h5>
+                                              
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to delete the job "<strong>{{ item.job_title }}</strong>"?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <form action="{% url 'delete_job' item.id %}" method="POST" style="display: inline;">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Job Details Modal -->
+                                <div class="modal fade" id="jobModal{{ item.id }}" tabindex="-1" aria-labelledby="jobModalLabel{{ item.id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title"><strong>{{ item.job_title }}</strong></h5>
+                                              
+                                            </div>
+                                            <div class="modal-body">
+                                                <p><strong>Company Name:</strong> {{ item.company_name }}</p>
+                                                <p><strong>Salary:</strong> {{ item.salary }}</p>
+                                                <p><strong>Experience:</strong> {{ item.experience }} years</p>
+                                                <p><strong>Location:</strong> {{ item.location }}</p>
+                                                <p><strong>Job Type:</strong> {{ item.job_type }}</p>
+                                                <p><strong>Education:</strong> {{ item.education }}</p>
+                                                <p><strong>Required Skills:</strong> {{ item.required_skills }}</p>
+                                                <p><strong>Roles & Responsibilities:</strong> {{ item.roles_and_responsibilities }}</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 {% endfor %}
                             </tbody>
                         </table>
@@ -91,41 +134,39 @@
             </div>
         </div>
     </div>
-    <!-- [ Main Content ] end -->
 </div>
 
-<!-- Job Details Modal -->
-<div class="modal fade" id="jobDetailsModal" tabindex="-1" aria-labelledby="jobDetailsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="jobDetailsModalLabel">Job Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="jobDetailsContent">
-                <!-- Job details will be loaded here dynamically -->
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
+<!-- JavaScript -->
 <script>
-    function changeJobStatus(jobId) {
-        if (confirm("Are you sure you want to mark this job as inactive?")) {
-            fetch(`/toggle_job_status/${jobId}/`, {
-                method: 'GET',
-            })
+
+// Function to toggle job status
+function changeJobStatus(jobId) {
+    Swal.fire({
+        title: "Change Job Status?",
+        text: "Do you want to mark this job as inactive?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Yes, change it",
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/toggle_job_status/${jobId}/`, { method: 'GET' })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    location.reload(); // Reload page to update job list
+                    Swal.fire("Updated!", "The job status has been changed.", "success")
+                    .then(() => location.reload());
+                } else {
+                    Swal.fire("Error!", "Failed to change status.", "error");
                 }
             })
-            .catch(error => console.error("Error:", error));
+            .catch(error => {
+                console.error("Error:", error);
+                Swal.fire("Error!", "Failed to update job status.", "error");
+            });
         }
-    }
-    </script>
-    
+    });
+}
+</script>
+
 {% endblock %}
