@@ -1,3 +1,18 @@
+// go to top button
+window.onscroll = function() {
+  let button = document.getElementById("goToTopBtn");
+  if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+      button.style.display = "block";
+  } else {
+      button.style.display = "none";
+  }
+};
+
+// Smooth scroll to the top
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 (function ($) {
 "use strict";
 // TOP Menu Sticky

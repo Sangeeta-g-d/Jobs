@@ -53,6 +53,9 @@ def forgot_password(request):
 def password_reset_sent(request):
     return render(request,'password_reset_sent.html')
 
+def password_reset_success(request):
+    return render(request,'password_reset_success.html')
+
 # Reset password - Form submission
 def reset_password(request, uidb64, token):
     if request.method == 'POST':
@@ -77,8 +80,6 @@ def reset_password(request, uidb64, token):
 
     return render(request, 'reset_password.html', {'uidb64': uidb64, 'token': token})
 
-def password_reset_success(request):
-    return render(request, 'password_reset_success.html')
 
 def admin_logout(request):
     logout(request)

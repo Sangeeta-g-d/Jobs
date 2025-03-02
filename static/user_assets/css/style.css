@@ -2231,8 +2231,8 @@ h3 {
 
 /* line 10, ../../Arafath/CL/December/235. Job board/HTML/scss/_footer.scss */
 .footer .footer_top {
-  padding-top: 145px;
-  padding-bottom: 129px;
+  padding-top: 45px;
+  padding-bottom: 49px;
 }
 
 @media (max-width: 767px) {
@@ -2572,6 +2572,29 @@ h3 {
 /* line 36, ../../Arafath/CL/December/235. Job board/HTML/scss/_bradcam.scss */
 .bradcam_area p a:hover {
   color: #fff;
+}
+
+#goToTopBtn {
+  display: none; /* Hidden by default */
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #e22e2e;
+  color: white;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  line-height: 50px;
+}
+
+#goToTopBtn:hover {
+  background-color: #e22e2e;
 }
 
 /* line 42, ../../Arafath/CL/December/235. Job board/HTML/scss/_bradcam.scss */
