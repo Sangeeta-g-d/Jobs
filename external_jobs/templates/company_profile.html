@@ -1,0 +1,54 @@
+{% extends 'company_base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary " style="background-color: #133b61!important ;">
+            <h5 style="color: #d5dde1 !important;;">{{ user.fullname }}</h5>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="row">
+                    <!-- Profile Image -->
+                    <div class="col-md-3 text-center">
+                        {% if user.profile_image %}
+                            <img src="{{ user.profile_image.url }}" alt="Profile Image" class="img-thumbnail" width="150">
+                        {% else %}
+                            <img src="https://via.placeholder.com/150" alt="No Profile Image" class="img-thumbnail">
+                        {% endif %}
+                        <br>
+                        <input type="file" name="profile_image" class="form-control mt-2">
+                    </div>
+
+                    <!-- Profile Details -->
+                    <div class="col-md-9">
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" name="fullname" class="form-control" value="{{ user.fullname }}">
+                        </div>
+                        
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="text" name="email" class="form-control" value="{{ user.username }}">
+                            </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone Number</label>
+                            <input type="text" name="phone_no" class="form-control" value="{{ user.phone_no }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Address</label>
+                            <textarea name="address" class="form-control" rows="3">{{ user.address }}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Save Button -->
+                <div class="text-center mt-3">
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

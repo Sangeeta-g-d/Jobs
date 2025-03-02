@@ -13,11 +13,12 @@ urlpatterns = [
     path('get_job_details/<int:id>/', views.get_job_details, name='get_job_details'),
     path('edit_job_details/<int:id>/', views.edit_job_details, name='edit_job_details'),
     path('delete_job/<int:id>/', views.delete_job, name='delete_job'),
+    path('delete_job_admin/<int:id>/', views.delete_job_admin, name='delete_job_admin'),
     path('login',views.user_login,name='user_login'),
     path('user_registration',views.user_registration,name='user_registration'),
     path('jobs',views.jobs,name='jobs'),
     path('dashboard',views.user_dashboard,name='user_dashboard'),
-    path('company_register',views.company_register,name='company_register'),
+    path('company_registration',views.company_register,name='company_register'),
     path('company_login',views.company_login,name='company_login'),
     path('company_list',views.company_list,name='company_list'),
     path('toggle-approval/<int:user_id>/', views.toggle_approval, name='toggle_approval'),
@@ -46,14 +47,16 @@ urlpatterns = [
     path('contact_us_details',views.contact_us_details,name='contact_us_details'),
 
 
-    path('user_profile/',views.user_profile,name="user_profile"),
+    path('user_profile',views.user_profile,name="user_profile"),
 
+    path('check-username/', views.check_username, name='check_username'),
 
     # Password reset paths
     path('forgot_password/', views.forgot_password, name='forgot_password'),
     path('reset_password/<uidb64>/<token>/', views.reset_password, name='reset_password'),
     path('password_reset_sent',views.password_reset_sent,name="password_reset_sent"),
     path('password_reset_success',views.password_reset_success,name="password_reset_success"),
+    path('company_profile',views.company_profile,name="company_profile"),
 
 
 ]

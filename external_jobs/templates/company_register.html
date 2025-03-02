@@ -5,7 +5,7 @@
 
 	{% include "layouts/head.html" %}
     {% include "layouts/head-bottom-link.html" %}
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <!-- [ auth-signin ] start -->
 <div class="auth-wrapper">
@@ -19,62 +19,184 @@
 						<hr>
 
                         <!-- Display Error Messages -->
-                        {% if messages %}
-                        <div class="alert alert-danger">
-                            {% for message in messages %}
-                                <p>{{ message }}</p>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
+                       
 
-                        <!-- Success Popup -->
-                        {% if success %}
-                        <div id="popup" class="alert alert-success" style="position: fixed; top: 20px; right: 20px; z-index: 1000;">
-                            Registration successful!
-                        </div>
-                        <script>
-                            setTimeout(() => {
-                                document.getElementById('popup').style.display = 'none';
-                                window.location.href = '/company_login'; // Adjust the URL to your login page
-                            }, 2000);
-                        </script>
-                        {% endif %}
-
-						<form action="" method="post" enctype="multipart/form-data">  <!-- Add enctype -->
+						<form action="" method="post" enctype="multipart/form-data" id="companySignupForm">  
                             {% csrf_token %}
                             <div class="form-group mb-3">
-                                <input type="text" name="username" class="form-control" placeholder="Enter Company Name">
+                                <input type="text" name="username" class="form-control" placeholder="Enter Company Name" id="fullname">
+                                <small class="text-danger" id="fullnameError"></small>
                             </div>
                             
                             <div class="form-group mb-3">
-                                <input type="email" name="email" class="form-control" placeholder="Enter Email">
+                                <input type="email" name="email" class="form-control" placeholder="Enter Email" id="email">
+                                <small class="text-danger" id="emailError"></small>
                             </div>
+                        
                             <div class="form-group mb-3">
-                                <input type="text" name="phone_no" class="form-control" placeholder="Enter Phone Number">
+                                <input type="text" name="phone_no" class="form-control" placeholder="Enter Phone Number" id="phone_no">
+                                <small class="text-danger" id="phoneError"></small>
                             </div>
+                        
                             <div class="form-group mb-3">
                                 <input type="text" name="address" class="form-control" placeholder="Enter Address">
                             </div>
+                        
                             <div class="form-group mb-3">
-                                <input type="file" name="profile_image" class="form-control" placeholder="Upload Logo">  <!-- New Image Upload -->
+                                <input type="file" name="profile_image" class="form-control">
                             </div>
-                            <div class="form-group mb-4">
-                                <input type="password" name="password" class="form-control" placeholder="Password">
+                        
+                            <div class="form-group mb-3">
+                                <input type="password" name="password" class="form-control" placeholder="Password" id="password">
+                                <small class="text-danger" id="passwordError"></small>
                             </div>
-                            <div class="form-group mb-4">
-                                <input type="password" name="c_password" class="form-control" placeholder="Confirm Password">
+                        
+                            <div class="form-group mb-3">
+                                <input type="password" name="c_password" class="form-control" placeholder="Confirm Password" id="c_password">
+                                <small class="text-danger" id="cpasswordError"></small>
                             </div>
-                            <button type="submit" class="btn btn-block btn-primary mb-4">Register</button>
+                        
+                            <button type="submit" class="btn btn-block btn-primary mb-4" id="submitButton" disabled>Register</button>
                         </form>
+                        
 						<hr>
 						<p class="mb-2 text-muted">Forgot password? <a href="auth-reset-password.html" class="f-w-400">Reset</a></p>
-						<p class="mb-2 text-muted">Already have an account? <a href="/login" class="f-w-400">Sign in</a></p>
+						<p class="mb-2 text-muted">Already have an account? <a href="/company_login" class="f-w-400">Sign in</a></p>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("companySignupForm");
+        const fullname = document.getElementById("fullname");
+        const phone = document.getElementById("phone_no");
+        const email = document.getElementById("email");
+        const password = document.getElementById("password");
+        const c_password = document.getElementById("c_password");
+        const submitButton = document.getElementById("submitButton");
+    
+        function validateFullname() {
+            const value = fullname.value.trim();
+            document.getElementById("fullnameError").textContent = 
+                value === "" ? "Company Name is required!" : "";
+    
+            if (value !== "") {
+                fetch(`/check-username/?username=${value}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.exists) {
+                            document.getElementById("fullnameError").textContent = "Company Name already exists!";
+                        }
+                        toggleSubmitButton();
+                    });
+            }
+        }
+    
+        function validatePhone() {
+            const value = phone.value.trim();
+            document.getElementById("phoneError").textContent = 
+                value === "" ? "Phone number is required!" : 
+                !/^\d{10}$/.test(value) ? "Phone number must be 10 digits!" : "";
+        }
+    
+        function validateEmail() {
+            const value = email.value.trim();
+            document.getElementById("emailError").textContent = 
+                value === "" ? "Email is required!" : 
+                !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? "Invalid email format!" : "";
+    
+            if (value !== "") {
+                fetch(`/check-email/?email=${value}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.exists) {
+                            document.getElementById("emailError").textContent = "Email already exists!";
+                        }
+                        toggleSubmitButton();
+                    });
+            }
+        }
+    
+        function validatePassword() {
+            const value = password.value.trim();
+            document.getElementById("passwordError").textContent = 
+                value === "" ? "Password is required!" : 
+                value.length < 6 ? "Password must be at least 6 characters long!" : "";
+        }
+    
+        function validateConfirmPassword() {
+            document.getElementById("cpasswordError").textContent = 
+                c_password.value !== password.value.trim() ? "Passwords do not match!" : "";
+        }
+    
+        function toggleSubmitButton() {
+            submitButton.disabled = 
+                fullname.value.trim() === "" ||
+                phone.value.trim().length !== 10 ||
+                !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim()) ||
+                password.value.trim().length < 6 ||
+                c_password.value.trim() !== password.value.trim();
+        }
+    
+        fullname.addEventListener("input", () => { validateFullname(); toggleSubmitButton(); });
+        phone.addEventListener("input", () => { validatePhone(); toggleSubmitButton(); });
+        email.addEventListener("input", () => { validateEmail(); toggleSubmitButton(); });
+        password.addEventListener("input", () => { validatePassword(); toggleSubmitButton(); });
+        c_password.addEventListener("input", () => { validateConfirmPassword(); toggleSubmitButton(); });
+    
+        form.addEventListener("submit", function (e) {
+            e.preventDefault(); // Prevent default form submission
+    
+            const formData = new FormData(form);
+    
+            // Show processing message
+            Swal.fire({
+                title: 'Processing...',
+                text: 'Please wait while we register your account',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+    
+            // Send form data using AJAX
+            fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Registration Successful!',
+                        text: data.message,
+                        showConfirmButton: false,
+                        timer: 2000
+                    }).then(() => {
+                        window.location.href = '/company_login'; // Redirect to login page
+                    });
+                    form.reset();
+                    toggleSubmitButton();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!',
+                        text: data.message
+                    });
+                }
+            });
+        });
+    });
+    </script>
+    
+    
+    
+    
 <!-- [ auth-signin ] end -->
 
 <!-- Required Js -->

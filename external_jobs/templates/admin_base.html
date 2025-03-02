@@ -24,8 +24,14 @@
     <!-- vendor css -->
     <link rel="stylesheet" href="/static/assets/css/style.css">
     
-   
-		
+    
+
+		<!-- Bootstrap CSS (if not already included) -->
+     
+
+        <!-- Bootstrap Bundle with Popper -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        
 </head>
 
 <body>
@@ -43,7 +49,7 @@
 				
 				<div class="">
 					<div class="main-menu-header">
-						<img class="img-radius" src="/static/assets/images/user/avatar-2.jpg" alt="User-Profile-Image">
+						<img class="img-radius" src="/static/assets/images/user/user.png" alt="User-Profile-Image">
 						<div class="user-details">
 							
 							<div id="more-details">{{username}}<i class="fa fa-chevron-down m-l-5"></i></div>
@@ -52,30 +58,43 @@
 					<div class="collapse" id="nav-user-link">
 						<ul class="list-unstyled">
 							
-							<li class="list-group-item"><a href="auth-normal-sign-in.html"><i class="feather icon-log-out m-r-5"></i>Logout</a></li>
+							<li class="list-group-item"><a href="/admin_logout"><i class="feather icon-log-out m-r-5"></i>Logout</a></li>
 						</ul>
 					</div>
 				</div>
 				
-				<ul class="nav pcoded-inner-navbar ">
-					<li class="nav-item pcoded-menu-caption">
-						
-					</li>
-					<li class="nav-item">
-					    <a href="/admin_db" class="nav-link "><span class="pcoded-micon"><i class="feather icon-home"></i></span><span class="pcoded-mtext">Dashboard</span></a>
-					</li>
-                   
-					<li class="nav-item">
-					    <a href="/add_job" class="nav-link "><span class="pcoded-micon"><i class="feather icon-home"></i></span><span class="pcoded-mtext">Add Job</span></a>
-					</li>
+                <ul class="nav pcoded-inner-navbar ">
+                    <li class="nav-item pcoded-menu-caption"></li>
+                
                     <li class="nav-item">
-					    <a href="/job_details" class="nav-link "><span class="pcoded-micon"><i class="feather icon-home"></i></span><span class="pcoded-mtext">Job Details</span></a>
-					</li>
-					<li class="nav-item">
-					    <a href="/company_list" class="nav-link "><span class="pcoded-micon"><i class="feather icon-home"></i></span><span class="pcoded-mtext">Companies</span></a>
-					</li>
-				
-				</ul>
+                        <a href="/admin_db" class="nav-link ">
+                            <span class="pcoded-micon"><i class="feather icon-grid"></i></span>
+                            <span class="pcoded-mtext">Dashboard</span>
+                        </a>
+                    </li>
+                
+                    <li class="nav-item">
+                        <a href="/add_job" class="nav-link ">
+                            <span class="pcoded-micon"><i class="feather icon-plus-circle"></i></span>
+                            <span class="pcoded-mtext">Add Job</span>
+                        </a>
+                    </li>
+                
+                    <li class="nav-item">
+                        <a href="/job_details" class="nav-link ">
+                            <span class="pcoded-micon"><i class="feather icon-file-text"></i></span>
+                            <span class="pcoded-mtext">Job Details</span>
+                        </a>
+                    </li>
+                
+                    <li class="nav-item">
+                        <a href="/company_list" class="nav-link ">
+                            <span class="pcoded-micon"><i class="feather icon-briefcase"></i></span>
+                            <span class="pcoded-mtext">Companies</span>
+                        </a>
+                    </li>
+                </ul>
+                
 			</div>
 		</div>
 	</nav>
@@ -102,18 +121,9 @@
             <ul class="navbar-nav ml-auto">
                 <li>
                     <div class="dropdown">
-                        <a class="dropdown-toggle" href="#" data-toggle="dropdown">
-                            <i class="icon feather icon-bell"></i>
-                            <span class="badge badge-pill badge-danger">5</span>
-                        </a>
+                       
                         <div class="dropdown-menu dropdown-menu-right notification">
-                            <div class="noti-head">
-                                <h6 class="d-inline-block m-b-0">Notifications</h6>
-                                <div class="float-right">
-                                    <a href="#!" class="m-r-10">mark as read</a>
-                                    <a href="#!">clear all</a>
-                                </div>
-                            </div>
+                            
                             <ul class="noti-body">
                                 <li class="n-title">
                                     <p class="m-b-0">NEW</p>
@@ -171,12 +181,12 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-right profile-notification">
                             <div class="pro-head">
-                                <img src="/static/assets/images/user/avatar-1.jpg" class="img-radius" alt="User-Profile-Image">
+                                <img src="/static/assets/images/user/user.png" class="img-radius" alt="User-Profile-Image">
                                 <span>{{username}}</span>
                               
                             </div>
                             <ul class="pro-body">
-                                <li><a href="user-profile.html" class="dropdown-item"><i class="feather icon-user"></i> Profile</a></li>
+                                
                                 <li><a href="/contact_us_details" class="dropdown-item"><i class="feather icon-mail"></i> My Messages</a></li>
                                 <li>
                                     <a href="/admin_logout" class="dud-logout" title="Logout">
@@ -210,9 +220,11 @@
 		 <!-- Apex Chart -->
 		 <script src="/static/assets/js/plugins/apexcharts.min.js"></script>
 		 
-		 
+		 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 		 <!-- custom-chart js -->
 		 <script src="/static/assets/js/pages/dashboard-main.js"></script>
+         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </body>
 
 </html>

@@ -2,6 +2,13 @@
 
 {% block content %}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Bootstrap CSS (if not already included)
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+ -->
+
+<!-- Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <div class="pcoded-content">
     <!-- [ breadcrumb ] start -->
     <div class="page-header">
@@ -12,8 +19,9 @@
                         <h5 class="m-b-10">Job Details</h5>
                     </div>
                     <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html"><i class="feather icon-home"></i></a></li>
-                        <li class="breadcrumb-item"><a href="#!">Job Management</a></li>
+                        <li class="breadcrumb-item"><a href="/job_details"><i class="feather icon-home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="/job_details">Job Information</a></li>
+
                     </ul>
                 </div>
             </div>
@@ -54,29 +62,44 @@
                                     <td>
                                         <!-- View Button -->
                                         <!-- View Button -->
-                                        <a href="javascript:void(0);" 
-                                        class="btn btn-link text-primary" 
-                                        style="font-size: 1.3rem;" 
-                                        onclick="openJobPopup('{{ item.id }}')">
-                                         <i class="feather icon-eye"></i>
-                                        </a>
-
+                                        <a href="#" class="btn btn-link text-primary" style="font-size: 1.3rem;" 
+                                        data-bs-toggle="modal" data-bs-target="#jobModal{{ item.id }}">
+                                        <i class="feather icon-eye"></i>
+                                     </a>
+                                     
                                         <!-- Edit Icon (Larger) -->
                                         <a href="/edit_job_details/{{item.id}}/" class="btn btn-link text-warning" style="font-size: 1.3rem;">
                                             <i class="feather icon-edit"></i>
                                         </a>
                                         <!-- Delete Icon -->
-                                       <a href="javascript:void(0);" 
-                                       class="btn btn-link text-danger" 
-                                       style="font-size: 1.3rem;" 
-                                       onclick="confirmDelete('{{ item.id }}')">
-                                       <i class="feather icon-trash"></i>
-                                    </a>
+                                        <button class="btn btn-link text-danger" style="font-size: 1.3rem;" data-bs-toggle="modal" data-bs-target="#deleteModal{{ item.id }}">
+                                            <i class="feather icon-trash"></i>
+                                        </button>
                                     </td>
                                   
                                     
 
                                 </tr>
+                                <div class="modal fade" id="deleteModal{{ item.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ item.id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteModalLabel{{ item.id }}">Confirm Deletion</h5>
+                                              
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to delete the job "<strong>{{ item.job_title }}</strong>"?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <form action="{% url 'delete_job_admin' item.id %}" method="POST" style="display: inline;">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 {% endfor %}
                             </tbody>
                         </table>
@@ -89,15 +112,23 @@
 </div>
 
 <!-- Job Details Modal -->
-<div class="modal fade" id="jobDetailsModal" tabindex="-1" aria-labelledby="jobDetailsModalLabel" aria-hidden="true">
+{% for item in data %}
+<div class="modal fade" id="jobModal{{ item.id }}" tabindex="-1" aria-labelledby="jobModalLabel{{ item.id }}" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="jobDetailsModalLabel">Job Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="jobModalLabel{{ item.id }}"><strong>{{ item.job_title }}</strong></h5>
+               
             </div>
-            <div class="modal-body" id="jobDetailsContent">
-                <!-- Job details will be loaded here dynamically -->
+            <div class="modal-body">
+                <p><strong>Company Name:</strong> {{ item.company_name }}</p>
+                <p><strong>Salary:</strong> {{ item.salary }}</p>
+                <p><strong>Experience:</strong> {{ item.experience }} years</p>
+                <p><strong>Location:</strong> {{ item.location }}</p>
+                <p><strong>Job Type:</strong> {{ item.job_type }}</p>
+                <p><strong>Education:</strong> {{ item.education }}</p>
+                <p><strong>Required Skills:</strong> {{ item.required_skills }}</p>
+                <p><strong>Roles & Responsibilities:</strong> {{ item.roles_and_responsibilities }}</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -105,4 +136,7 @@
         </div>
     </div>
 </div>
+{% endfor %}
+
+
 {% endblock %}

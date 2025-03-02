@@ -138,7 +138,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Collect form data
         const formData = new FormData(form);
-
+        Swal.fire({
+        title: 'Processing...',
+        text: 'Please wait while we register your account',
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
         // Send form data using AJAX
         fetch(form.action, {
             method: 'POST',
