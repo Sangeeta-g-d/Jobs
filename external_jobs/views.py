@@ -12,7 +12,6 @@ from django.db.models import Count
 from datetime import timedelta, date
 from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
-
 # forgot password
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import get_user_model
@@ -22,6 +21,7 @@ from django.core.mail import send_mail
 from django.urls import reverse
 from django.http import HttpResponse
 from django.conf import settings
+
 
 User = get_user_model()
 # Create your views here.
@@ -338,7 +338,8 @@ def user_registration(request):
             return JsonResponse({'status': 'error', 'message': 'Email already exists!'})
 
         # Save User
-        user = NewUser.objects.create_user(username=email, phone_no=phone, password=encrypted_password, fullname=fullname, email=email)
+        user = NewUser.objects.create_user(username=email, phone_no=phone,  fullname=fullname, email=email)
+        user.set_password(password)  # Hash password properly
         user.save()
         return JsonResponse({'status': 'success', 'message': 'Registration Successful!'})
 
@@ -573,14 +574,14 @@ def company_register(request):
         # Create and save user
         user = NewUser.objects.create_user(
             fullname=full_name,
-            username=email,
+            username=email,  # Using email as username
             phone_no=phone_no,
             address=address,
-            password=encrypted_password,
             profile_image=image,
             user_type='Company',
             email=email
         )
+        user.set_password(password)  # Hash password properly
         user.save()
 
         return JsonResponse({'status': 'success', 'message': 'Company Registration Successful!'})
@@ -593,7 +594,7 @@ def company_login(request):
         username = request.POST.get('email')
         password = request.POST.get('password')
         print(username,password)
-        user = authenticate(username=username, password=password)
+        user = authenticate(request, username=username, password=password)
         print(user)
         if user is not None:
             if user.is_staff:  # Check if the admin has approved the user
