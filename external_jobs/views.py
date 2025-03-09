@@ -25,6 +25,8 @@ from django.conf import settings
 
 User = get_user_model()
 # Create your views here.
+
+# forgot password
 def forgot_password(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -83,18 +85,16 @@ def reset_password(request, uidb64, token):
 
 def admin_logout(request):
     logout(request)
-    # Redirect to a specific page after logout (optional)
     return redirect('/v3_login')
 
 def company_logout(request):
     logout(request)
-    # Redirect to a specific page after logout (optional)
     return redirect('/company_login')
 
 def user_logout(request):
     logout(request)
-    # Redirect to a specific page after logout (optional)
     return redirect('/')
+
 
 def v3_login(request):
     if request.method == 'POST':
@@ -126,8 +126,6 @@ def admin_db(request):
         'companies': companies,
         'username':username
     })
-
-
 
 def register(request):
     return render(request,'register.html')
@@ -592,21 +590,25 @@ def company_login(request):
     if request.method == 'POST':
         username = request.POST.get('email')
         password = request.POST.get('password')
-        print(username,password)
-        user = authenticate(username=username, password=password)
-        print(user)
+        
+        try:
+            user = NewUser.objects.get(username=username)  # Ensure email is in username
+            user = authenticate(request, username=user.username, password=password)
+        except User.DoesNotExist:
+            user = None
+        
         if user is not None:
-            if user.is_staff:  # Check if the admin has approved the user
+            print("user")
+            if user.is_staff:
                 login(request, user)
                 return redirect('/company_db')
             else:
-                print("hhhhhhhhhhhhhhh")
-                print(user.is_staff)
                 error_message = "Admin has not approved your account yet."
         else:
-            print("kkkkkkkkkkk")
             error_message = "Invalid username or password."
+        
         return render(request, 'company_login.html', {'error_message': error_message})
+    
     return render(request, 'company_login.html')
 
 @login_required
@@ -694,7 +696,6 @@ def company_add_job(request):
                 work_mode=work_mode,
                 required_skills=required_skills,
                 roles_and_responsibilities=r_and_r,
-                
                 category=category,
                 company_name=company_name,
                 company_logo=company_logo,
@@ -732,16 +733,17 @@ def apply_job(request):
 
         try:
             job = Jobs.objects.get(id=job_id)
-            print("FFFFFFF",job, job.added_by_id)
+            print("FFFFFFF", job, job.added_by_id)
         except Jobs.DoesNotExist:
             return JsonResponse({"message": "Job not found!"}, status=404)
 
-        # Assuming Jobs model has a ForeignKey to Company model
-        AppliedJob.objects.create(user=user, job_id=job_id, resume=resume, company=job.added_by_id)
+        # Use the job instance instead of job_id
+        AppliedJob.objects.create(user=user, job_id=job, resume=resume, company=job.added_by_id)
 
         return JsonResponse({"message": "Your application has been submitted successfully!"})
 
     return JsonResponse({"message": "Invalid request!"}, status=400)
+
 
 @login_required
 def company_job_details(request):
