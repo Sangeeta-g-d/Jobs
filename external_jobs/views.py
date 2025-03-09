@@ -100,7 +100,9 @@ def v3_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
+        print(username,password)
         user = authenticate(username = username, password = password)
+        print(user)
         if user is not None and user.is_superuser == True:
             login(request,user)
             return redirect('/admin_db')
