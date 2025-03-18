@@ -2573,6 +2573,29 @@ h3 {
 .bradcam_area p a:hover {
   color: #fff;
 }
+.thumb {
+  width: 100px;  /* Adjust as needed */
+  height: 100px; /* Adjust as needed */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #f8f8f8; /* Optional: Background color for empty space */
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Ensures the full image is visible */
+}
+
+/* applie_jobs table */
+.table img {
+  display: block;
+  margin: auto;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
 
 #goToTopBtn {
   display: none; /* Hidden by default */

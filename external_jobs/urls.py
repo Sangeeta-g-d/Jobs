@@ -47,7 +47,7 @@ urlpatterns = [
     path('contact_us_details',views.contact_us_details,name='contact_us_details'),
 
 
-    path('user_profile',views.user_profile,name="user_profile"),
+    path('user_profile/',views.user_profile,name="user_profile"),
 
     path('check-username/', views.check_username, name='check_username'),
 

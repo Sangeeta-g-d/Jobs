@@ -12,7 +12,6 @@ from django.db.models import Count
 from datetime import timedelta, date
 from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
-
 # forgot password
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import get_user_model
@@ -22,6 +21,7 @@ from django.core.mail import send_mail
 from django.urls import reverse
 from django.http import HttpResponse
 from django.conf import settings
+
 
 User = get_user_model()
 # Create your views here.
@@ -100,7 +100,9 @@ def v3_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
+        print(username,password)
         user = authenticate(username = username, password = password)
+        print(user)
         if user is not None and user.is_superuser == True:
             login(request,user)
             return redirect('/admin_db')
@@ -336,7 +338,8 @@ def user_registration(request):
             return JsonResponse({'status': 'error', 'message': 'Email already exists!'})
 
         # Save User
-        user = NewUser.objects.create_user(username=email, phone_no=phone, password=encrypted_password, fullname=fullname, email=email)
+        user = NewUser.objects.create_user(username=email, phone_no=phone,  fullname=fullname, email=email)
+        user.set_password(password)  # Hash password properly
         user.save()
         return JsonResponse({'status': 'success', 'message': 'Registration Successful!'})
 
@@ -571,14 +574,14 @@ def company_register(request):
         # Create and save user
         user = NewUser.objects.create_user(
             fullname=full_name,
-            username=email,
+            username=email,  # Using email as username
             phone_no=phone_no,
             address=address,
-            password=encrypted_password,
             profile_image=image,
             user_type='Company',
             email=email
         )
+        user.set_password(password)  # Hash password properly
         user.save()
 
         return JsonResponse({'status': 'success', 'message': 'Company Registration Successful!'})
@@ -590,13 +593,9 @@ def company_login(request):
     if request.method == 'POST':
         username = request.POST.get('email')
         password = request.POST.get('password')
-        
-        try:
-            user = NewUser.objects.get(username=username)  # Ensure email is in username
-            user = authenticate(request, username=user.username, password=password)
-        except User.DoesNotExist:
-            user = None
-        
+        print(username,password)
+        user = authenticate(request, username=username, password=password)
+        print(user)
         if user is not None:
             print("user")
             if user.is_staff:
@@ -748,15 +747,23 @@ def apply_job(request):
 @login_required
 def company_job_details(request):
     company_id = request.user.id
-    username= request.user.fullname
-    logo=request.user.profile_image
-    data = Jobs.objects.filter(added_by_id=company_id, status="Active")  # Fetch only active jobs
+    username = request.user.fullname
+    logo = request.user.profile_image
+    search_query = request.GET.get('search', '').strip()  # Get search query
+
+    data = Jobs.objects.filter(added_by_id=company_id, status="Active")  
+
+    if search_query:
+        data = data.filter(job_title__icontains=search_query)  # Filter by job title
+
     context = {
         'data': data,
-        'username':username,
-        'logo':logo
+        'username': username,
+        'logo': logo,
+        'search_query': search_query
     }
     return render(request, 'company_job_details.html', context)
+
 
 
 def toggle_job_status(request, job_id):
@@ -802,10 +809,18 @@ def company_edit_job_details(request, id):
 @login_required
 def company_applied_jobs(request):
     company_id = request.user.id
-    username= request.user.fullname
-    logo=request.user.profile_image
-    jobs = Jobs.objects.filter(added_by=company_id)  # Filter jobs by the logged-in company
-    return render(request, 'company_applied_jobs.html', {'jobs': jobs,'username':username,'logo':logo})
+    username = request.user.fullname
+    logo = request.user.profile_image
+    search_query = request.GET.get('search', '')  # Get search query from the request
+
+    # Filter jobs by the logged-in company and search for job title if query is provided
+    if search_query:
+        jobs = Jobs.objects.filter(added_by=company_id, job_title__icontains=search_query)
+    else:
+        jobs = Jobs.objects.filter(added_by=company_id)
+
+    return render(request, 'company_applied_jobs.html', {'jobs': jobs, 'username': username, 'logo': logo, 'search_query': search_query})
+
 
 @login_required
 def c_applied_candidates(request, job_id):
@@ -961,6 +976,9 @@ def user_profile(request):
         request.user.fullname = request.POST.get('fullname', '')
         request.user.phone_no = request.POST.get('phone_no', '')
         request.user.username = request.POST.get('email', '')
+
+        if request.FILES.get('profile'):
+            request.user.profile_image = request.FILES['profile']
         request.user.save()
 
         # Update user details
@@ -975,10 +993,10 @@ def user_profile(request):
 
         user_details.save()
 
-        # Redirect with a query parameter
-        return redirect('/user_profile/?saved=true')
+        # Set saved flag to True
+        saved = True
 
-    context = {'user_details': user_details}
+    context = {'user_details': user_details, 'saved': saved}
     return render(request, 'user_profile.html', context)
 
 @login_required
