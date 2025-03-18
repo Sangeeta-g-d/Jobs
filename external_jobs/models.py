@@ -56,4 +56,4 @@ class Contact_us(models.Model):
     name = models.CharField(max_length=500, blank=True)
     email= models.CharField(max_length=250, blank=True)
     phone_no = models.CharField(max_length=100, blank=True)
-    message = models.CharField(max_length=5000, blank=True)  # New field for address
+    message = models.CharField(max_length=5000, blank=True)  
