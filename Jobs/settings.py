@@ -129,7 +129,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'jobtriad@gmail.com'  # Replace with your email
-EMAIL_HOST_PASSWORD = 'aqqf poqh ptbq gfnp'  # Use App Password if 2-step verification is enabled
+EMAIL_HOST_PASSWORD = 'vbuv vmuc kqde hwlm'  # Use App Password if 2-step verification is enabled
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
