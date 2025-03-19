@@ -80,9 +80,9 @@ AUTH_USER_MODEL = 'external_jobs.NewUser'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'jobtriad',  # Replace with your database name
+        'NAME': 'JobTriad',  # Replace with your database name
         'USER': 'root',  # Replace with your MySQL username
-        'PASSWORD': 'NewPassword123!',  # Replace with your MySQL password
+        'PASSWORD': 'VSV_database_2025',  # Replace with your MySQL password
         'HOST': '127.0.0.1',  # Or 'localhost' for a local database
         'PORT': '3306',  # Default MySQL port
     }
