@@ -206,7 +206,10 @@
                                             <div class="single_jobs white-bg d-flex justify-content-between">
                                                 <div class="jobs_left d-flex align-items-center">
                                                     <div class="thumb">
-                                                        <img src="{{ job.company_logo.url }}" alt="">
+
+                                                        {% if job.company_logo %}
+                                                        <img src="{{ job.company_logo.url }}" alt="company logo">
+                                                        {% endif %}
                                                     </div>
                                                     <div class="jobs_conetent">
                                                         <a href="#"><h4>{{ job.job_title }}</h4></a>
@@ -349,8 +352,6 @@
 <script src="/static/user_assets/js/jquery.magnific-popup.min.js"></script>
 <script src="/static/user_assets/js/plugins.js"></script>
 <script src="/static/user_assets/js/gijgo.min.js"></script>
-
-
 
 <!--contact js-->
 <script src="/static/user_assets/js/contact.js"></script>
