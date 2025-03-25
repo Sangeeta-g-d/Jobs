@@ -21,6 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-x5y8@5#pd*qt=&ig90egvlu2a5^33+c!mi)^4k=s)_h1s-no*'  # Keep this secure!
 
 # SECURITY WARNING: don't run with debug turned on in production!
+
 DEBUG = True  # Change to False in production
 
 ALLOWED_HOSTS = ['82.25.108.17', 'jobtriad.in', 'www.jobtriad.in', '127.0.0.1']
@@ -75,7 +76,7 @@ DATABASES = {
         'NAME': 'JobTriad',  # Replace with your database name
         'USER': 'root',  # Replace with your MySQL username
         'PASSWORD': 'VSV_database_2025',  # Replace with your MySQL password
-        'HOST': '82.25.108.17',  # Or 'localhost' for local DB
+        'HOST': '82.25.108.17',  # Or 'localhost' for a local database
         'PORT': '3306',  # Default MySQL port
     }
 }
