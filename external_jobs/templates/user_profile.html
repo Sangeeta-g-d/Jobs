@@ -18,8 +18,13 @@
                             <div class="single_jobs white-bg d-flex justify-content-between">
                                 <div class="jobs_left d-flex align-items-center">
                                     <div class="thumb">
-                                        <img src="/static/assets/images/user/user.png" alt="">
+                                        {% if user.profile_image %}
+                                            <img src="/{{ user.profile_image }}" alt="Profile Image">
+                                        {% else %}
+                                            <img src="/static/img/svg_icon/1.svg" alt="Default Image">
+                                        {% endif %}
                                     </div>
+                                    
                                     <div class="jobs_conetent">
                                         <a href="#"><h4>{{request.user.fullname}}</h4></a>
                                         <div class="links_locat d-flex align-items-center">
@@ -42,7 +47,7 @@
 
                         <div class="descript_wrap white-bg p-5 rounded shadow-lg">
                             <h3 class="mb-4 text-center text-primary">Edit Your Details</h3>
-                            <form method="POST" action="">
+                            <form method="POST" action="" enctype="multipart/form-data">
                                 {% csrf_token %}
                                 <div class="row g-4">
                                     <div class="col-md-6">
@@ -92,6 +97,11 @@
                                         </select>
                                     </div>
                                     <div class="col-12">
+                                        <label for="profile" class="form-label">User Profile</label>
+                                        <input type="file" class="form-control form-control-lg" id="profile" name="profile">
+                                      
+                                    </div>
+                                    <div class="col-12">
                                         <label for="skills" class="form-label">Skills</label>
                                         <textarea class="form-control form-control-lg" id="skills" name="skills" rows="4" placeholder="List your skills">{{ user_details.skills }}</textarea>
                                     </div>
@@ -108,6 +118,12 @@
         </div>
     </div>
 </div>
+{% if saved %}
+    <div class="alert alert-success" role="alert">
+        Your profile has been updated successfully!
+    </div>
+{% endif %}
+
 
 
 {% endblock %}

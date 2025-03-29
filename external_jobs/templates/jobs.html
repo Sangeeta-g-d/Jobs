@@ -31,42 +31,10 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <style>
-      
-    .thumb {
-    width: 100px;  /* Adjust as needed */
-    height: 100px; /* Adjust as needed */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    background-color: #f8f8f8; /* Optional: Background color for empty space */
-}
-
-.thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain; /* Ensures the full image is visible */
-}
-
-/* applie_jobs table */
-.table img {
-    display: block;
-    margin: auto;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-
-    </style>
 </head>
 
 <body>
-    <!--[if lte IE 9]>
-            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
-        <![endif]-->
 
-    <!-- header-start -->
     <header>
         <div class="header-area " style="background: rgba(0, 29, 56, 0.8);">
             <div id="sticky-header" class="main-header-area">
@@ -209,14 +177,6 @@
                                 </div>
                             </form>
                         </div>
-                        <div class="range_wrap">
-                            <label for="amount">Price range:</label>
-                            <div id="slider-range"></div>
-                            <p>
-                                <input type="text" id="amount" readonly style="border:0; color:#7A838B; font-size: 14px; font-weight:400;">
-                            </p>
-                        </div>
-                      
                     </div>
                 </div>
                 <div class="col-lg-9">
@@ -246,7 +206,10 @@
                                             <div class="single_jobs white-bg d-flex justify-content-between">
                                                 <div class="jobs_left d-flex align-items-center">
                                                     <div class="thumb">
-                                                        <img src="{{ job.company_logo.url }}" alt="">
+
+                                                        {% if job.company_logo %}
+                                                        <img src="{{ job.company_logo.url }}" alt="company logo">
+                                                        {% endif %}
                                                     </div>
                                                     <div class="jobs_conetent">
                                                         <a href="#"><h4>{{ job.job_title }}</h4></a>
@@ -266,7 +229,7 @@
                                                         <a href="/login"  class="boxed-btn3">Apply Now</a>
                                                     </div>
                                                     <div class="date">
-                                                        <p class="view-more-btn" data-job-id="{{ job.id }}">View More</p>
+                                                        <p class="view-more-btn" style="cursor: pointer;" data-job-id="{{ job.id }}">View More</p>
                                                         <p class="text-muted">
                                                             Posted {% if days_old == 0 %} Today
                                                             {% elif days_old == 1 %} 1 day ago
@@ -306,166 +269,40 @@
         </div>
     </div>
     <!-- job_listing_area_end  -->
-
-
-    <script>
-        $( function() {
-            $( "#slider-range" ).slider({
-                range: true,
-                min: 0,
-                max: 24600,
-                values: [ 750, 24600 ],
-                slide: function( event, ui ) {
-                    $( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] +"/ Year" );
-                }
-            });
-            $( "#amount" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ) +
-                " - $" + $( "#slider-range" ).slider( "values", 1 ) + "/ Year");
-        } );
-        </script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const viewMoreButtons = document.querySelectorAll(".view-more-btn");
-
-        viewMoreButtons.forEach(button => {
-            button.addEventListener("click", function() {
-                let jobId = this.getAttribute("data-job-id");
-                let detailsDiv = document.getElementById("job-details-" + jobId);
-                let jobCard = this.closest(".single_jobs"); // Get the job card to scroll to
-
-                // Close all other job details sections
-                document.querySelectorAll(".job_details").forEach(div => {
-                    if (div !== detailsDiv) {
-                        div.style.display = "none"; // Hide other job details
-                    }
-                });
-
-                // Reset all "View More" button texts
-                document.querySelectorAll(".view-more-btn").forEach(btn => {
-                    if (btn !== this) {
-                        btn.innerText = "View More";
-                    }
-                });
-
-                // Toggle the clicked job details section
-                if (detailsDiv.style.display === "none" || detailsDiv.style.display === "") {
-                    detailsDiv.style.display = "block";  // Show details
-                    this.innerText = "View Less";  // Change button text
-                    
-                    // Smoothly scroll to the job card
-                    jobCard.scrollIntoView({ behavior: "smooth", block: "start" });
-                } else {
-                    detailsDiv.style.display = "none";  // Hide details
-                    this.innerText = "View More";  // Reset button text
-                }
-            });
-        });
-    });
-</script>
-
-
 <!-- Script for search functionality -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $("#search_designation").on("keyup", function() {
-            var designation = $(this).val().trim();
-
-            $.ajax({
-                url: "{% url 'jobs' %}",
-                type: "GET",
-                data: {
-                    designation: designation
-                },
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest"  // Required for detecting AJAX in Django
-                },
-                success: function(response) {
-                    var jobsList = $(".job_lists .row");
-                    jobsList.empty(); // Clear existing jobs
-
-                    if (response.jobs.length > 0) {
-                        response.jobs.forEach(function(job) {
-                            var jobHtml = `
-                                <div class="col-lg-12 col-md-12">
-                                    <div class="single_jobs white-bg d-flex justify-content-between">
-                                        <div class="jobs_left d-flex align-items-center">
-                                            <div class="thumb">
-                                                <img src="${job.company_logo}" alt="">
-                                            </div>
-                                            <div class="jobs_conetent">
-                                                <a href="#"><h4>${job.job_title}</h4></a>
-                                                <div class="links_locat d-flex align-items-center">
-                                                    <div class="location">
-                                                        <p><i class="fa fa-map-marker"></i> ${job.location}</p>
-                                                    </div>
-                                                    <div class="location">
-                                                        <p><i class="fa fa-clock-o"></i> ${job.job_type}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="jobs_right">
-                                            <div class="apply_now">
-                                                <a class="heart_mark" href="#"><i class="fa fa-heart"></i></a>
-                                                <a href="/login" target="_blank" class="boxed-btn3">Apply Now</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                            jobsList.append(jobHtml);
-                        });
-                    } else {
-                        jobsList.html("<p>No jobs found.</p>");
-                    }
-                }
-            });
-        });
-    });
-</script>
-
-
-
 
  <!-- footer start -->
  <footer class="footer">
     <div class="footer_top">
         <div class="container">
             <div class="row">
+                 <!-- Services Section -->
+                 <div class="col-xl-3 col-md-6 col-lg-3">
+                    <div class="footer_widget">
+                        <h3 class="footer_title">Services</h3>
+                        <p>We are dedicated to connecting students with genuine job opportunities to help kickstart their careers. Our platform ensures reliable job listings, making the job search process easier and more efficient. 🚀</p>
+                    </div>
+                </div>
                 <!-- Company Section -->
                 <div class="col-xl-3 col-md-6 col-lg-3">
                     <div class="footer_widget">
                         <h3 class="footer_title">Company</h3>
                         <ul>
                             <li><a href="/about_us">About JobTriad</a></li>
-                            <li><a href="#Categories">Job Categories</a></li>
+                            <!-- <li><a href="#Categories">Job Categories</a></li> -->
                             <li><a href="/jobs">Jobs</a></li>
                             <li><a href="/contact_us">Contact Us</a></li>
                         </ul>
                     </div>
                 </div>
-
-                <!-- Services Section -->
-                <div class="col-xl-3 col-md-6 col-lg-3">
-                    <div class="footer_widget">
-                        <h3 class="footer_title">Services</h3>
-                        <ul>
-                            <li><a href="#">Resume Writing</a></li>
-                            <li><a href="#">Job Alerts</a></li>
-                            <li><a href="#">Career Guidance</a></li>
-                            <li><a href="#">Employer Services</a></li>
-                        </ul>
-                    </div>
-                </div>
-
                 <!-- Get in Touch Section    <p>📞 +91 98765 43210</p>-->
                 <div class="col-xl-3 col-md-6 col-lg-3">
                     <div class="footer_widget">
                         <h3 class="footer_title">Get in Touch</h3>
                         <p>Old SP Dharwad - 580001</p>
                         <p>Karnataka, India</p>
-                       
+                       <p>jobtriad@gmail.com</p>
                     </div>
                 </div>
 
@@ -474,10 +311,10 @@
                     <div class="footer_widget">
                         <h3 class="footer_title">Contact Us</h3>
                         <ul class="social_links">
-                            <li><a href="#"><i class="fa-brands fa-linkedin"></i> Follow us on LinkedIn</a></li>
+                           
                             <li><a href="#"><i class="fa-brands fa-instagram"></i> Follow us on Instagram</a></li>
                             <li><a href="#"><i class="fa-brands fa-facebook"></i> Follow us on Facebook</a></li>
-                            <li><a href="#"><i class="fa-brands fa-youtube"></i> Subscribe to our YouTube</a></li>
+                           
 
                         </ul>
                         
@@ -516,14 +353,13 @@
 <script src="/static/user_assets/js/plugins.js"></script>
 <script src="/static/user_assets/js/gijgo.min.js"></script>
 
-
-
 <!--contact js-->
 <script src="/static/user_assets/js/contact.js"></script>
 <script src="/static/user_assets/js/jquery.ajaxchimp.min.js"></script>
 <script src="/static/user_assets/js/jquery.form.js"></script>
 <script src="/static/user_assets/js/jquery.validate.min.js"></script>
 <script src="/static/user_assets/js/mail-script.js"></script>
+<script src="/static/user_assets/js/custom.js"></script>
 
 
 <script src="/static/user_assets/js/main.js"></script>

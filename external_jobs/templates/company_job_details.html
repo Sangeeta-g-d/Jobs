@@ -4,9 +4,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- CSRF Token for AJAX   
- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
--->
 <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
 
 <div class="pcoded-content">
@@ -34,6 +31,19 @@
                 <div class="card-header">
                     <h5>Job Details</h5>
                 </div>
+                <!-- Search Bar -->
+<div class="row mb-2 ml-2 mt-2">
+    <div class="col-md-6">
+        <form method="GET" action="">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control" placeholder="Search by Job Title" value="{{ search_query }}">
+                <button type="submit" class="btn btn-primary">Search</button>
+                <a href="{% url 'company_job_details' %}" class="btn btn-secondary">Reset</a>
+            </div>
+        </form>
+    </div>
+</div>
+
                 <div class="card-body table-border-style">
                     <div class="table-responsive">
                         <table class="table table-hover">
