@@ -37,19 +37,40 @@ def forgot_password(request):
             uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
             reset_link = request.build_absolute_uri(reverse('reset_password', args=[uidb64, token]))
 
+            # Professional Email Content
+            subject = "Password Reset Request - JobTriad"
+            message = f"""
+            Dear {user.first_name},
+
+            We received a request to reset your password for your JobTriad account. If you did not request this, please ignore this email.
+
+            To reset your password, please click the link below:
+            {reset_link}
+
+            If the above link does not work, copy and paste it into your browser's address bar.
+
+            If you need further assistance, please contact our support team.
+
+            Best regards,  
+            JobTriad Team  
+            jobtriad@gmail.com  
+            """
+
             # Send email
             send_mail(
-                "Password Reset Request",
-                f"Click the link to reset your password: {reset_link}",
+                subject,
+                message,
                 settings.EMAIL_HOST_USER,
                 [email],
                 fail_silently=False,
             )
+
             return render(request, 'password_reset_sent.html')
 
         return render(request, 'forgot_password.html', {'error': 'No user found with this email.'})
 
     return render(request, 'forgot_password.html')
+
 
 
 def password_reset_sent(request):
@@ -76,12 +97,13 @@ def reset_password(request, uidb64, token):
         if default_token_generator.check_token(user, token):
             user.set_password(new_password)
             user.save()
+
+            # Store user type in session
+            request.session['user_type'] = user.user_type if hasattr(user, 'user_type') else None
+
             return redirect('password_reset_success')  # Redirect to success page
-        else:
-            return render(request, 'reset_password.html', {'error': 'Invalid or expired reset link.'})
 
     return render(request, 'reset_password.html', {'uidb64': uidb64, 'token': token})
-
 
 def admin_logout(request):
     logout(request)
@@ -305,9 +327,9 @@ def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('email')
         password = request.POST.get('password')
-        print(username, password)
+        #print(username, password)
         user = authenticate(username=username, password=password)
-        print(user)
+        #print(user)
         if user is not None:
             login(request, user)
             return redirect('/dashboard')  # Redirect to dashboard after login
