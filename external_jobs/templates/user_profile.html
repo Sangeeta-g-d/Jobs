@@ -38,53 +38,68 @@
                                     </div>
                                 </div>
                                 <div class="jobs_right">
-                                    <a href="path/to/your/resume.pdf" download="Your_Resume.pdf" class="resume_link">
-                                        <i class="fa fa-file-pdf-o"></i> Resume
-                                    </a>
+                                    {% if user_details.user_resume %}
+                                        <a href="{{ user_details.user_resume.url }}" download="Your_Resume.pdf" class="resume_link">
+                                            <i class="fa fa-file-pdf-o"></i> Download Resume
+                                        </a>
+                                    {% else %}
+                                        <p class="text-danger">Please upload your resume</p>
+                                    {% endif %}
                                 </div>
+                                
                             </div>
                         </div>
 
                         <div class="descript_wrap white-bg p-5 rounded shadow-lg">
                             <h3 class="mb-4 text-center text-primary">Edit Your Details</h3>
-                            <form method="POST" action="" enctype="multipart/form-data">
+                            <form method="POST" action="" enctype="multipart/form-data" id="userForm">
                                 {% csrf_token %}
                                 <div class="row g-4">
                                     <div class="col-md-6">
                                         <label for="fullname" class="form-label">Full name</label>
-                                        <input type="text" class="form-control form-control-lg" id="fullname" name="fullname" value="{{ request.user.fullname }}" placeholder="Enter your full name" required>
+                                        <input type="text" class="form-control form-control-lg" id="fullname" name="fullname"
+                                            value="{{ request.user.fullname }}" placeholder="Enter your full name" required>
                                         <div class="text-danger" id="fullnameError"></div>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="phone_no" class="form-label">Contact Number</label>
-                                        <input type="tel" class="form-control form-control-lg" id="phone_no" name="phone_no" value="{{ request.user.phone_no }}" placeholder="Enter your contact number" required>
+                                        <input type="tel" class="form-control form-control-lg" id="phone_no" name="phone_no"
+                                            value="{{ request.user.phone_no }}" placeholder="Enter your contact number" pattern="[0-9]{10}"
+                                            title="Enter a valid 10-digit phone number" required>
                                         <div class="text-danger" id="phoneError"></div>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="emailid" class="form-label">Email</label>
-                                        <input type="email" class="form-control form-control-lg" id="emailid" name="email" value="{{ request.user.username }}" placeholder="Enter your email" required>
+                                        <input type="email" class="form-control form-control-lg" id="emailid" name="email"
+                                            value="{{ request.user.username }}" placeholder="Enter your email" required>
                                         <div class="text-danger" id="emailError"></div>
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="resume" class="form-label">Resume</label>
-                                        <input type="file" class="form-control form-control-lg" id="resume" name="resume">
+                                        <label for="resume" class="form-label">Resume (PDF only)</label>
+                                        <input type="file" class="form-control form-control-lg" id="resume" name="resume" accept=".pdf">
                                     </div>
                                     <div class="col-md-6">
                                         <label for="qualification" class="form-label">Qualification</label>
-                                        <input type="text" class="form-control form-control-lg" id="qualification" name="qualification" value="{{ user_details.qualification }}" placeholder="Enter your qualification" pattern="^[A-Za-z\s]+$" title="Qualification should not contain numbers" required>
+                                        <input type="text" class="form-control form-control-lg" id="qualification" name="qualification"
+                                            value="{{ user_details.qualification }}" placeholder="Enter your qualification" pattern="^[A-Za-z\s]+$"
+                                            title="Qualification should not contain numbers" required>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="year_of_passing" class="form-label">Year of Passing</label>
-                                        <input type="text" class="form-control form-control-lg" id="year_of_passing" name="year_of_passing" value="{{ user_details.year_of_passing }}" placeholder="Enter year of passing" required>
+                                        <input type="text" class="form-control form-control-lg" id="year_of_passing" name="year_of_passing"
+                                            value="{{ user_details.year_of_passing }}" placeholder="Enter year of passing" pattern="\d{4}"
+                                            title="Enter a valid 4-digit year (e.g., 2023)" required>
                                         <div class="text-danger" id="yearError"></div>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="year_of_exp" class="form-label">Experience (Years)</label>
-                                        <input type="text" class="form-control form-control-lg" id="year_of_exp" name="year_of_exp" value="{{ user_details.year_of_exp }}" placeholder="Enter experience in years" required>
+                                        <input type="text" class="form-control form-control-lg" id="year_of_exp" name="year_of_exp"
+                                            value="{{ user_details.year_of_exp }}" placeholder="Enter experience in years" pattern="\d{1,2}"
+                                            title="Enter a valid number of years (e.g., 5)" required>
                                         <div class="text-danger" id="expError"></div>
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="area_of_interest" class="form-label">Area of Interest</label> <br>
+                                        <label for="area_of_interest" class="form-label">Area of Interest</label> <br/>
                                         <select class="form-control form-control-lg" id="area_of_interest" name="area_of_interest" required>
                                             <option value="">Select</option>
                                             <option value="Design-Creative" {% if user_details.area_of_interest == "Design-Creative" %}selected{% endif %}>Design-Creative</option>
@@ -99,18 +114,17 @@
                                     <div class="col-12">
                                         <label for="profile" class="form-label">User Profile</label>
                                         <input type="file" class="form-control form-control-lg" id="profile" name="profile">
-                                      
                                     </div>
                                     <div class="col-12">
                                         <label for="skills" class="form-label">Skills</label>
-                                        <textarea class="form-control form-control-lg" id="skills" name="skills" rows="4" placeholder="List your skills">{{ user_details.skills }}</textarea>
+                                        <textarea class="form-control form-control-lg" id="skills" name="skills" rows="4"
+                                            placeholder="List your skills">{{ user_details.skills }}</textarea>
                                     </div>
                                     <div class="col-12 text-center mt-4">
                                         <button type="submit" class="btn btn-primary btn-lg px-5">Save Changes</button>
                                     </div>
                                 </div>
                             </form>
-                            
                         </div>
                     </div>
                 </div>

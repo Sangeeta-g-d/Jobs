@@ -77,3 +77,5 @@ function deleteJob(jobId) {
         Swal.fire('Error!', 'Something went wrong.', 'error');
     });
 }
+
+

@@ -329,7 +329,7 @@ def user_login(request):
         password = request.POST.get('password')
         #print(username, password)
         user = authenticate(username=username, password=password)
-        #print(user)
+        print("++++++++++++",user)
         if user is not None:
             login(request, user)
             return redirect('/dashboard')  # Redirect to dashboard after login
@@ -989,33 +989,47 @@ def contact_us_details(request):
 
 from django.shortcuts import redirect
 
+@login_required
 def user_profile(request):
     user_details, created = UserDetails.objects.get_or_create(user_id=request.user)
     saved = False
-
+    
     if request.method == 'POST':
-        # Update user's basic info
-        request.user.fullname = request.POST.get('fullname', '')
-        request.user.phone_no = request.POST.get('phone_no', '')
-        request.user.username = request.POST.get('email', '')
+        user = request.user
 
-        if request.FILES.get('profile'):
-            request.user.profile_image = request.FILES['profile']
-        request.user.save()
+        # Update user's basic info
+        user.fullname = request.POST.get('fullname', '').strip()
+        user.phone_no = request.POST.get('phone_no', '').strip()
+        user.email = request.POST.get('email', '').strip()  # Keep email separate from username
+
+        if 'profile' in request.FILES:
+            user.profile_image = request.FILES['profile']
+        
+        user.save()  # Save the user model first
 
         # Update user details
-        user_details.qualification = request.POST.get('qualification', '')
-        user_details.year_of_exp = request.POST.get('year_of_exp', '')
-        user_details.area_of_interest = request.POST.get('area_of_interest', '')
-        user_details.year_of_passing = request.POST.get('year_of_passing', '')
-        user_details.skills = request.POST.get('skills', '')
+        user_details.qualification = request.POST.get('qualification', '').strip()
+        user_details.area_of_interest = request.POST.get('area_of_interest', '').strip()
+        user_details.skills = request.POST.get('skills', '').strip()
 
-        if request.FILES.get('resume'):
+        # Validate year_of_passing and year_of_exp
+        year_of_passing = request.POST.get('year_of_passing', '').strip()
+        year_of_exp = request.POST.get('year_of_exp', '').strip()
+
+        if year_of_passing.isdigit() and len(year_of_passing) == 4:
+            user_details.year_of_passing = year_of_passing
+        else:
+            user_details.year_of_passing = ''
+
+        if year_of_exp.isdigit() and 0 <= int(year_of_exp) <= 50:  # Assuming valid experience range
+            user_details.year_of_exp = year_of_exp
+        else:
+            user_details.year_of_exp = ''
+
+        if 'resume' in request.FILES:
             user_details.user_resume = request.FILES['resume']
 
-        user_details.save()
-
-        # Set saved flag to True
+        user_details.save()  # Save the user details
         saved = True
 
     context = {'user_details': user_details, 'saved': saved}
