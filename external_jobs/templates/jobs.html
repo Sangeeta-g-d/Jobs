@@ -202,6 +202,7 @@
                             {% if jobs_with_age %}
                                 {% for item in jobs_with_age %}
                                     {% with job=item.job days_old=item.days_old %}
+                                   
                                         <div class="col-lg-12 col-md-12">
                                             <div class="single_jobs white-bg d-flex justify-content-between">
                                                 <div class="jobs_left d-flex align-items-center">
@@ -212,7 +213,7 @@
                                                         {% endif %}
                                                     </div>
                                                     <div class="jobs_conetent">
-                                                        <a href="#"><h4>{{ job.job_title }}</h4></a>
+                                                        <a href="{% url 'single_job' job.id %}"><h4>{{ job.job_title }}</h4></a>
                                                         <div class="links_locat d-flex align-items-center">
                                                             <div class="location">
                                                                 <p><i class="fa fa-map-marker"></i> {{ job.location }}</p>
@@ -255,6 +256,7 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    
                                     {% endwith %}
                                 {% endfor %}
                             {% else %}

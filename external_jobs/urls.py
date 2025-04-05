@@ -57,6 +57,8 @@ urlpatterns = [
     path('password_reset_sent',views.password_reset_sent,name="password_reset_sent"),
     path('password_reset_success',views.password_reset_success,name="password_reset_success"),
     path('company_profile',views.company_profile,name="company_profile"),
+    path('single_job/<int:job_id>',views.single_job,name="single_job"),
+    path('u_single_job/<int:job_id>',views.u_single_job,name="u_single_job"),
 
 
 ]

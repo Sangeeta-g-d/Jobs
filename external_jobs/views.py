@@ -1054,3 +1054,12 @@ def company_profile(request):
         return redirect('company_profile')
 
     return render(request, 'company_profile.html', {'user': user,'username':username,'logo':logo})
+
+
+def single_job(request, job_id):
+    job = get_object_or_404(Jobs, id=job_id)
+    return render(request, 'single_job.html', {'job': job})
+
+def u_single_job(request, job_id):
+    job = get_object_or_404(Jobs, id=job_id)
+    return render(request, 'u_single_job.html', {'job': job})

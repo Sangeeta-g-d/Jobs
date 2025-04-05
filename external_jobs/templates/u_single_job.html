@@ -1,0 +1,214 @@
+{% extends 'user_base.html' %}
+{% block content %}
+
+    <!-- bradcam_area  -->
+    
+    <!--/ bradcam_area  -->
+ 
+    <!-- job_listing_area_start  -->
+    <div class="job_listing_area plus_padding">
+        <div class="container my-5">
+            <div class="job_details_area">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="job_details_header">
+                                <div class="single_jobs white-bg d-flex justify-content-between">
+                                    <div class="jobs_left d-flex align-items-center">
+                                        <div class="thumb">
+                                            {% if job.company_logo %}
+                                            <img src="{{ job.company_logo.url }}" alt="{{ job.company_name }}">
+                                            {% else %}
+                                            <img src="{{ job.company_name }}" alt="">
+                                            {% endif %}
+                                        </div>
+                                       
+
+                                        <div class="jobs_conetent">
+                                            <h4 >{{ job.job_title }}</h4>
+                                            
+                                            <div class="links_locat d-flex align-items-center">
+                                                <div class="location">
+                                                    <p> <i class="fa fa-map-marker"></i> {{ job.location }}</p>
+                                                </div>
+                                                <div class="location">
+                                                    <p> <i class="fa fa-clock-o"></i>  {{ job.job_type }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 
+                                </div>
+                            </div>
+                            <div class="descript_wrap white-bg">
+                                <div class="single_wrap">
+                                    <h4>Education</h4>
+                                    <p>{{ job.education }}</p>
+                                </div>
+                                <div class="single_wrap">
+                                    <h4>Required Skills</h4>
+                                    <p>{{ job.required_skills }}</p>
+                                </div>
+                                <div class="single_wrap">
+                                    <h4>Roles & Responsibilities</h4>
+                                    <p>{{ job.roles_and_responsibilities }}</p>
+                                </div>
+                               
+                                
+                                
+                            </div>
+                         
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="job_sumary">
+                                <div class="summery_header">
+                                    <h3>Job Summery</h3>
+                                </div>
+                                
+                               
+                                <div class="job_content">
+                                    <ul>
+                                        <li>Posted on : <span>{{ job.date_posted }}</span></li>
+                                        <li>Work mode : <span>{{ job.work_mode }}</span></li>
+                                        <li>Salary : <span>{{ job.salary }}</span></li>
+                                        <li>Experience : <span>{{ job.experience }} Year</span></li>
+                                        <li>Status : <span> {{ job.status }}</span></li>
+                                    </ul>
+                                    <br><br>
+                                    <div class="apply_now">
+                                        {% if job.job_link != "nolink" %}
+                                            <a href="{{ job.job_link }}" target="_blank" class="boxed-btn3">Apply Now</a>
+                                        {% else %}
+                                            <a href="javascript:void(0);" class="boxed-btn3 open-popup" data-job-id="{{ job.id }}">Apply Now</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+         
+        </div>
+        
+
+        <div id="popup-overlay"></div>
+
+        <!-- Popup Form -->
+        <div id="popup-form">
+        <div class="popup-content">
+        <h3>Apply for this Job</h3>
+        <form id="job-application-form">
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="text" id="phone" placeholder="Phone Number" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="file" id="resume" accept=".pdf,.doc,.docx" required>
+        <div class="popup-buttons">
+        <button type="submit" id="submit-application">Submit</button>
+        <button type="button" id="close-popup">Close</button>
+        </div>
+        </form>
+        </div>
+        </div>
+
+    </div>
+
+    </div>
+
+    <!-- job_listing_area_end  -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const popupForm = document.getElementById("popup-form");
+            const closeButton = document.getElementById("close-popup");
+            const openButtons = document.querySelectorAll(".open-popup");
+            const submitButton = document.getElementById("submit-application");
+            const usernameInput = document.getElementById("username");
+            const phoneInput = document.getElementById("phone");
+            const emailInput = document.getElementById("email");
+            const resumeInput = document.getElementById("resume");
+    
+            // Open popup and fetch user details
+            openButtons.forEach(button => {
+                button.addEventListener("click", function () {
+                    let jobId = this.getAttribute("data-job-id");
+                    popupForm.dataset.jobId = jobId;
+    
+                    // Fetch user details via AJAX
+                    fetch("/get-user-details/")
+                        .then(response => response.json())
+                        .then(data => {
+                            usernameInput.value = data.username;
+                            phoneInput.value = data.phone;
+                            emailInput.value = data.email;
+                        });
+    
+                    popupForm.style.display = "block";
+                });
+            });
+    
+            // Close popup
+            closeButton.addEventListener("click", function () {
+                popupForm.style.display = "none";
+            });
+    
+            // Handle form submission
+            document.getElementById("job-application-form").addEventListener("submit", function (event) {
+                event.preventDefault();
+                let formData = new FormData();
+                formData.append("username", usernameInput.value);
+                formData.append("phone", phoneInput.value);
+                formData.append("email", emailInput.value);
+                formData.append("resume", resumeInput.files[0]);
+                formData.append("job_id", popupForm.dataset.jobId);
+    
+                fetch("/apply-job/", {
+                    method: "POST",
+                    body: formData,
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message === "Your application has been submitted successfully!") {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Application Submitted!',
+                            text: data.message,
+                            showConfirmButton: false,
+                            timer: 2000
+                        }).then(() => {
+                            popupForm.style.display = "none";
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: data.message
+                        });
+                    }
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!',
+                        text: 'Something went wrong. Please try again.'
+                    });
+                });
+            });
+        });
+    </script>
+
+
+
+
+
+
+    {% endblock %}
+
+	

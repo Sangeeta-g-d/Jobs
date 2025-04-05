@@ -1,0 +1,107 @@
+{% extends 'user_base.html' %}
+{% block content %}
+
+    <!-- bradcam_area  -->
+    
+    <!--/ bradcam_area  -->
+ 
+    <!-- job_listing_area_start  -->
+    <div class="job_listing_area plus_padding">
+        <div class="container my-5">
+            <div class="job_details_area">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="job_details_header">
+                                <div class="single_jobs white-bg d-flex justify-content-between">
+                                    <div class="jobs_left d-flex align-items-center">
+                                        <div class="thumb">
+                                            {% if job.company_logo %}
+                                            <img src="{{ job.company_logo.url }}" alt="{{ job.company_name }}">
+                                            {% else %}
+                                            <img src="{{ job.company_name }}" alt="">
+                                            {% endif %}
+                                        </div>
+                                       
+
+                                        <div class="jobs_conetent">
+                                            <h4 >{{ job.job_title }}</h4>
+                                            
+                                            <div class="links_locat d-flex align-items-center">
+                                                <div class="location">
+                                                    <p> <i class="fa fa-map-marker"></i> {{ job.location }}</p>
+                                                </div>
+                                                <div class="location">
+                                                    <p> <i class="fa fa-clock-o"></i>  {{ job.job_type }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 
+                                </div>
+                            </div>
+                            <div class="descript_wrap white-bg">
+                                <div class="single_wrap">
+                                    <h4>Education</h4>
+                                    <p>{{ job.education }}</p>
+                                </div>
+                                <div class="single_wrap">
+                                    <h4>Required Skills</h4>
+                                    <p>{{ job.required_skills }}</p>
+                                </div>
+                                <div class="single_wrap">
+                                    <h4>Roles & Responsibilities</h4>
+                                    <p>{{ job.roles_and_responsibilities }}</p>
+                                </div>
+                               
+                                
+                                
+                            </div>
+                         
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="job_sumary">
+                                <div class="summery_header">
+                                    <h3>Job Summery</h3>
+                                </div>
+                                
+                               
+                                <div class="job_content">
+                                    <ul>
+                                        <li>Posted on : <span>{{ job.date_posted }}</span></li>
+                                        <li>Work mode : <span>{{ job.work_mode }}</span></li>
+                                        <li>Salary : <span>{{ job.salary }}</span></li>
+                                        <li>Experience : <span>{{ job.experience }} Year</span></li>
+                                        <li>Status : <span> {{ job.status }}</span></li>
+                                    </ul>
+                                    <br><br>
+                                    <div class="apply_now">
+                                                       
+                                        <a href="/login"  class="boxed-btn3">Apply Now</a>
+                                    </div>
+                                </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+         
+        </div>
+        
+    </div>
+    <!-- job_listing_area_end  -->
+
+
+
+
+
+
+
+    {% endblock %}
+
+	
