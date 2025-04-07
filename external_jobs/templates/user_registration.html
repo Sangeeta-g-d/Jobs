@@ -163,11 +163,12 @@ document.addEventListener("DOMContentLoaded", function () {
         showConfirmButton: false,
         timer: 2000
     }).then(() => {
-        window.location.href = '/login'; // Redirect to login page
+        window.location.href = '/dashboard'; // ✅ Redirect to dashboard
     });
     form.reset();
     toggleSubmitButton();
 }
+
 else {
                 Swal.fire({
                     icon: 'error',

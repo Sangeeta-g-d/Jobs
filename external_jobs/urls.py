@@ -17,6 +17,7 @@ urlpatterns = [
     path('login',views.user_login,name='user_login'),
     path('user_registration',views.user_registration,name='user_registration'),
     path('jobs',views.jobs,name='jobs'),
+    path('users_list',views.users_list,name='users_list'),
     path('dashboard',views.user_dashboard,name='user_dashboard'),
     path('company_registration',views.company_register,name='company_register'),
     path('company_login',views.company_login,name='company_login'),
@@ -45,6 +46,7 @@ urlpatterns = [
     path('company_logout',views.company_logout,name='company_logout'),
     path('user_logout',views.user_logout,name='user_logout'),
     path('contact_us_details',views.contact_us_details,name='contact_us_details'),
+    path('delete_user/<int:user_id>/', views.delete_user, name='delete_user'),
 
 
     path('user_profile/',views.user_profile,name="user_profile"),

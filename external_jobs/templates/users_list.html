@@ -1,0 +1,143 @@
+{% extends 'admin_base.html' %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<div class="pcoded-content">
+    <!-- [ breadcrumb ] start -->
+    <div class="page-header">
+        <div class="page-block">
+            <div class="row align-items-center">
+                <div class="col-md-12">
+                    <div class="page-header-title">
+                        <h5 class="m-b-10">Candidate List</h5>
+                    </div>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href=""><i class="feather icon-home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="">Candidate Listings</a></li>
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <!-- [ breadcrumb ] end -->
+
+    <!-- [ Main Content ] start -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Candidates</h5>
+                </div>
+                <div class="card-body table-border-style">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Full name</th>
+                                    <th>Phone number</th>
+                                    <th>Email</th>
+                                    <th>Action</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in data %}
+                                <tr id="row-{{ item.id }}">
+                                    <td>{{ item.fullname }}</td>
+                                    <td>{{ item.phone_no }}</td>
+                                    <td>{{ item.username }}</td>
+                                 
+                                    <td>
+                                        <a href="/a_company_jobs/{{ item.id }}/" class="btn btn-info btn-sm">
+                                            View More
+                                        </a>
+                                        <button class="btn btn-danger btn-sm delete-btn" data-id="{{ item.id }}">Delete</button>
+
+                                   
+                                    </td>
+                                    
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [ Main Content ] end -->
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteButtons = document.querySelectorAll('.delete-btn');
+    
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const userId = this.getAttribute('data-id');
+    
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'This will permanently delete the user.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch(`/delete_user/${userId}/`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': getCookie('csrftoken'),
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                // Remove row from table
+                                const row = document.getElementById(`row-${userId}`);
+                                if (row) row.remove();
+    
+                                // Success alert
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Deleted!',
+                                    text: data.message,
+                                    showConfirmButton: false,
+                                    timer: 2000
+                                });
+                            } else {
+                                Swal.fire('Error!', data.message, 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire('Error!', 'Something went wrong!', 'error');
+                        });
+                    }
+                });
+            });
+        });
+    
+        // Helper: Get CSRF token from cookies
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    });
+    </script>
+    
+
+{% endblock %}

@@ -127,6 +127,7 @@ def v3_login(request):
         print(user)
         if user is not None and user.is_superuser == True:
             login(request,user)
+            request.session.set_expiry(345600)
             return redirect('/admin_db')
         else:
             error_message = "Invalid username or password"
@@ -330,8 +331,9 @@ def user_login(request):
         #print(username, password)
         user = authenticate(username=username, password=password)
         print("++++++++++++",user)
-        if user is not None:
+        if user is not None and user.user_type == 'user':
             login(request, user)
+            request.session.set_expiry(345600)
             return redirect('/dashboard')  # Redirect to dashboard after login
         else:
             error_message = "Invalid username or password"
@@ -347,23 +349,36 @@ def check_email(request):
         return JsonResponse({'exists': True})
     return JsonResponse({'exists': False})
 
+
 def user_registration(request):
     if request.method == 'POST':
         fullname = request.POST['fullname']
         phone = request.POST['phone_no']
         email = request.POST['email']
         password = request.POST['password']
-        encrypted_password = make_password(password) 
-
 
         if NewUser.objects.filter(username=email).exists():
             return JsonResponse({'status': 'error', 'message': 'Email already exists!'})
 
-        # Save User
-        user = NewUser.objects.create_user(username=email, phone_no=phone,  fullname=fullname, email=email)
-        user.set_password(password)  # Hash password properly
+        # Create and save user
+        user = NewUser.objects.create_user(
+            username=email,
+            phone_no=phone,
+            fullname=fullname,
+            email=email,
+            password=password  # handled by create_user
+        )
         user.save()
-        return JsonResponse({'status': 'success', 'message': 'Registration Successful!'})
+
+        # Authenticate and login the user
+        user = authenticate(request, username=email, password=password)
+        if user is not None and user.user_type == 'user':
+            login(request, user)
+            # Set session to expire in 4 days
+            request.session.set_expiry(345600)  # 4 days in seconds
+            return JsonResponse({'status': 'success', 'message': 'Registration and Login Successful!'})
+
+        return JsonResponse({'status': 'error', 'message': 'Authentication failed after registration.'})
 
     return render(request, 'user_registration.html')
 
@@ -605,8 +620,14 @@ def company_register(request):
         )
         user.set_password(password)  # Hash password properly
         user.save()
+        user = authenticate(request, username=email, password=password)
+        if user is not None and user.user_type == 'Company':
+            login(request, user)
+            # Set session to expire in 4 days
+            request.session.set_expiry(345600)  # 4 days in seconds
+            return JsonResponse({'status': 'success', 'message': 'Registration and Login Successful!'})
 
-        return JsonResponse({'status': 'success', 'message': 'Company Registration Successful!'})
+        return JsonResponse({'status': 'error', 'message': 'Authentication failed after registration.'})
 
     return render(request, 'company_register.html')
 
@@ -632,11 +653,30 @@ def company_login(request):
     
     return render(request, 'company_login.html')
 
-@login_required
+@login_required(login_url='/v3_login')
 def company_list(request):
     data = NewUser.objects.filter(user_type='Company').all()
     username= request.user.username
     return render(request, 'company_list.html', {'data': data,'username':username})
+
+
+@login_required(login_url='/v3_login')
+def users_list(request):
+    data = NewUser.objects.filter(user_type='user').exclude(is_superuser = True)
+    username= request.user.username
+    return render(request, 'users_list.html', {'data': data,'username':username})
+
+
+@login_required(login_url='/v3_login')
+def delete_user(request, user_id):
+    if request.method == 'POST':
+        try:
+            user = NewUser.objects.get(id=user_id, user_type='user')
+            user.delete()
+            return JsonResponse({'status': 'success', 'message': 'User deleted successfully!'})
+        except NewUser.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'User does not exist!'})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request!'})
 
 @login_required
 def toggle_approval(request, user_id):

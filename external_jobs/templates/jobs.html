@@ -187,11 +187,9 @@
                                     <h4>Search Jobs</h4>
                                 </div>
                                 <div class="col-md-6">
-                                    <form method="GET" action="{% url 'jobs' %}" class="search_bar d-flex justify-content-end">
+                                  
                                         <input type="text" class="form-control search-input" name="search" id="job_search" placeholder="Search by job title" value="{{ search_query }}">
-                                        <button type="submit" class="btn btn-secondary search-btn ml-2">Search</button>
-                                    </form>
-                                    
+                               
                                 </div>
                             </div>
                         </div>
@@ -203,7 +201,7 @@
                                 {% for item in jobs_with_age %}
                                     {% with job=item.job days_old=item.days_old %}
                                    
-                                        <div class="col-lg-12 col-md-12">
+                                        <div class="col-lg-12 col-md-12 job-card" data-title="{{ job.job_title|lower }}">
                                             <div class="single_jobs white-bg d-flex justify-content-between">
                                                 <div class="jobs_left d-flex align-items-center">
                                                     <div class="thumb">
@@ -273,6 +271,28 @@
     <!-- job_listing_area_end  -->
 <!-- Script for search functionality -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- search script -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const searchInput = document.getElementById("job_search");
+        const jobCards = document.querySelectorAll(".job-card");
+
+        searchInput.addEventListener("input", function() {
+            const query = searchInput.value.toLowerCase();
+
+            jobCards.forEach(card => {
+                const title = card.getAttribute("data-title");
+
+                if (title.includes(query)) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        });
+    });
+</script>
 
  <!-- footer start -->
  <footer class="footer">
