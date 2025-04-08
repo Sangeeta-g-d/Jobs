@@ -1,11 +1,89 @@
-{% extends 'user_base.html' %}
-{% block content %}
+<!doctype html>
+<html class="no-js" lang="zxx">
 
-    <!-- bradcam_area  -->
-    
-    <!--/ bradcam_area  -->
- 
-    <!-- job_listing_area_start  -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>JobTriad</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- <link rel="manifest" href="site.webmanifest"> -->
+    <link rel="shortcut icon" type="image/x-icon" href="/static/user_assets/img/favicon_io11111/favicon.ico">
+    <!-- Place favicon.ico in the root directory -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- CSS here -->
+    <link rel="stylesheet" href="/static/user_assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/user_assets/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/static/user_assets/css/magnific-popup.css">
+    <link rel="stylesheet" href="/static/user_assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/user_assets/css/themify-icons.css">
+    <link rel="stylesheet" href="/static/user_assets/css/nice-select.css">
+    <link rel="stylesheet" href="/static/user_assets/css/flaticon.css">
+    <link rel="stylesheet" href="/static/user_assets/css/gijgo.css">
+    <link rel="stylesheet" href="/static/user_assets/css/animate.min.css">
+    <link rel="stylesheet" href="/static/user_assets/css/slicknav.css">
+
+    <link rel="stylesheet" href="/static/user_assets/css/style.css">
+    <!-- <link rel="stylesheet" href="css/responsive.css"> -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+</head>
+
+<body>
+
+    <header>
+        <div class="header-area " style="background: rgba(0, 29, 56, 0.8);">
+            <div id="sticky-header" class="main-header-area">
+                <div class="container-fluid ">
+                    <div class="header_bottom_border">
+                        <div class="row align-items-center">
+                            <div class="col-xl-3 col-lg-2">
+                                <div class="logo">
+                                    <a href="/">
+                                        <img src="/static/user_assets/img/logo.jpeg" alt="" width="100px" height="100px"style="height:45px "  >
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-7">
+                                <div class="main-menu  d-none d-lg-block">
+                                    <nav>
+                                        <ul id="navigation">
+                                            <li><a href="/">home</a></li>
+                                            <li><a href="/jobs">Jobs</a></li>
+                                           
+                                            <li><a href="/about_us">About Us</a></li>
+                                            <li><a href="/contact_us">Contact Us</a></li>
+                                           
+                                            
+                                           
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 d-none d-lg-block">
+                                <div class="Appointment">
+                                    <div class="phone_num d-none d-xl-block">
+                                        <a href="/login">Log in</a>
+                                    </div>
+                                    <div class="d-none d-lg-block">
+                                        <a class="boxed-btn3" href="/company_login">Post a Job</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="mobile_menu d-block d-lg-none"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </header>
     <div class="job_listing_area plus_padding">
         <div class="container my-5">
             <div class="job_details_area">
@@ -86,22 +164,103 @@
                     </div>
                 </div>
             </div>
-
-
-
-
-         
         </div>
-        
     </div>
     <!-- job_listing_area_end  -->
 
 
+<!-- footer start -->
+<footer class="footer">
+    <div class="footer_top">
+        <div class="container">
+            <div class="row">
+                 <!-- Services Section -->
+                 <div class="col-xl-3 col-md-6 col-lg-3">
+                    <div class="footer_widget">
+                        <h3 class="footer_title">Services</h3>
+                        <p>We are dedicated to connecting students with genuine job opportunities to help kickstart their careers. Our platform ensures reliable job listings, making the job search process easier and more efficient. 🚀</p>
+                    </div>
+                </div>
+                <!-- Company Section -->
+                <div class="col-xl-3 col-md-6 col-lg-3">
+                    <div class="footer_widget">
+                        <h3 class="footer_title">Company</h3>
+                        <ul>
+                            <li><a href="/about_us">About JobTriad</a></li>
+                            <!-- <li><a href="#Categories">Job Categories</a></li> -->
+                            <li><a href="/jobs">Jobs</a></li>
+                            <li><a href="/contact_us">Contact Us</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Get in Touch Section    <p>📞 +91 98765 43210</p>-->
+                <div class="col-xl-3 col-md-6 col-lg-3">
+                    <div class="footer_widget">
+                        <h3 class="footer_title">Get in Touch</h3>
+                        <p>Old SP Dharwad - 580001</p>
+                        <p>Karnataka, India</p>
+                       <p>jobtriad@gmail.com</p>
+                    </div>
+                </div>
+
+                <!-- Contact Us / Social Links -->
+                <div class="col-xl-3 col-md-6 col-lg-3">
+                    <div class="footer_widget">
+                        <h3 class="footer_title">Follow Us</h3>
+                        <ul class="social_links">
+                           
+                            <li><a href="https://www.instagram.com/jobtriad/" target="_blank"><i class="fa-brands fa-instagram"></i> Follow us on Instagram</a></li>
+                        </ul>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <!-- Copyright Section -->
+            <div class="footer_bottom text-center">
+                <p>© 2025 JobTriad. All Rights Reserved.</p>
+            </div>
+        </div>
+    </div>
+</footer>
+<!--/ footer end  -->
+
+<!-- link that opens popup -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- JS here -->
+<script src="/static/user_assets/js/vendor/modernizr-3.5.0.min.js"></script>
+<script src="/static/user_assets/js/vendor/jquery-1.12.4.min.js"></script>
+<script src="/static/user_assets/js/popper.min.js"></script>
+<script src="/static/user_assets/js/bootstrap.min.js"></script>
+<script src="/static/user_assets/js/owl.carousel.min.js"></script>
+<script src="/static/user_assets/js/isotope.pkgd.min.js"></script>
+<script src="/static/user_assets/js/ajax-form.js"></script>
+<script src="/static/user_assets/js/waypoints.min.js"></script>
+<script src="/static/user_assets/js/jquery.counterup.min.js"></script>
+<script src="/static/user_assets/js/imagesloaded.pkgd.min.js"></script>
+<script src="/static/user_assets/js/scrollIt.js"></script>
+<script src="/static/user_assets/js/jquery.scrollUp.min.js"></script>
+<script src="/static/user_assets/js/wow.min.js"></script>
+<script src="/static/user_assets/js/nice-select.min.js"></script>
+<script src="/static/user_assets/js/jquery.slicknav.min.js"></script>
+<script src="/static/user_assets/js/jquery.magnific-popup.min.js"></script>
+<script src="/static/user_assets/js/plugins.js"></script>
+<script src="/static/user_assets/js/gijgo.min.js"></script>
+
+<!--contact js-->
+<script src="/static/user_assets/js/contact.js"></script>
+<script src="/static/user_assets/js/jquery.ajaxchimp.min.js"></script>
+<script src="/static/user_assets/js/jquery.form.js"></script>
+<script src="/static/user_assets/js/jquery.validate.min.js"></script>
+<script src="/static/user_assets/js/mail-script.js"></script>
+<script src="/static/user_assets/js/custom.js"></script>
 
 
+<script src="/static/user_assets/js/main.js"></script>
+</body>
+
+</html>
 
 
-
-    {% endblock %}
 
 	

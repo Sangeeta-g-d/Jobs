@@ -225,7 +225,7 @@
                                                 <div class="jobs_right">
                                                     <div class="apply_now">
                                                        
-                                                        <a href="/login"  class="boxed-btn3">Apply Now</a>
+                                                        <a href="{% url 'single_job' job.id %}"  class="boxed-btn3">Apply Now</a>
                                                     </div>
                                                     <div class="date">
                                                         <p class="view-more-btn" style="cursor: pointer;" data-job-id="{{ job.id }}">View More</p>
