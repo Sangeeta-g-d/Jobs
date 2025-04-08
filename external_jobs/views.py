@@ -381,16 +381,16 @@ def user_registration(request):
 
     return render(request, 'user_registration.html')
 
-
 def jobs(request):
     if request.GET.get('reset'):
         request.session.pop('searched_jobs', None)
         request.session.pop('filters', None)  # Clear filters
         return redirect('jobs')
+    
     # Get user search input
     search_query = request.GET.get('search', '').strip()
     selected_designation = request.GET.get('designation', '').strip()
-    print("----------------------",selected_designation)
+    print("----------------------", selected_designation)
     selected_location = request.GET.get('location', '').strip()
     selected_category = request.GET.get('category', '').strip()
     selected_job_type = request.GET.get('job_type', '').strip()
@@ -416,14 +416,13 @@ def jobs(request):
     unique_work_modes = Jobs.objects.values_list('work_mode', flat=True).distinct()
     unique_experience_levels = Jobs.objects.values_list('experience', flat=True).distinct()
 
-
     # If a new search is made, store the job IDs in the session
     if search_query:
-        job_list = Jobs.objects.filter(job_title__icontains=search_query)
+        job_list = Jobs.objects.filter(job_title__icontains=search_query).order_by('-id')
         request.session['searched_jobs'] = list(job_list.values_list('id', flat=True))
     else:
         searched_job_ids = request.session.get('searched_jobs', [])
-        job_list = Jobs.objects.filter(id__in=searched_job_ids) if searched_job_ids else Jobs.objects.all()
+        job_list = Jobs.objects.filter(id__in=searched_job_ids).order_by('-id') if searched_job_ids else Jobs.objects.all().order_by('-id')
 
     # Apply filters only to the searched results
     if selected_designation:
@@ -431,7 +430,7 @@ def jobs(request):
         request.session['searched_jobs'] = list(job_list.values_list('id', flat=True))
     else:
         searched_job_ids = request.session.get('searched_jobs', [])
-        job_list = Jobs.objects.filter(id__in=searched_job_ids) if searched_job_ids else Jobs.objects.all()
+        job_list = Jobs.objects.filter(id__in=searched_job_ids).order_by('-id') if searched_job_ids else Jobs.objects.all().order_by('-id')
 
     if selected_location:
         job_list = job_list.filter(location__icontains=selected_location)
@@ -475,6 +474,7 @@ def jobs(request):
     }
 
     return render(request, 'jobs.html', context)
+
 
 
 @login_required
