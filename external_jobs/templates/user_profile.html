@@ -52,79 +52,82 @@
 
                         <div class="descript_wrap white-bg p-5 rounded shadow-lg">
                             <h3 class="mb-4 text-center text-primary">Edit Your Details</h3>
-                            <form method="POST" action="" enctype="multipart/form-data" id="userForm">
-                                {% csrf_token %}
-                                <div class="row g-4">
-                                    <div class="col-md-6">
-                                        <label for="fullname" class="form-label">Full name</label>
-                                        <input type="text" class="form-control form-control-lg" id="fullname" name="fullname"
-                                            value="{{ request.user.fullname }}" placeholder="Enter your full name" required>
-                                        <div class="text-danger" id="fullnameError"></div>
+                                <form method="POST" action="" enctype="multipart/form-data" id="userForm">
+                                    {% csrf_token %}
+                                    <div class="row g-4">
+                                        <div class="col-md-6">
+                                            <label for="fullname" class="form-label">Full name</label>
+                                            <input type="text" class="form-control form-control-lg" id="fullname" name="fullname"
+                                                value="{{ request.user.fullname }}" placeholder="Enter your full name" required>
+                                            <div class="text-danger" id="fullnameError"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="phone_no" class="form-label">Contact Number</label>
+                                            <input type="tel" class="form-control form-control-lg" id="phone_no" name="phone_no"
+                                                value="{{ request.user.phone_no }}" placeholder="Enter your contact number" pattern="[0-9]{10}"
+                                                title="Enter a valid 10-digit phone number" required>
+                                            <div class="text-danger" id="phoneError"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="emailid" class="form-label">Email</label>
+                                            <input type="email" class="form-control form-control-lg" id="emailid" name="email"
+                                                value="{{ request.user.username }}" placeholder="Enter your email" required>
+                                            <div class="text-danger" id="emailError"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="resume" class="form-label">Resume (PDF only)</label>
+                                            <input type="file" class="form-control form-control-lg" id="resume" name="resume" accept=".pdf">
+                                        </div>
+
+
+                                    
+
+                                        <div class="col-md-6">
+                                            <label for="qualification" class="form-label">Qualification</label>
+                                            <input type="text" class="form-control form-control-lg" id="qualification" name="qualification"
+                                                value="{{ user_details.qualification }}" placeholder="Enter your qualification" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="year_of_passing" class="form-label">Year of Passing</label>
+                                            <input type="text" class="form-control form-control-lg" id="year_of_passing" name="year_of_passing"
+                                                value="{{ user_details.year_of_passing }}" placeholder="Enter year of passing"
+                                            required>
+                                            <div class="text-danger" id="yearError"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="year_of_exp" class="form-label">Experience (Years)</label>
+                                            <input type="text" class="form-control form-control-lg" id="year_of_exp" name="year_of_exp"
+                                                value="{{ user_details.year_of_exp }}" placeholder="Enter experience in years"
+                                                required>
+                                            <div class="text-danger" id="expError"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="area_of_interest" class="form-label">Area of Interest</label> <br/>
+                                            <select class="form-control form-control-lg" id="area_of_interest" name="area_of_interest" required>
+                                                <option value="">Select</option>
+                                                <option value="Design-Creative" {% if user_details.area_of_interest == "Design-Creative" %}selected{% endif %}>Design-Creative</option>
+                                                <option value="Marketing" {% if user_details.area_of_interest == "Marketing" %}selected{% endif %}>Marketing</option>
+                                                <option value="Software and Web" {% if user_details.area_of_interest == "Software and Web" %}selected{% endif %}>Software and Web</option>
+                                                <option value="Administration" {% if user_details.area_of_interest == "Administration" %}selected{% endif %}>Administration</option>
+                                                <option value="Teaching and Education" {% if user_details.area_of_interest == "Teaching and Education" %}selected{% endif %}>Teaching and Education</option>
+                                                <option value="Engineering (Hardware)" {% if user_details.area_of_interest == "Engineering (Hardware)" %}selected{% endif %}>Engineering (Hardware)</option>
+                                                <option value="Telemarketing" {% if user_details.area_of_interest == "Telemarketing" %}selected{% endif %}>Telemarketing</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12">
+                                            <label for="profile" class="form-label">User Profile</label>
+                                            <input type="file" class="form-control form-control-lg" id="profile" name="profile">
+                                        </div>
+                                        <div class="col-12">
+                                            <label for="skills" class="form-label">Skills</label>
+                                            <textarea class="form-control form-control-lg" id="skills" name="skills" rows="4"
+                                                placeholder="List your skills">{{ user_details.skills }}</textarea>
+                                        </div>
+                                        <div class="col-12 text-center mt-4">
+                                            <button type="submit" class="btn btn-primary btn-lg px-5">Save Changes</button>
+                                        </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label for="phone_no" class="form-label">Contact Number</label>
-                                        <input type="tel" class="form-control form-control-lg" id="phone_no" name="phone_no"
-                                            value="{{ request.user.phone_no }}" placeholder="Enter your contact number" pattern="[0-9]{10}"
-                                            title="Enter a valid 10-digit phone number" required>
-                                        <div class="text-danger" id="phoneError"></div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="emailid" class="form-label">Email</label>
-                                        <input type="email" class="form-control form-control-lg" id="emailid" name="email"
-                                            value="{{ request.user.username }}" placeholder="Enter your email" required>
-                                        <div class="text-danger" id="emailError"></div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="resume" class="form-label">Resume (PDF only)</label>
-                                        <input type="file" class="form-control form-control-lg" id="resume" name="resume" accept=".pdf">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="qualification" class="form-label">Qualification</label>
-                                        <input type="text" class="form-control form-control-lg" id="qualification" name="qualification"
-                                            value="{{ user_details.qualification }}" placeholder="Enter your qualification" pattern="^[A-Za-z\s]+$"
-                                            title="Qualification should not contain numbers" required>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="year_of_passing" class="form-label">Year of Passing</label>
-                                        <input type="text" class="form-control form-control-lg" id="year_of_passing" name="year_of_passing"
-                                            value="{{ user_details.year_of_passing }}" placeholder="Enter year of passing" pattern="\d{4}"
-                                            title="Enter a valid 4-digit year (e.g., 2023)" required>
-                                        <div class="text-danger" id="yearError"></div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="year_of_exp" class="form-label">Experience (Years)</label>
-                                        <input type="text" class="form-control form-control-lg" id="year_of_exp" name="year_of_exp"
-                                            value="{{ user_details.year_of_exp }}" placeholder="Enter experience in years" pattern="\d{1,2}"
-                                            title="Enter a valid number of years (e.g., 5)" required>
-                                        <div class="text-danger" id="expError"></div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="area_of_interest" class="form-label">Area of Interest</label> <br/>
-                                        <select class="form-control form-control-lg" id="area_of_interest" name="area_of_interest" required>
-                                            <option value="">Select</option>
-                                            <option value="Design-Creative" {% if user_details.area_of_interest == "Design-Creative" %}selected{% endif %}>Design-Creative</option>
-                                            <option value="Marketing" {% if user_details.area_of_interest == "Marketing" %}selected{% endif %}>Marketing</option>
-                                            <option value="Software and Web" {% if user_details.area_of_interest == "Software and Web" %}selected{% endif %}>Software and Web</option>
-                                            <option value="Administration" {% if user_details.area_of_interest == "Administration" %}selected{% endif %}>Administration</option>
-                                            <option value="Teaching and Education" {% if user_details.area_of_interest == "Teaching and Education" %}selected{% endif %}>Teaching and Education</option>
-                                            <option value="Engineering (Hardware)" {% if user_details.area_of_interest == "Engineering (Hardware)" %}selected{% endif %}>Engineering (Hardware)</option>
-                                            <option value="Telemarketing" {% if user_details.area_of_interest == "Telemarketing" %}selected{% endif %}>Telemarketing</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-12">
-                                        <label for="profile" class="form-label">User Profile</label>
-                                        <input type="file" class="form-control form-control-lg" id="profile" name="profile">
-                                    </div>
-                                    <div class="col-12">
-                                        <label for="skills" class="form-label">Skills</label>
-                                        <textarea class="form-control form-control-lg" id="skills" name="skills" rows="4"
-                                            placeholder="List your skills">{{ user_details.skills }}</textarea>
-                                    </div>
-                                    <div class="col-12 text-center mt-4">
-                                        <button type="submit" class="btn btn-primary btn-lg px-5">Save Changes</button>
-                                    </div>
-                                </div>
-                            </form>
+                                </form>
                         </div>
                     </div>
                 </div>

@@ -330,7 +330,6 @@ def user_login(request):
         password = request.POST.get('password')
         #print(username, password)
         user = authenticate(username=username, password=password)
-        print("++++++++++++",user)
         if user is not None and user.user_type == 'user':
             login(request, user)
             request.session.set_expiry(345600)
