@@ -11,6 +11,7 @@ from django.contrib.auth.hashers import make_password
 from django.db.models import Count
 from datetime import timedelta, date
 from django.utils.timezone import now
+import json
 from django.contrib.auth.decorators import login_required
 # forgot password
 from django.contrib.auth.tokens import default_token_generator
@@ -162,35 +163,22 @@ def add_job(request):
     if request.method == 'POST':
         try:
             added_by = request.user
-            job_title = request.POST.get('job_title')
-            experience = request.POST.get('experience')
-            salary = request.POST.get('package')
-            education = request.POST.get('education')
-            location = request.POST.get('location')
-            job_type = request.POST.get('job_type')
-            work_mode = request.POST.get('work_mode')
-            r_and_r = request.POST.get('r_and_r')
-            job_link = request.POST.get('job_link')
-            company_name = request.POST.get('company_name')
-            category = request.POST.get('category')
-            required_skills = request.POST.get('skills')
-            company_logo = request.FILES.get('company_logo')  # Handle logo upload
-
-            if not job_title or not company_name or not location :
-                missing_fields = []
-                if not job_title:
-                    missing_fields.append("Job Title")
-                if not company_name:
-                    missing_fields.append("Company Name")
-                if not location:
-                    missing_fields.append("Location")
-                
-
-                alert["type"] = "error"
-                alert["message"] = f"Missing required fields: {', '.join(missing_fields)}"
-                return render(request, 'add_job.html', {"alert": alert})
-
-            # Create job entry
+            job_title = request.POST.get('job_title', '').strip()
+            experience = request.POST.get('experience', '').strip()
+            salary = request.POST.get('package', '').strip()
+            education = request.POST.get('education', '').strip()
+            location = request.POST.get('location', '').strip()
+            job_type = request.POST.get('job_type', '').strip()
+            work_mode = request.POST.get('work_mode', '').strip()
+            r_and_r = request.POST.get('r_and_r', '')
+            r_and_r_list = [line.strip() for line in r_and_r.splitlines() if line.strip()]
+            r_and_r_json = json.dumps(r_and_r_list)
+            job_link = request.POST.get('job_link', '').strip()
+            company_name = request.POST.get('company_name', '').strip()
+            category = request.POST.get('category', '').strip()
+            required_skills = request.POST.get('skills', '').strip()
+            company_logo = request.FILES.get('company_logo')
+            
             Jobs.objects.create(
                 job_title=job_title,
                 salary=salary,
@@ -200,7 +188,7 @@ def add_job(request):
                 job_type=job_type,
                 work_mode=work_mode,
                 required_skills=required_skills,
-                roles_and_responsibilities=r_and_r,
+                roles_and_responsibilities=r_and_r_json,
                 job_link=job_link,
                 category = category,
                 company_name=company_name,
@@ -219,12 +207,20 @@ def add_job(request):
 
 @login_required
 def job_details(request):
-    id= request.user.id
-    data = Jobs.objects.filter(added_by_id=id)
-    username= request.user.username
+    id = request.user.id
+    data = Jobs.objects.filter(added_by_id=id).order_by('-id')
+    username = request.user.username
+
+    # Convert JSON string of roles_and_responsibilities to list for each job
+    for job in data:
+        try:
+            job.roles_and_responsibilities = json.loads(job.roles_and_responsibilities)
+        except (json.JSONDecodeError, TypeError):
+            job.roles_and_responsibilities = []
+
     context = {
         'data': data,
-        'username':username
+        'username': username
     }
     return render(request, 'job_details.html', context)
 

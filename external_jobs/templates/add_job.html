@@ -17,11 +17,11 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="job_title">Job Title <span style="color: red;">*</span></label>
-                            <input type="text" class="form-control" id="job_title" name="job_title" placeholder="Enter Job Title">
+                            <input type="text" class="form-control" id="job_title" name="job_title" placeholder="Enter Job Title" required>
                         </div>
                         <div class="form-group">
                             <label for="company_name">Company Name <span style="color: red;">*</span></label>
-                            <input type="text" class="form-control" id="company_name" name="company_name" placeholder="Enter Company Name">
+                            <input type="text" class="form-control" id="company_name" name="company_name" placeholder="Enter Company Name" required>
                         </div>
                         <div class="form-group">
                             <label for="location">Location <span style="color: red;">*</span></label>
@@ -30,7 +30,7 @@
                         
                         <div class="form-group">
                             <label for="job_type">Job Type</label>
-                            <select class="form-control" id="job_type" name="job_type">
+                            <select class="form-control" id="job_type" name="job_type" required>
                                 <option value="">Select</option>
                                 <option value="Full-Time">Full-Time</option>
                                 <option value="Part-Time">Part-Time</option>
@@ -44,13 +44,11 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="job_link">Job Link </label>
-                            <input type="url" class="form-control" id="job_link" name="job_link" placeholder="Enter Job Link">
+                            <input type="url" class="form-control" id="job_link" name="job_link" placeholder="Enter Job Link" required>
                         </div>
                         <div class="form-group">
                             <label for="experience">Experience</label>
-                            
-                            
-                            <select class="form-control" id="experience" name="experience">
+                            <select class="form-control" id="experience" name="experience" required>
                                 <option value="">Select</option>
                                 <option value="Fresher">Fresher</option>
                                 <option value="0-1">0-1</option>
@@ -67,7 +65,7 @@
                         </div>
                         <div class="form-group">
                             <label for="work_mode">Work Mode</label>
-                            <select class="form-control" id="work_mode" name="work_mode">
+                            <select class="form-control" id="work_mode" name="work_mode" required>
                                 <option value="">Select</option>
                                 <option value="Remote">Remote</option>
                                 <option value="On-Site">On-Site</option>
@@ -85,7 +83,7 @@
                         </div>
                         <div class="form-group">
                             <label for="job_type">Job Category</label>
-                            <select class="form-control" id="category" name="category">
+                            <select class="form-control" id="category" name="category" required>
                                 <option value="">Select</option>
                                 <option value="Design-Creative">Design-Creative</option>
                                 <option value="Marketing">Marketing</option>
@@ -107,11 +105,11 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="company_logo">Company Logo</label>
-                            <input type="file" class="form-control" id="company_logo" name="company_logo">
+                            <input type="file" class="form-control" id="company_logo" name="company_logo" required>
                         </div>
                         <div class="form-group">
                             <label for="r_and_r">Roles and Responsibilities</label>
-                            <textarea class="form-control" id="r_and_r" name="r_and_r" rows="3" ></textarea>
+                            <textarea name="r_and_r" class="form-control" rows="5" cols="40" placeholder="Enter each point on a new line"></textarea>
                         </div>
                     </div>
                 </div>

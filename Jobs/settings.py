@@ -70,16 +70,25 @@ WSGI_APPLICATION = 'Jobs.wsgi.application'
 AUTH_USER_MODEL = 'external_jobs.NewUser'
 
 # Database Configuration
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'JobTriad',  # Replace with your database name
+#         'USER': 'root',  # Replace with your MySQL username
+#         'PASSWORD': 'VSV_database_2025',  # Replace with your MySQL password
+#         'HOST': '82.25.108.17',  # Or 'localhost' for a local database
+#         'PORT': '3306',  # Default MySQL port
+#     }
+# }
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'JobTriad',  # Replace with your database name
-        'USER': 'root',  # Replace with your MySQL username
-        'PASSWORD': 'VSV_database_2025',  # Replace with your MySQL password
-        'HOST': '82.25.108.17',  # Or 'localhost' for a local database
-        'PORT': '3306',  # Default MySQL port
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [

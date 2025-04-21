@@ -33,9 +33,12 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">
-                    <h5>Job Details</h5>
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Job Details</h5>
+                    <input type="text" id="jobSearchInput" class="form-control w-50" placeholder="Search jobs..." style="max-width: 300px;">
                 </div>
+                
+                
                 <div class="card-body table-border-style">
                     <div class="table-responsive">
                         <table class="table table-hover">
@@ -76,9 +79,6 @@
                                             <i class="feather icon-trash"></i>
                                         </button>
                                     </td>
-                                  
-                                    
-
                                 </tr>
                                 <div class="modal fade" id="deleteModal{{ item.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ item.id }}" aria-hidden="true">
                                     <div class="modal-dialog">
@@ -122,13 +122,20 @@
             </div>
             <div class="modal-body">
                 <p><strong>Company Name:</strong> {{ item.company_name }}</p>
+                <p><strong>Job link:</strong> <a href="{{item.job_link}}" target="_blank">{{item.job_link}}</a> </p>
                 <p><strong>Salary:</strong> {{ item.salary }}</p>
                 <p><strong>Experience:</strong> {{ item.experience }} years</p>
                 <p><strong>Location:</strong> {{ item.location }}</p>
                 <p><strong>Job Type:</strong> {{ item.job_type }}</p>
                 <p><strong>Education:</strong> {{ item.education }}</p>
                 <p><strong>Required Skills:</strong> {{ item.required_skills }}</p>
-                <p><strong>Roles & Responsibilities:</strong> {{ item.roles_and_responsibilities }}</p>
+                <p><strong>Roles & Responsibilities:</strong></p>
+                <ul>
+                    {% for point in item.roles_and_responsibilities %}
+                        <li>{{ point }}</li>
+                    {% endfor %}
+                </ul>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -137,6 +144,27 @@
     </div>
 </div>
 {% endfor %}
+
+
+<!-- search script -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("jobSearchInput");
+        const tableRows = document.querySelectorAll("tbody tr");
+
+        searchInput.addEventListener("keyup", function () {
+            const query = this.value.toLowerCase();
+
+            tableRows.forEach(row => {
+                const cells = row.querySelectorAll("td");
+                const matches = Array.from(cells).some(cell =>
+                    cell.textContent.toLowerCase().includes(query)
+                );
+                row.style.display = matches ? "" : "none";
+            });
+        });
+    });
+</script>
 
 
 {% endblock %}
